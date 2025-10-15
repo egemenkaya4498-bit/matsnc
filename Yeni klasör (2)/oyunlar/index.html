@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="../manifest.json">
+    <title>Oyunumuz Yakında Gelecek...</title>
+<body>
+   <h1>Oyunumuz Yakında Gelecek...</h1>
+   <a href="anasayfa.html" class="menu-item neon-green-border">
+   <h2>Ana Sayfaya Geri Dön...</h2>
+       <script>
+        /**
+         * Sağ Tık Menüsünü, Geliştirici Araçları Kısayollarını ve Metin Seçimini Engelleme
+         */
+
+        // Sağ Tık Menüsünü (Context Menu) Engelle
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // Klavye Kısayollarını Engelle (F12, Ctrl+Shift+I, Ctrl+U vb.)
+        document.onkeydown = function(e) {
+            // F12 tuşu
+            if (e.key === 'F12' || e.keyCode === 123) {
+                return false;
+            }
+
+            // Ctrl+Shift+I (Geliştirici Araçları)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.keyCode === 73)) {
+                return false;
+            }
+
+            // Ctrl+U (Sayfa Kaynağını Görüntüle)
+            if (e.ctrlKey && (e.key === 'U' || e.keyCode === 85)) {
+                return false;
+            }
+        }
+
+        // İsteğe bağlı: Sayfa metninin seçilmesini engelle
+        document.body.onselectstart = function() { return false; }
+    </script>

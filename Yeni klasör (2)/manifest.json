@@ -1,0 +1,21 @@
+{
+  "name": "Sayısal Analiz Aracı",
+  "short_name": "Matematik Sonuç",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#d32f2f",
+  "icons": [
+    {
+      "src": "img/faviconx128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "img/faviconx512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

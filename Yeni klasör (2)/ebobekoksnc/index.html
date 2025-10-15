@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EBOB, EKOK ve Asallık Kontrolü</title>
+    <meta name="robots" content="index, follow">
+    <link rel="icon" type="image/png" href="../img/favicon.png">
+    <link rel="shortcut icon" href="../img/favicon.png" type="image/png">
+    <link rel="manifest" href="../manifest.json">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap');
+
+        :root {
+            /* Neon Renk Paleti (Ana Sayfanızdan alındı) */
+            --neon-blue: #00eaff;
+            --neon-blue-light: #66e7ff;
+            --neon-green: #39ff14;
+            --neon-purple: #ae00ff;
+            --neon-red: #ff3333;
+            
+            /* Temel Renkler */
+            --dark-bg: #0d1326; 
+            --text-color: #e0e0e0; 
+            --link-color: #00ff37be;
+            --metin-color: #00f7ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* --- Genel Arka Plan: Ana Sayfa Stili --- */
+        body {
+            font-family: 'Orbitron', sans-serif; /* Siberpunk font */
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+
+            /* MEKANİK ARKA PLAN EKLEME (Ana Sayfanızdan alındı) */
+            background-image: url('data:image/svg+xml,%3Csvg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M11 0l11 22 11 -22zm22 0l11 22 11 -22zm22 0l11 22 11 -22zm22 0l11 22 11 -22zm-88 100l11 -22 11 22zm22 0l11 -22 11 22zm22 0l11 -22 11 22zm22 0l11 -22 11 22zm-88 -50l11 22 11 -22zm22 -50l11 22 11 -22zm22 -50l11 22 11 -22zm22 -50l11 22 11 -22zm-88 100l11 -22 11 22zm22 100l11 -22 11 22zm22 100l11 -22 11 22zm22 100l11 -22 11 22zm-88 -50l11 22 11 -22zm22 50l11 22 11 -22zm22 50l11 22 11 -22zm22 50l11 22 11 -22z" fill="%2300EAFF" opacity="0.1" /%3E%3C/svg%3E'), /* SVG ile üçgen deseni */
+                              linear-gradient(135deg, #0d1326 0%, #1a233a 100%); 
+            background-size: 50px 50px, cover; 
+            background-attachment: fixed; 
+        }
+
+        /* Ana İçerik Kapsayıcı (Ana Sayfanızdan alındı) */
+        .container {
+            background-color: rgba(13, 19, 38, 0.85);
+            border: 1px solid var(--neon-blue);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0, 234, 255, 0.8), 
+                        inset 0 0 15px rgba(0, 234, 255, 0.4); 
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Başlıklar (Ana Sayfanızdan alındı) */
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-blue);
+            text-shadow: 0 0 15px var(--neon-blue);
+            margin-bottom: 20px;
+            font-size: 2.2em;
+            letter-spacing: 2px;
+        }
+
+        /* Normal Paragraf Metni (Ana Sayfanızdan alındı) */
+        p {
+            color: var(--metin-color); /* Neon mavi metin */
+            font-family: 'Share Tech Mono', monospace; /* Teknoloji fontu */
+            margin-bottom: 15px;
+        }
+        
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-green);
+            text-shadow: 0 0 8px var(--neon-green);
+            margin-top: 25px;
+            font-size: 1.6em;
+        }
+
+        /* --- Input Alanları ve Etiketler için Yeni Neon Stil --- */
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left; /* Etiketleri sola hizala */
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--neon-blue-light);
+            text-shadow: 0 0 5px var(--neon-blue);
+            font-weight: 700;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--neon-green);
+            border-radius: 5px;
+            background-color: rgba(26, 35, 58, 0.8); /* Koyu input arkaplanı */
+            color: var(--neon-green);
+            font-size: 1.2em;
+            font-family: 'Share Tech Mono', monospace;
+            box-shadow: 0 0 10px rgba(57, 255, 20, 0.5); /* Yeşil neon kutu gölgesi */
+            transition: all 0.3s;
+        }
+        
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 15px var(--neon-blue); /* Odaklanınca mavi neon */
+        }
+
+        /* --- Buton Stili (Hesapla) --- */
+        button {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--neon-red); /* Buton çerçevesi */
+            border-radius: 8px;
+            background-color: rgba(255, 51, 51, 0.2); /* Hafif kırmızı arkaplan */
+            color: var(--neon-red);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3em;
+            cursor: pointer;
+            text-shadow: 0 0 8px var(--neon-red);
+            box-shadow: 0 0 20px var(--neon-red);
+            transition: all 0.3s ease-in-out;
+            font-weight: 700;
+        }
+
+        button:hover {
+            background-color: rgba(255, 51, 51, 0.4);
+            box-shadow: 0 0 35px var(--neon-red);
+            transform: translateY(-2px);
+        }
+
+        /* --- Sonuç Bölümü --- */
+        hr {
+            border: none;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), var(--neon-blue), rgba(0, 0, 0, 0));
+            margin: 25px 0;
+        }
+
+        #sonuclar {
+            text-align: left;
+        }
+
+        #sonuclar p {
+            margin: 10px 0;
+            font-size: 1.1em;
+            color: var(--text-color); /* Koyu metin rengi */
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        #sonuclar strong {
+            color: var(--neon-blue-light);
+            font-weight: 700;
+        }
+
+        /* Sonuç Değerleri */
+        #ebobSonuc, #ekokSonuc {
+            font-weight: 700;
+            color: var(--neon-green);
+            text-shadow: 0 0 5px var(--neon-green);
+        }
+
+        /* Taranıyor Yazısı */
+        #taramaAlani {
+            color: var(--neon-red) !important;
+            text-shadow: 0 0 8px var(--neon-red) !important;
+            font-size: 1.5em;
+            margin-bottom: 25px;
+        }
+        
+        /* Aralarında Asallık Sonucu için Neon Renkleri */
+        #asalSonuc[style*="dc3545"] { /* HAYIR sonucu için (Neon Kırmızı) */
+            color: var(--neon-red) !important; 
+            text-shadow: 0 0 8px var(--neon-red) !important;
+        }
+        #asalSonuc[style*="28a745"] { /* EVET sonucu için (Neon Yeşil) */
+            color: var(--neon-green) !important;
+            text-shadow: 0 0 8px var(--neon-green) !important;
+        }
+        
+        /* Home Button (Geri Butonu) Stili - Ana Sayfa temasına uygun */
+        .homebutton {
+            position: fixed; 
+            top: 1.5rem; 
+            left: 1.5rem; 
+            z-index: 50; 
+            transition: all 0.3s ease-in-out;
+        }
+        .homebutton .btn {
+            font-size: 0; 
+            width: 3.5rem; 
+            height: 3.5rem; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            font-weight: 700;
+            white-space: nowrap; 
+            transition: all 0.3s ease-in-out;
+            background-color: var(--neon-blue); /* Neon Mavi Buton Arka Plan */
+            color: var(--dark-bg);
+            border-radius: 0.75rem;
+            box-shadow: 0 0 15px var(--neon-blue);
+        }
+
+        .homebutton .btn::before {
+            content: "🏠";
+            font-size: 1.5rem;
+            line-height: 1;
+            transition: all 0.3s ease-in-out;
+            color: var(--dark-bg);
+        }
+
+        .homebutton .btn:hover::before {
+            content: "Geri Dön";
+            font-size: 1rem;
+            color: var(--dark-bg);
+        }
+
+        .homebutton .btn:hover {
+            width: auto;
+            padding: 0.75rem 1.25rem;
+            background-color: var(--neon-blue-light);
+            box-shadow: 0 0 25px var(--neon-blue-light);
+            transform: translateY(-2px);
+            cursor: pointer;
+        }
+        
+    </style>
+</head>
+<body>
+    
+    <div class="homebutton">
+        <a href="../index.html" style="text-decoration: none;">
+            <button class="btn">
+            </button>
+        </a>
+    </div>
+
+    <div class="container">
+        <h1>EBOB & EKOK Analizi</h1>
+        <p>Hesaplanacak pozitif tam sayıları girin:</p>
+
+        <div class="input-group">
+            <label for="sayi1">Birinci Sayı:</label>
+            <input type="number" id="sayi1" min="" value="" oninput="oynatSnds1()">
+        </div>
+
+        <div class="input-group">
+            <label for="sayi2">İkinci Sayı:</label>
+            <input type="number" id="sayi2" min="" value="" oninput="oynatSnds1()">
+        </div>
+         <button onclick="baslatTaramaVeHesapla()">HESAPLAMAYI BAŞLAT</button>
+        <hr>
+
+        <h2 id="taramaAlani" style="display: none; text-align: center;"></h2>
+        <hr id="taramaCizgisi" style="display: none;">
+        
+        <h2>Analiz Sonuçları</h2>
+        <div id="sonuclar" style="display: none;">
+            <p><strong>EBOB (En Büyük Ortak Bölen):</strong> <span id="ebobSonuc"></span></p>
+            <p><strong>EKOK (En Küçük Ortak Kat):</strong> <span id="ekokSonuc"></span></p>
+            <p><strong>Aralarında Asallık:</strong> <span id="asalSonuc"></span></p>
+        </div>
+    </div>
+
+    <script>
+        function ebob(a, b) {
+            a = Math.abs(a);
+            b = Math.abs(b);
+            while (b) {
+                let temp = b;
+                b = a % b;
+                a = temp;
+            }
+            return a;
+        }
+
+        function ekok(a, b) {
+            if (ebob(a, b) === 0) return 0;
+            return (Math.abs(a * b)) / ebob(a, b);
+        }
+
+        function hesaplaVeGoster(sayi1, sayi2) {
+            const hesaplananEbob = ebob(sayi1, sayi2);
+            const hesaplananEkok = ekok(sayi1, sayi2);
+            const aralarindaAsalMi = hesaplananEbob === 1;
+
+            let asalMetni = aralarindaAsalMi 
+                ? "EVET. (EBOB=1)" 
+                : "HAYIR. (EBOB = " + hesaplananEbob + ")";
+
+            document.getElementById('ebobSonuc').textContent = hesaplananEbob;
+            document.getElementById('ekokSonuc').textContent = hesaplananEkok;
+            document.getElementById('asalSonuc').textContent = asalMetni;
+            document.getElementById('asalSonuc').style.color = aralarindaAsalMi ? "#28a745" : "#dc3545"; 
+            document.getElementById('taramaAlani').style.display = 'none';
+            document.getElementById('taramaCizgisi').style.display = 'none';
+            document.getElementById('sonuclar').style.display = 'block';
+        }
+        function baslatTaramaVeHesapla() {
+            const sayi1 = +document.getElementById('sayi1').value;
+            const sayi2 = +document.getElementById('sayi2').value;
+            const taramaAlani = document.getElementById('taramaAlani');
+            const taramaCizgisi = document.getElementById('taramaCizgisi');
+            const sonuclarDiv = document.getElementById('sonuclar');
+
+            if (!Number.isInteger(sayi1) || sayi1 <= 0 || !Number.isInteger(sayi2) || sayi2 <= 0) {
+                alert("Lütfen pozitif tam sayı giriniz.");
+                return;
+            }
+            
+            sonuclarDiv.style.display = 'none';
+
+            taramaAlani.textContent = "VERİLER ANALİZ EDİLİYOR...";
+            taramaAlani.style.display = 'block';
+            taramaCizgisi.style.display = 'block';
+            taramaAlani.style.color = "#ff4500"; 
+            setTimeout(() => {
+                hesaplaVeGoster(sayi1, sayi2);
+            }, 3000); 
+        }
+        document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+        document.onkeydown = function(e) {
+            if (e.key === 'F12' || e.keyCode === 123 || 
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.keyCode === 73)) || 
+                (e.ctrlKey && (e.key === 'U' || e.keyCode === 85))) {
+                return false;
+            }
+        }
+        document.body.onselectstart = function() { return false; }
+    </script>
+    </body>
+</html>
