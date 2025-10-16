@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="index, follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sayısal Araçlar Ana Sayfa</title>
+    <link rel="icon" type="image/png" href="img/favicon.png"> 
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#d32f2f">
+
+</head>
+<body>
+    <div class="container">
+        <h1>Sayısal Analiz Merkezi</h1>
+        <p>Lütfen kullanmak istediğiniz aracı seçin:</p>
+
+        <div class="menu-grid">
+            <a href="ebobekoksnc/index.html" class="menu-item neon-blue-border">
+                <h2>EBOB & EKOK</h2>
+                <p>İki sayı için En Büyük Ortak Bölen ve En Küçük Ortak Kat'ı hesaplayın.</p>
+            </a>
+            
+            <a href="hesapmakinesi/index.html" class="menu-item neon-green-border">
+                <h2>Hesap Makinesi</h2>
+                <p>Basit ve bilimsel işlemlerinizi hızlıca gerçekleştirin.</p>
+            </a>
+            
+            <a href="asallikkontrol/index.html" class="menu-item neon-red-border">
+                <h2>Asallık Kontrolü</h2>
+                <p>Bir sayının asal olup olmadığını hızla kontrol edin.</p>
+            </a>
+            <a href="oyunlar/anasayfa.html" class="menu-item neon-green-border">
+                <h2>Oyunlarımız</h2>
+                <p>Oyunlarımız Yakında Gelecek...</p>
+            </a>
+        </div>
+    </div>
+    <script>
+        /**
+         * Sağ Tık Menüsünü, Geliştirici Araçları Kısayollarını ve Metin Seçimini Engelleme
+         */
+
+        // Sağ Tık Menüsünü (Context Menu) Engelle
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // Klavye Kısayollarını Engelle (F12, Ctrl+Shift+I, Ctrl+U vb.)
+        document.onkeydown = function(e) {
+            // F12 tuşu
+            if (e.key === 'F12' || e.keyCode === 123) {
+                return false;
+            }
+
+            // Ctrl+Shift+I (Geliştirici Araçları)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.keyCode === 73)) {
+                return false;
+            }
+
+            // Ctrl+U (Sayfa Kaynağını Görüntüle)
+            if (e.ctrlKey && (e.key === 'U' || e.keyCode === 85)) {
+                return false;
+            }
+        }
+
+        // İsteğe bağlı: Sayfa metninin seçilmesini engelle
+        document.body.onselectstart = function() { return false; }
+    </script>
+    </body>
+</html>

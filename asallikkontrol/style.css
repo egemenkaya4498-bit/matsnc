@@ -1,0 +1,153 @@
+/* Asallık Kontrolü Özel Stilleri */
+
+/* --- Ana Container Stilleri --- */
+.container {
+    max-width: 500px;
+    padding: 25px;
+    /* Mekanik arka plan için burayı ekliyoruz */
+    background-color: rgba(13, 19, 38, 0.85); /* Hafif opak arka plan */
+    border: 1px solid rgba(0, 234, 255, 0.4);
+    border-radius: 15px;
+    box-shadow: 0 0 40px rgba(0, 234, 255, 0.7), 
+                inset 0 0 20px rgba(0, 234, 255, 0.3);
+    backdrop-filter: blur(5px); /* Daha az blur, daha keskin */
+    -webkit-backdrop-filter: blur(5px);
+}
+
+/* --- Genel Metin ve Başlıklar --- */
+h1, h2 {
+    color: var(--neon-blue-light); /* Başlık rengi daha belirgin */
+    text-shadow: 0 0 10px var(--neon-blue-light);
+}
+
+/* Geri Dön Linki */
+.back-link {
+    display: block;
+    margin-bottom: 30px;
+    color: var(--neon-blue);
+    text-decoration: none;
+    font-size: 1.1em;
+    font-weight: 600;
+    transition: all 0.3s ease-in-out;
+    text-shadow: 0 0 5px var(--neon-blue);
+}
+.back-link:hover {
+    color: var(--neon-green);
+    text-shadow: 0 0 8px var(--neon-green);
+    transform: translateX(-5px);
+}
+
+/* Açıklama ve Etiket Stilleri */
+.description, .neon-label {
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--text-color); /* Genel metin rengi */
+    margin-bottom: 15px;
+}
+
+.input-group {
+    margin-bottom: 25px;
+}
+
+.neon-label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--neon-green);
+    text-shadow: 0 0 5px var(--neon-green);
+    font-size: 1.1em;
+}
+
+/* --- Input Alanı (Burada rakamın beyaz olmasını sağladık) --- */
+#tekSayi {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid var(--neon-blue);
+    background-color: #0c152e;
+    color: #FFFFFF; /* Rakam beyaz olsun diye burayı değiştirdik! */
+    font-size: 1.5em;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 234, 255, 0.5) inset;
+    transition: all 0.3s;
+    text-align: center;
+}
+#tekSayi:focus {
+    outline: none;
+    border-color: var(--neon-green);
+    box-shadow: 0 0 15px var(--neon-green) inset;
+}
+
+/* --- Kontrol Butonu --- */
+#kontrol-buton {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--neon-green);
+    color: #000;
+    font-size: 1.4em;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 10px var(--neon-green);
+    transition: all 0.3s;
+}
+#kontrol-buton:hover {
+    background-color: #14ff70;
+    box-shadow: 0 0 25px var(--neon-green);
+    transform: translateY(-2px);
+}
+
+/* Ayırıcı Çizgi */
+.neon-hr {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 234, 255, 0), rgba(0, 234, 255, 0.75), rgba(0, 234, 255, 0));
+    margin: 30px 0;
+}
+
+/* Sonuç Paneli */
+.sonuc-panel {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    background-color: rgba(13, 19, 38, 0.6);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    font-family: 'Share Tech Mono', monospace;
+}
+
+.sonuc-panel p {
+    margin: 10px 0;
+    font-size: 1.2em;
+    color: #ccc;
+}
+
+/* Sonuç Metinleri (JS'ten gelen sınıflar) */
+#asalSonuc {
+    font-weight: bold;
+    font-size: 1.4em;
+}
+
+.result-asal {
+    color: #39ff14; /* Neon Yeşil */
+    text-shadow: 0 0 15px #39ff14;
+}
+
+.result-değil {
+    color: #ff4500; /* Neon Kırmızı */
+    text-shadow: 0 0 15px #ff4500;
+}
+
+.result-data {
+    color: var(--neon-blue-light);
+    text-shadow: 0 0 5px var(--neon-blue-light);
+}
+/* --- Yeni Stil: Analiz Durumu --- */
+.result-analiz {
+    color: var(--neon-purple); /* Mor veya sarımsı bir renk iyi gider */
+    text-shadow: 0 0 15px var(--neon-purple), 0 0 5px #fff;
+    /* Hafif bir yanıp sönme (blink) efekti ekleyelim, daha mekanik olur */
+    animation: blink 1s infinite alternate; 
+}
+
+@keyframes blink {
+    from { opacity: 1; }
+    to { opacity: 0.6; }
+}

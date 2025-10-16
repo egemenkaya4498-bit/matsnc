@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="index, follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oyunlar Ana Sayfa - Neon Tema</title>
+    <link rel="icon" type="image/png" href="../img/favicon.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#d32f2f">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap');
+
+        :root {
+            /* Neon Renk Paleti */
+            --neon-blue: #00eaff;
+            --neon-blue-light: #00f7ff;
+            --neon-green: #00f7ff;
+            --neon-purple: #ae00ff;
+            --neon-red: #ff3333;
+            
+            /* Temel Renkler */
+            --dark-bg: #0d1326; /* Koyu arka plan */
+            --text-color: #e0e0e0; /* Açık gri metin */
+            --link-color: #00ff37be;
+            --metin-color: #00f7ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* --- Genel Arka Plan: Mekanik Stil Burada! --- */
+        body {
+            font-family: 'Orbitron', sans-serif; /* Daha siberpunk bir font */
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+
+            /* MEKANİK ARKA PLAN EKLEME (SVG üçgen deseni) */
+            background-image: url('data:image/svg+xml,%3Csvg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M11 0l11 22 11 -22zm22 0l11 22 11 -22zm22 0l11 22 11 -22zm22 0l11 22 11 -22zm-88 100l11 -22 11 22zm22 0l11 -22 11 22zm22 0l11 -22 11 22zm22 0l11 -22 11 22zm-88 -50l11 22 11 -22zm22 -50l11 22 11 -22zm22 -50l11 22 11 -22zm22 -50l11 22 11 -22zm-88 100l11 -22 11 22zm22 100l11 -22 11 22zm22 100l11 -22 11 22zm22 100l11 -22 11 22zm-88 -50l11 22 11 -22zm22 50l11 22 11 -22zm22 50l11 22 11 -22zm22 50l11 22 11 -22z" fill="%2300EAFF" opacity="0.1" /%3E%3C/svg%3E'), /* SVG ile üçgen deseni */
+                              linear-gradient(135deg, #0d1326 0%, #1a233a 100%); /* Hafif degrade */
+            background-size: 50px 50px, cover; /* Desenin boyutu ve degradeyi kaplama */
+            background-attachment: fixed; /* Arka planın kaymasını engelle */
+        }
+
+        /* Ana İçerik Kapsayıcı */
+        .container {
+            background-color: rgba(13, 19, 38, 0.85); /* Hafif opak arka plan */
+            border: 1px solid var(--neon-blue);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0, 234, 255, 0.8), /* Dış neon parlama */
+                        inset 0 0 15px rgba(0, 234, 255, 0.4); /* İç neon parlama */
+            backdrop-filter: blur(8px); /* Hafif bulanıklık efekti */
+            -webkit-backdrop-filter: blur(8px); /* Safari desteği */
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-blue);
+            text-shadow: 0 0 15px var(--neon-blue);
+            margin-bottom: 20px;
+            font-size: 2.2em;
+            letter-spacing: 2px;
+        }
+        
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--neon-green);
+            text-shadow: 0 0 8px var(--neon-green);
+        }
+        
+        /* Yeni Oyun Menüsü Öğeleri için Stil */
+        .menu-grid {
+            display: flex; /* Öğeleri yan yana veya alt alta düzenlemek için */
+            flex-direction: column; /* Alt alta sıralamak için */
+            gap: 20px; /* Öğeler arasına boşluk */
+            margin-top: 30px;
+        }
+        
+        .menu-item {
+            display: block;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid; /* Renk, aşağıdaki sınıflarla belirlenecek */
+            transition: all 0.3s ease-in-out;
+            text-align: left;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Hafif gölge */
+        }
+        
+        .menu-item:hover {
+            transform: translateY(-5px); /* Hafif yukarı kalkma efekti */
+        }
+        
+        .menu-item h2 {
+            font-size: 1.3em;
+            margin-bottom: 5px;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .menu-item p {
+            font-family: 'Share Tech Mono', monospace; /* Alt metin için farklı bir siber font */
+            font-size: 0.9em;
+            color: var(--text-color);
+            margin: 0;
+            text-shadow: none;
+        }
+
+        /* Neon Sınır Renkleri ve Gölge Efektleri */
+        .neon-blue-border {
+            border-color: var(--neon-blue);
+            color: var(--neon-blue-light);
+            text-shadow: 0 0 8px var(--neon-blue);
+            box-shadow: 0 0 20px var(--neon-blue), inset 0 0 5px var(--neon-blue-light);
+        }
+        
+        .neon-blue-border:hover {
+            box-shadow: 0 0 30px var(--neon-blue-light), inset 0 0 10px var(--neon-blue);
+        }
+        
+        .neon-green-border {
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+            text-shadow: 0 0 8px var(--neon-green);
+            box-shadow: 0 0 20px var(--neon-green), inset 0 0 5px var(--neon-green);
+        }
+        
+        .neon-green-border:hover {
+            box-shadow: 0 0 30px var(--neon-green), inset 0 0 10px var(--neon-green);
+        }
+        
+        .neon-red-border {
+            border-color: var(--neon-red);
+            color: var(--neon-red);
+            text-shadow: 0 0 8px var(--neon-red);
+            box-shadow: 0 0 20px var(--neon-red), inset 0 0 5px var(--neon-red);
+        }
+
+        .neon-red-border:hover {
+            box-shadow: 0 0 30px var(--neon-red), inset 0 0 10px var(--neon-red);
+        }
+
+    </style>
+    <script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "tpoc4vhm1i");
+</script>
+</head>
+<body>
+    <div class="container">
+        <h1>Oyun Simülasyonları</h1>
+        <p>Eğlenceli zeka oyunlarımız yakında hizmetinizde:</p>
+        <a href="../index.html" class="back-link">&lt; Ana Menüye Dön [EXIT]</a>
+        <div class="menu-grid">
+            <a href="index.html" class="menu-item neon-green-border">
+                <h2>Testler</h2>
+                <p>Matematik testleri çöz.(Yakında Gelecek)</p>
+            </a>
+            <a href="index.html" class="menu-item neon-blue-border">
+                <h2>Bilgi Yarışması</h2>
+                <p>Matematik Bilginizi Test Edin.(Yakında Gelecek)</p>
+            </a>
+            
+            <a href="index.html" class="menu-item neon-green-border">
+                <h2>Mantık ve Zeka Geliştirme</h2>
+                <p>Mantık bulmacaları çöz.(Yakında Gelecek)</p>
+            </a>
+                
+        </div>
+    </div>
+        <script>
+        /**
+         * Sağ Tık Menüsünü, Geliştirici Araçları Kısayollarını ve Metin Seçimini Engelleme
+         */
+
+        // Sağ Tık Menüsünü (Context Menu) Engelle
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // Klavye Kısayollarını Engelle (F12, Ctrl+Shift+I, Ctrl+U vb.)
+        document.onkeydown = function(e) {
+            // F12 tuşu
+            if (e.key === 'F12' || e.keyCode === 123) {
+                return false;
+            }
+
+            // Ctrl+Shift+I (Geliştirici Araçları)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.keyCode === 73)) {
+                return false;
+            }
+
+            // Ctrl+U (Sayfa Kaynağını Görüntüle)
+            if (e.ctrlKey && (e.key === 'U' || e.keyCode === 85)) {
+                return false;
+            }
+        }
+
+        // İsteğe bağlı: Sayfa metninin seçilmesini engelle
+        document.body.onselectstart = function() { return false; }
+    </script>
+</body>
+</html>

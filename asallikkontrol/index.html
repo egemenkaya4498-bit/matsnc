@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASAL KONTROL</title>
+    <link rel="icon" type="image/png" href="../img/favicon.png">
+    <link rel="shortcut icon" href="../img/favicon.png" type="image/png">
+    <link rel="stylesheet" href="../style.css"> 
+    <link rel="stylesheet" href="style.css"> </head>
+    <link rel="manifest" href="../manifest.json">
+  <script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "tpoc4vhm1i");
+</script>
+<body>
+    <div class="container">
+        <h1>🔢 Asallık Kontrol Terminali</h1>
+        <a href="../index.html" class="back-link">&lt; Ana Menüye Dön [EXIT]</a>
+
+        <p class="description">Analiz etmek için pozitif bir tamsayı girin:</p> 
+        <div class="input-group">
+            <label for="tekSayi" class="neon-label">Giriş Verisi (Sayı):</label>
+            <input type="number" id="tekSayi" min="1" value="1" placeholder="Bir Tam Sayı Giriniz"> 
+            </div>
+
+        <button onclick="kontrolEt()" id="kontrol-buton">🚨 KONTROLÜ BAŞLAT</button> 
+        <hr class="neon-hr"> 
+
+        <h2>// ANALİZ SONUCU</h2>
+        <div id="sonuclar" class="sonuc-panel" style="display: none;">
+            <p><strong>[GİRİŞ] &gt;</strong> <span id="girilenSayi" class="result-data"></span></p>
+            <p><strong>[DURUM] &gt;</strong> <span id="asalSonuc" class=""></span></p> 
+            </div>
+    </div>
+
+
+    <script>
+        /**
+         * Sağ Tık Menüsünü, Geliştirici Araçları Kısayollarını ve Metin Seçimini Engelleme
+         */
+
+        // Sağ Tık Menüsünü (Context Menu) Engelle
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // Klavye Kısayollarını Engelle (F12, Ctrl+Shift+I, Ctrl+U vb.)
+        document.onkeydown = function(e) {
+            // F12 tuşu
+            if (e.key === 'F12' || e.keyCode === 123) {
+                return false;
+            }
+
+            // Ctrl+Shift+I (Geliştirici Araçları)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.keyCode === 73)) {
+                return false;
+            }
+
+            // Ctrl+U (Sayfa Kaynağını Görüntüle)
+            if (e.ctrlKey && (e.key === 'U' || e.keyCode === 85)) {
+                return false;
+            }
+        }
+
+        // İsteğe bağlı: Sayfa metninin seçilmesini engelle
+        document.body.onselectstart = function() { return false; }
+    </script>
+
+    <script src="../script.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

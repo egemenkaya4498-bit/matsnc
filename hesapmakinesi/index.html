@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hesap Makinesi</title>
+    <meta name="robots" content="index, follow">
+    <link rel="icon" type="image/png" href="../img/favicon.png">
+    <link rel="shortcut icon" href="../img/favicon.png" type="image/png">
+    <link rel="manifest" href="../manifest.json">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap');
+
+        :root {
+            /* Neon Renk Paleti (Ana Sayfanızdan alındı) */
+            --neon-blue: #00eaff;
+            --neon-blue-light: #66e7ff;
+            --neon-green: #39ff14;
+            --neon-purple: #ae00ff;
+            --neon-red: #ff3333;
+            
+            /* Temel Renkler */
+            --dark-bg: #0d1326; 
+            --card-bg: #162447;
+            --text-color: #e0e0e0; 
+            --link-color: #00ff37be;
+            --metin-color: #00f7ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* --- Genel Arka Plan: Ana Sayfa Stili --- */
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+
+            /* MEKANİK ARKA PLAN EKLEME */
+            background-image: url('data:image/svg+xml,%3Csvg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M11 0l11 22 11 -22zm22 0l11 22 11 -22zm22 0l11 22 11 -22zm22 0l11 22 11 -22zm-88 100l11 -22 11 22zm22 0l11 -22 11 22zm22 0l11 -22 11 22zm22 0l11 -22 11 22zm-88 -50l11 22 11 -22zm22 -50l11 22 11 -22zm22 -50l11 22 11 -22zm22 -50l11 22 11 -22zm-88 100l11 -22 11 22zm22 100l11 -22 11 22zm22 100l11 -22 11 22zm22 100l11 -22 11 22zm-88 -50l11 22 11 -22zm22 50l11 22 11 -22zm22 50l11 22 11 -22zm22 50l11 22 11 -22z" fill="%2300EAFF" opacity="0.1" /%3E%3C/svg%3E'), 
+                              linear-gradient(135deg, #0d1326 0%, #1a233a 100%); 
+            background-size: 50px 50px, cover; 
+            background-attachment: fixed; 
+        }
+
+        /* Ana İçerik Kapsayıcı - Hesap Makinesi için küçük */
+        .container {
+            background-color: rgba(13, 19, 38, 0.95);
+            border: 1px solid var(--neon-blue);
+            border-radius: 15px;
+            padding: 50px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0, 234, 255, 0.8), 
+                        inset 0 0 15px rgba(0, 234, 255, 0.4); 
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            max-width: 500px; /* Daha kompakt hale getirildi */
+            width: 100%;
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-blue);
+            text-shadow: 0 0 15px var(--neon-blue);
+            margin-bottom: 15px;
+            font-size: 2em;
+            letter-spacing: 2px;
+        }
+
+        /* Geri Dön Linki */
+        .back-link {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--neon-green);
+            text-decoration: none;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.4em;
+            transition: color 0.3s;
+            text-align: left;
+        }
+        .back-link:hover {
+            color: var(--neon-blue);
+            text-shadow: 0 0 5px var(--neon-blue);
+        }
+
+        /* Makine Kutusu */
+        .calculator {
+            border: 3px solid var(--neon-blue-light);
+            border-radius: 10px;
+            padding: 15px;
+            background-color: var(--dark-bg); 
+            box-shadow: 0 0 15px rgba(0, 234, 255, 0.6);
+        }
+
+        /* Ekran (Display) */
+        #display {
+            width: 100%;
+            height: 65px;
+            background-color: #2b3a5b;
+            border: 2px solid var(--neon-green);
+            color: var(--neon-green);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 2.5em; /* Daha büyük font */
+            text-align: right;
+            padding: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border-radius: 5px;
+            box-shadow: 0 0 10px var(--neon-green) inset;
+            letter-spacing: 1px;
+            outline: none;
+        }
+
+        /* Tuş Takımı (Keys) */
+        .keys {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 eşit sütun */
+            gap: 12px; /* Düğmeler arası boşluk */
+        }
+
+        /* Tüm Tuşlar İçin Temel Stil (Kare/Daire) */
+        .keys button {
+            width: 100%; /* Sütunun tüm genişliğini kapla */
+            padding-top: 100%; /* Düğmeleri kare yapar (yüksekliği genişliğe eşitle) */
+            position: relative; /* İçerik için pozisyon referansı */
+            border-radius: 50%; /* Düğmeleri daire yapar */
+            
+            border: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.6em; 
+            cursor: pointer;
+            background-color: var(--card-bg); 
+            color: var(--text-color);
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            transition: all 0.2s ease-in-out;
+            font-weight: 700;
+        }
+        
+        /* Tuşların İçeriğini Ortala */
+        .keys button span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: block; /* Span'ın içeriği tam ortalanır */
+        }
+
+        .keys button:hover {
+            background-color: #2b3a5b;
+            transform: scale(1.05);
+        }
+
+        /* Operatör Tuşları (÷, ×, -, +) */
+        .key-operator {
+            background-color: var(--neon-blue);
+            color: var(--dark-bg);
+            font-weight: bold;
+            box-shadow: 0 0 15px var(--neon-blue);
+        }
+        .key-operator:hover {
+            background-color: var(--neon-blue-light);
+            box-shadow: 0 0 25px var(--neon-blue-light);
+        }
+
+        /* Fonksiyon/Özel Tuşlar (AC, ±, %, DEL) */
+        .key-function {
+            background-color: #9d00ff; /* Neon Mor */
+            color: var(--dark-bg);
+            font-weight: bold;
+            box-shadow: 0 0 10px #9d00ff;
+        }
+        .key-ac, .key-del {
+            background-color: var(--neon-red); /* AC ve DEL Kırmızı */
+            box-shadow: 0 0 10px var(--neon-red);
+        }
+        .key-function:hover, .key-ac:hover, .key-del:hover {
+            background-color: #ff4500;
+            box-shadow: 0 0 20px #ff4500;
+        }
+
+        /* Eşittir Tuşu */
+        .key-equal {
+            background-color: var(--neon-green);
+            color: var(--dark-bg);
+            font-weight: bold;
+            font-size: 1.8em; 
+            box-shadow: 0 0 20px var(--neon-green);
+        }
+        .key-equal:hover {
+            background-color: #14ff70;
+            box-shadow: 0 0 35px #14ff70;
+        }
+    </style>
+    
+    <script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "tpoc4vhm1i");
+    </script>
+</head>
+<body onkeydown="handleKeyPress(event)"> 
+        <script>
+        /**
+         * Sağ Tık Menüsünü, Geliştirici Araçları Kısayollarını ve Metin Seçimini Engelleme
+         */
+
+        // Sağ Tık Menüsünü (Context Menu) Engelle
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // Klavye Kısayollarını Engelle (F12, Ctrl+Shift+I, Ctrl+U vb.)
+        document.onkeydown = function(e) {
+            // F12 tuşu
+            if (e.key === 'F12' || e.keyCode === 123) {
+                return false;
+            }
+
+            // Ctrl+Shift+I (Geliştirici Araçları)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.keyCode === 73)) {
+                return false;
+            }
+
+            // Ctrl+U (Sayfa Kaynağını Görüntüle)
+            if (e.ctrlKey && (e.key === 'U' || e.keyCode === 85)) {
+                return false;
+            }
+        }
+
+        // İsteğe bağlı: Sayfa metninin seçilmesini engelle
+        document.body.onselectstart = function() { return false; }
+    </script>
+    <div class="container">
+        <h1>📱 Hesap Makinesi</h1> 
+        <a href="../index.html" class="back-link">&lt; Ana Menüye Dön [EXIT]</a>
+        <div class="calculator">
+            <input type="text" id="display" readonly value="0" aria-label="Hesap Makinesi Ekranı">
+            
+            <div class="keys">
+                
+                <button onclick="clearDisplay()" class="key-function key-ac" data-key="c"><span>AC</span></button>
+                <button onclick="toggleSign()" class="key-function" data-key="±"><span>±</span></button>
+                <button onclick="applyPercentage()" class="key-function" data-key="%"><span>%</span></button>
+                <button onclick="appendOperator('/')" class="key-operator" data-key="/"><span>÷</span></button>
+
+                <button onclick="appendNumber('7')" class="key-number" data-key="7"><span>7</span></button>
+                <button onclick="appendNumber('8')" class="key-number" data-key="8"><span>8</span></button>
+                <button onclick="appendNumber('9')" class="key-number" data-key="9"><span>9</span></button>
+                <button onclick="appendOperator('*')" class="key-operator" data-key="*"><span>×</span></button>
+
+                <button onclick="appendNumber('4')" class="key-number" data-key="4"><span>4</span></button>
+                <button onclick="appendNumber('5')" class="key-number" data-key="5"><span>5</span></button>
+                <button onclick="appendNumber('6')" class="key-number" data-key="6"><span>6</span></button>
+                <button onclick="appendOperator('-')" class="key-operator" data-key="-"><span>-</span></button>
+                
+                <button onclick="appendNumber('1')" class="key-number" data-key="1"><span>1</span></button>
+                <button onclick="appendNumber('2')" class="key-number" data-key="2"><span>2</span></button>
+                <button onclick="appendNumber('3')" class="key-number" data-key="3"><span>3</span></button>
+                <button onclick="appendOperator('+')" class="key-operator" data-key="+"><span>+</span></button>
+                
+                <button onclick="appendNumber('0')" class="key-number" data-key="0"><span>0</span></button>
+                <button onclick="appendDecimal(',')" class="key-number" data-key=","><span>,</span></button>
+                <button onclick="deleteLast()" class="key-function key-del" data-key="del"><span>DEL</span></button> <button onclick="calculateResult()" class="key-equal" data-key="="><span>=</span></button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentInput = '0';
+        let operator = null;
+        let firstOperand = null;
+        const display = document.getElementById('display');
+        const MAX_DIGITS = 15; 
+
+        // Ekranı güncelleme fonksiyonu
+        function updateDisplay() {
+            display.value = currentInput.replace('.', ',');
+        }
+
+        // Rakam Ekleme
+        function appendNumber(number) {
+            if (currentInput.startsWith('Error')) {
+                currentInput = number;
+                updateDisplay();
+                return;
+            }
+
+            const cleanInput = currentInput.replace('.', '').replace('-', '');
+            
+            if (cleanInput.length >= MAX_DIGITS && currentInput !== '0') {
+                alert(`Maksimum ${MAX_DIGITS} basamak (rakam) girilebilir!`);
+                return;
+            }
+
+            if (currentInput === '0') {
+                currentInput = number;
+            } else {
+                currentInput += number;
+            }
+            
+            updateDisplay();
+        }
+        function appendDecimal(dot) {
+            const internalDot = '.'; 
+            
+            if (!currentInput.includes(internalDot)) {
+                const cleanInput = currentInput.replace('-', '');
+                
+                if (cleanInput.length >= MAX_DIGITS) {
+                     alert(`Maksimum ${MAX_DIGITS} basamak (rakam) girilebilir!`);
+                     return;
+                }
+                currentInput += internalDot; 
+            }
+            updateDisplay();
+        }
+
+        // İşleci Belirleme
+        function appendOperator(nextOperator) {
+            if (firstOperand !== null && operator !== null) {
+                calculateResult(false);
+            }
+            
+            firstOperand = parseFloat(currentInput); 
+            operator = nextOperator;
+            currentInput = '0'; 
+            updateDisplay();
+        }
+        
+        // Yüzde İşlemi
+        function applyPercentage() {
+            if (currentInput.startsWith('Error')) return;
+            
+            let result = 0;
+            const current = parseFloat(currentInput);
+            
+            if (firstOperand === null) {
+                result = current / 100;
+            } else {
+                const first = firstOperand;
+                const percentageValue = current / 100;
+                
+                switch (operator) {
+                    case '+':
+                    case '-':
+                        result = first + (first * percentageValue * (operator === '+' ? 1 : -1));
+                        break;
+                    case '*':
+                    case '/':
+                        result = calculateCore(first, operator, percentageValue);
+                        break;
+                    default:
+                        result = current;
+                        break;
+                }
+                firstOperand = null;
+                operator = null;
+            }
+            
+            formatAndSetResult(result);
+        }
+        
+        // Temel aritmetik hesaplama fonksiyonu
+        function calculateCore(op1, op, op2) {
+            switch (op) {
+                case '+': return op1 + op2;
+                case '-': return op1 - op2;
+                case '*': return op1 * op2;
+                case '/': 
+                    if (op2 === 0) {
+                        return 'Error: BÖL/0';
+                    }
+                    return op1 / op2;
+                default: return op2;
+            }
+        }
+
+        // Sonucu Formatlayıp Ekrana Yazan Fonksiyon
+        function formatAndSetResult(result) {
+            if (typeof result === 'string' && result.startsWith('Error')) {
+                currentInput = result;
+            } else {
+                let resultString = parseFloat(result).toPrecision(MAX_DIGITS);
+                
+                if (!resultString.toLowerCase().includes('e')) {
+                    resultString = resultString.replace(/\.?0+$/, "");
+                }
+                currentInput = resultString;
+            }
+            
+            updateDisplay();
+        }
+
+        // Sonucu Hesaplama
+        function calculateResult(shouldUpdateDisplay = true) {
+            if (firstOperand === null || operator === null) return;
+            
+            const secondOperand = parseFloat(currentInput);
+            const result = calculateCore(firstOperand, operator, secondOperand);
+            
+            firstOperand = null; 
+            operator = null; 
+            
+            if (shouldUpdateDisplay) {
+                formatAndSetResult(result);
+            } else {
+                firstOperand = result;
+            }
+        }
+
+        // Ekranı Temizleme (AC)
+        function clearDisplay() {
+            currentInput = '0';
+            firstOperand = null;
+            operator = null;
+            updateDisplay();
+        }
+        
+        // Son Karakteri Silme (DEL)
+        function deleteLast() {
+            if (currentInput.startsWith('Error')) {
+                currentInput = '0';
+            } else if (currentInput.length > 1 && currentInput !== '0') {
+                currentInput = currentInput.slice(0, -1);
+            } else {
+                currentInput = '0';
+            }
+            updateDisplay();
+        }
+
+        /**
+         * Mevcut sayının işaretini (+/-) değiştirir (± tuşu için).
+         */
+        function toggleSign() {
+            if (currentInput !== '0' && !currentInput.startsWith('Error')) {
+                currentInput = (parseFloat(currentInput) * -1).toString();
+            }
+            updateDisplay();
+        }
+
+        /**
+         * Klavyeden tuş basıldığında çağrılan ana olay işleyici (Klavye Desteği).
+         */
+        function handleKeyPress(event) {
+            const key = event.key;
+            
+            if (/[0-9]/.test(key)) {
+                appendNumber(key);
+            } 
+            else if (key === ',' || key === '.') { 
+                appendDecimal(',');
+                event.preventDefault(); 
+            } 
+            else if (key === '+' || key === '-' || key === '*' || key === '/') {
+                appendOperator(key);
+                event.preventDefault(); 
+            } 
+            else if (key === '=') {
+                calculateResult();
+                event.preventDefault(); 
+            }
+            else if (key === 'Enter') {
+                calculateResult();
+                event.preventDefault();
+            }
+            else if (key === 'Backspace') {
+                deleteLast(); // Backspace artık DEL tuşu gibi çalışır
+                event.preventDefault(); 
+            } 
+            else if (key.toLowerCase() === 'c' || key === 'Escape') {
+                clearDisplay();
+            }
+            else if (key === '%') {
+                 applyPercentage();
+            }
+        }
+
+        // Uygulama başlatıldığında ekranı sıfırla
+        updateDisplay();
+    </script>
+    </body>
+</html>
