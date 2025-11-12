@@ -14,4 +14,24 @@
         <priority>0.8</priority>
     </url>
     
-    </urlset>
+    <url>
+        <loc>https://matsnc.netlify.app/hesapmakinesi/index.html</loc>
+        <lastmod>2025-11-12</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>https://matsnc.netlify.app/asallikkontrol/index.html</loc>
+        <lastmod>2025-11-12</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://matsnc.netlify.app/oyunlar/anasayfa.html</loc>
+        <lastmod>2025-11-12</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+</urlset>
