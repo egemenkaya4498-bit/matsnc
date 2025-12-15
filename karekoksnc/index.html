@@ -19,9 +19,8 @@
             --neon-red: #ff3333;
             
             /* Temel Renkler */
-            --dark-bg: #0d1326; /* Koyu arka plan */
-            --text-color: #e0e0e0; /* Açık gri metin */
-            --link-color: #00ff37be;
+            --dark-bg: #0d1326; 
+            --text-color: #e0e0e0; 
             --metin-color: #00f7ff;
         }
 
@@ -49,164 +48,173 @@
             background-attachment: fixed;
         }
 
+        /* --- Ana Container Stilleri (Asallık Temasından Alındı) --- */
         .container {
-            background-color: rgba(13, 19, 38, 0.85);
-            border: 1px solid var(--neon-blue);
+            max-width: 500px;
+            padding: 25px;
+            background-color: rgba(13, 19, 38, 0.85); 
+            border: 1px solid rgba(0, 234, 255, 0.4);
             border-radius: 15px;
-            padding: 30px;
+            box-shadow: 0 0 40px rgba(0, 234, 255, 0.7), 
+                        inset 0 0 20px rgba(0, 234, 255, 0.3);
+            backdrop-filter: blur(5px); 
+            -webkit-backdrop-filter: blur(5px);
             text-align: center;
-            box-shadow: 0 0 30px rgba(0, 234, 255, 0.8),
-                        inset 0 0 15px rgba(0, 234, 255, 0.4);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            max-width: 600px;
-            width: 90%;
-            position: relative;
-            z-index: 10;
         }
 
-        h1 {
+        /* --- Genel Metin ve Başlıklar --- */
+        h1, h2 {
             font-family: 'Orbitron', sans-serif;
-            color: var(--neon-purple); /* Sayfa başlığını mora çevirdik */
-            text-shadow: 0 0 15px var(--neon-purple);
+            color: var(--neon-blue-light); 
+            text-shadow: 0 0 10px var(--neon-blue-light);
             margin-bottom: 20px;
             font-size: 2.2em;
-            letter-spacing: 2px;
         }
-        
-        p{
-            color: var(--metin-color);
+
+        p {
+            color: var(--text-color);
+            font-family: 'Share Tech Mono', monospace;
             margin-bottom: 15px;
         }
 
-        /* --- KAREKÖK UYGULAMASI ÖZEL STİLİ --- */
-        
-        /* Giriş Alanı Grubu */
-        .input-group {
-            margin: 25px 0;
-            padding: 15px;
-            border: 1px solid var(--neon-purple);
-            border-radius: 10px;
-            background-color: rgba(174, 0, 255, 0.1);
-        }
-
-        .input-group label {
+        /* Geri Dön Linki (back-link) */
+        .back-link {
             display: block;
-            margin-bottom: 10px;
-            font-size: 1.1em;
-            color: var(--neon-purple);
-            text-shadow: 0 0 5px var(--neon-purple);
-        }
-
-        .input-group input[type="number"] {
-            width: 80%;
-            padding: 12px;
-            border: none;
-            border-radius: 5px;
-            background-color: #1a233a;
+            margin-bottom: 30px;
             color: var(--neon-blue);
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 1.2em;
-            text-align: center;
-            box-shadow: 0 0 10px rgba(174, 0, 255, 0.5);
-            transition: box-shadow 0.3s ease;
-        }
-
-        .input-group input[type="number"]:focus {
-            outline: none;
-            box-shadow: 0 0 15px var(--neon-purple);
-        }
-
-        /* Hesapla Butonu */
-        .action-button {
-            background-color: var(--neon-purple);
-            color: var(--dark-bg);
-            border: none;
-            padding: 12px 25px;
-            margin-top: 15px;
-            border-radius: 8px;
-            font-family: 'Orbitron', sans-serif;
+            text-decoration: none;
             font-size: 1.1em;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 0 15px var(--neon-purple);
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            font-weight: 600;
+            transition: all 0.3s ease-in-out;
+            text-shadow: 0 0 5px var(--neon-blue);
+        }
+        .back-link:hover {
+            color: var(--neon-green);
+            text-shadow: 0 0 8px var(--neon-green);
+            transform: translateX(-5px);
         }
 
-        .action-button:hover {
-            background-color: #ff00ff;
-            box-shadow: 0 0 25px #ff00ff;
+        /* Etiket Stilleri */
+        .neon-label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--neon-green);
+            text-shadow: 0 0 5px var(--neon-green);
+            font-size: 1.1em;
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        /* --- Input Alanı --- */
+        .input-group {
+            margin-bottom: 25px;
+        }
+        #sayiGiris {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--neon-blue);
+            background-color: #0c152e;
+            color: #FFFFFF; /* Rakam beyaz */
+            font-size: 1.5em;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 234, 255, 0.5) inset;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        #sayiGiris:focus {
+            outline: none;
+            border-color: var(--neon-green);
+            box-shadow: 0 0 15px var(--neon-green) inset;
+        }
+
+        /* --- Hesapla Butonu (kontrol-buton teması) --- */
+        #hesaplaBtn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--neon-green);
+            color: #000;
+            font-size: 1.4em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--neon-green);
+            transition: all 0.3s;
+            font-family: 'Orbitron', sans-serif;
+        }
+        #hesaplaBtn:hover {
+            background-color: #14ff70;
+            box-shadow: 0 0 25px var(--neon-green);
             transform: translateY(-2px);
         }
 
-        /* Sonuç Alanı */
-        .sonuc-alan {
-            margin-top: 30px;
-            padding: 20px;
-            border: 2px solid var(--neon-blue);
-            border-radius: 10px;
-            min-height: 80px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background-color: rgba(0, 234, 255, 0.1);
+        /* Ayırıcı Çizgi */
+        .neon-hr {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 234, 255, 0), rgba(0, 234, 255, 0.75), rgba(0, 234, 255, 0));
+            margin: 30px 0;
         }
 
-        .sonuc-alan h2 {
-            color: var(--neon-blue);
-            text-shadow: 0 0 10px var(--neon-blue);
+        /* Sonuç Paneli (sonuc-panel teması) */
+        .sonuc-alan {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            background-color: rgba(13, 19, 38, 0.6);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            font-family: 'Share Tech Mono', monospace;
+            min-height: 80px;
+        }
+        .sonuc-alan p {
+            margin: 10px 0;
+            font-size: 1.2em;
+            color: #ccc;
+        }
+        
+        /* Yeni Sonuç Stilleri */
+        .sonuc-h2 {
+            font-size: 1.4em;
+            color: var(--neon-blue-light);
+            text-shadow: 0 0 5px var(--neon-blue-light);
             margin-bottom: 10px;
         }
-
+        
         .sonuc-deger {
             font-family: 'Share Tech Mono', monospace;
-            font-size: 2.5em;
+            font-size: 2.2em;
             font-weight: 700;
             text-shadow: 0 0 10px currentColor; 
+            margin-top: 10px;
         }
 
-        /* Ana Menüye Dön Butonu Stili */
-        .main-menu-link {
-            display: inline-block;
-            margin-top: 30px;
-            padding: 10px 20px;
-            background-color: rgba(0, 234, 255, 0.15);
-            border: 1px solid var(--neon-blue);
-            border-radius: 8px;
-            color: var(--neon-blue-light);
-            font-weight: 700;
-            text-shadow: 0 0 8px var(--neon-blue);
-            transition: all 0.3s ease-in-out;
-            text-decoration: none; /* Link olduğu için */
-            font-family: 'Orbitron', sans-serif;
-        }
-
-        .main-menu-link:hover {
-            background-color: rgba(0, 234, 255, 0.3);
-            box-shadow: 0 0 20px var(--neon-blue);
-            transform: translateY(-2px);
-            color: #fff;
+        /* Hata Mesajı Stilleri */
+        .error-message {
+            color: var(--neon-red);
+            text-shadow: 0 0 8px var(--neon-red);
+            font-size: 1.3em;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Karekök Hesaplayıcı</h1>
-        <p>Hesaplamak istediğiniz pozitif sayıyı ($x$) girin:</p>
+        <h1>💾 Karekök Hesaplayıcı Terminali</h1> 
+        <a href="../index.html" class="back-link">&lt; Ana Menüye Dön [EXIT]</a>
+
+        <p class="description">Karekökünü hesaplamak istediğiniz pozitif tamsayıyı girin:</p>
         
         <div class="input-group">
-            <label for="sayiGiris">Sayı (x):</label>
+            <label for="sayiGiris" class="neon-label">Giriş Verisi (Sayı):</label>
             <input type="number" id="sayiGiris" placeholder="Örn: 16 veya 2" min="0">
         </div>
 
-        <button id="hesaplaBtn" class="action-button">Karekökü Hesapla</button>
+        <button id="hesaplaBtn">🚨 HESAPLAMAYI BAŞLAT</button>
 
-        <div class="sonuc-alan" id="sonucAlan">
-            <p>Sonuç burada gösterilecektir.</p>
-        </div>
+        <hr class="neon-hr">
         
-        <a href="../index.html" class="main-menu-link">Ana Menüye Dön</a>
+        <h2>// ANALİZ SONUCU</h2>
+        <div class="sonuc-alan" id="sonucAlan">
+            <p><strong>[DURUM] &gt;</strong> <span class="result-data">Veri Girişi Bekleniyor...</span></p>
+        </div>
     </div>
 
     <script>
@@ -224,12 +232,12 @@
 
                 // Giriş kontrolü
                 if (sayiStr.trim() === "") {
-                    sonucAlan.innerHTML = '<p style="color: var(--neon-red);">Lütfen bir sayı girin.</p>';
+                    sonucAlan.innerHTML = '<p class="error-message">HATA: Lütfen bir sayı girin.</p>';
                     return;
                 }
 
                 if (isNaN(sayi) || sayi < 0) {
-                    sonucAlan.innerHTML = '<p style="color: var(--neon-red);">Lütfen geçerli ve pozitif bir sayı girin.</p>';
+                    sonucAlan.innerHTML = '<p class="error-message">HATA: Geçerli ve pozitif sayı gerekli.</p>';
                     return;
                 }
                 
@@ -237,16 +245,29 @@
                 const sonuc = Math.sqrt(sayi);
                 
                 // Sonucu görüntüleme
-                let sonucHTML = `<h2>$\sqrt{${sayi}}$ Sonucu:</h2>`;
+                
+                let sonucHTML = '';
+                let sonucDegerStr = '';
+                let renkStili = '';
 
                 // Tam sayı kontrolü ve sonuç formatlama
                 if (Number.isInteger(sonuc)) {
-                    // Tam sayı ise tam olarak göster
-                    sonucHTML += `<p class="sonuc-deger" style="color: var(--neon-green);">${sonuc}</p>`;
+                    sonucDegerStr = sonuc.toString();
+                    renkStili = 'var(--neon-green)'; // Tam sayı ise yeşil
                 } else {
-                    // Ondalık sayı ise, 6 basamak hassasiyetle göster
-                    sonucHTML += `<p class="sonuc-deger" style="color: var(--neon-blue-light);">${sonuc.toFixed(6)} (Yaklaşık Değer)</p>`;
+                    sonucDegerStr = sonuc.toFixed(6);
+                    renkStili = 'var(--neon-blue-light)'; // Ondalık ise mavi
                 }
+
+                // **Karekök sembolü için HTML karakter kodunu kullanma**
+                sonucHTML += `
+                    <p class="sonuc-h2">
+                        <strong>[GİRİŞ] &gt;</strong> &#8730;${sayi}
+                    </p>
+                    <p>
+                        <strong>[SONUÇ] &gt;</strong> <span class="sonuc-deger" style="color: ${renkStili};">${sonucDegerStr}</span>
+                    </p>
+                `;
 
                 sonucAlan.innerHTML = sonucHTML;
             }
