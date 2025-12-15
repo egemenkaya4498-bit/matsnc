@@ -3,395 +3,752 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matematik Bilgi Yarışması</title>
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/animejs/lib/anime.min.js"></script>
+    <title>Bilgi Yarışması</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Space+Grotesk:wght@500;700&display=swap');
+        /* --- CSS AYARLARI --- */
+        :root {
+            --primary: #e84118; /* Noel Kırmızısı */
+            --secondary: #44bd32; /* Çam Yeşili */
+            --accent: #fbc531; /* Altın */
+            --dark: #2f3640;
+            --light: #f5f6fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Nunito', sans-serif;
+            user-select: none;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
+            background: radial-gradient(circle at center, #192a56 0%, #000000 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            overflow: hidden;
+            position: relative;
         }
-        .title-font {
-            font-family: 'Space Grotesk', sans-serif;
+
+        /* KAR YAĞIŞI */
+        .snow-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
         }
-        /* Seçenek butonları için animasyon */
-        .option-btn {
-            transition: all 0.3s ease;
+
+        .snowflake {
+            position: absolute;
+            color: white;
+            top: -20px;
+            animation: fall linear infinite;
         }
-        .option-btn:hover {
-            transform: translateY(-2px);
+
+        @keyframes fall {
+            to { transform: translateY(105vh); }
         }
-        /* İlerleme çubuğu animasyonu */
-        .progress-bar {
-            transition: width 0.5s ease;
+
+        /* ANA PENCERE (Glassmorphism) */
+        .glass-panel {
+            width: 95%;
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 0 40px rgba(0,0,0,0.6);
+            z-index: 10;
+            position: relative;
+            max-height: 95vh;
+            overflow-y: auto;
         }
-        /* Cevap renkleri */
-        .correct-answer {
-            background-color: #10b981 !important; /* Zümrüt Yeşili */
-            color: white !important;
+
+        /* NOEL BABA ŞAPKASI VE BAŞLIK */
+        .header-container {
+            position: relative;
+            text-align: center;
+            margin-bottom: 30px;
+            margin-top: 10px;
         }
-        .wrong-answer {
-            background-color: #ef4444 !important; /* Kırmızı */
-            color: white !important;
+
+        .santa-hat {
+            position: absolute;
+            top: -45px;
+            left: 50%;
+            transform: translateX(-80px) rotate(-15deg);
+            width: 80px;
+            z-index: 20;
+            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.5));
         }
-        /* Seçilen cevabın çerçevesi */
-        .selected-answer {
-            border: 2px solid #3b82f6 !important; /* Mavi */
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 900;
+            background: linear-gradient(to right, #e84118, #fbc531, #44bd32);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            letter-spacing: 2px;
+        }
+
+        /* ÜNİTE KARTLARI */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.07);
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.15);
+            border-color: var(--accent);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .card h3 { color: var(--accent); margin-bottom: 10px; font-size: 1.4rem; }
+        .card p { font-size: 0.9rem; opacity: 0.8; line-height: 1.4; }
+
+        /* SORU ALANI */
+        .quiz-container { display: none; }
+        .quiz-container.active { display: block; animation: slideUp 0.5s ease; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .info-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            color: #bdc3c7;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+
+        .question-box {
+            background: rgba(0,0,0,0.3);
+            padding: 30px;
+            border-radius: 15px;
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--primary);
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .opt-btn {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid transparent;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 1.3rem; /* Cevapları büyüttük */
+            cursor: pointer;
+            transition: 0.2s;
+            color: white;
+            text-align: left;
+            position: relative;
+        }
+
+        .opt-btn:hover { background: rgba(255,255,255,0.2); }
+
+        .opt-btn.correct {
+            background: rgba(68, 189, 50, 0.2);
+            border-color: var(--secondary);
+            color: var(--secondary);
+            font-weight: bold;
+        }
+
+        .opt-btn.wrong {
+            background: rgba(232, 65, 24, 0.2);
+            border-color: var(--primary);
+            color: var(--primary);
+            opacity: 0.7;
+        }
+
+        .next-btn {
+            display: none;
+            width: 100%;
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 50px;
+            border: none;
+            background: var(--accent);
+            color: #2f3640;
+            font-size: 1.2rem;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(251, 197, 49, 0.4);
+            animation: popIn 0.3s;
+        }
+
+        @keyframes popIn { from{transform:scale(0.8);opacity:0;} to{transform:scale(1);opacity:1;} }
+
+        /* SONUÇ EKRANI */
+        .result-screen { display: none; text-align: center; }
+        .result-screen.active { display: block; }
+        
+        .score-big {
+            font-size: 6rem;
+            font-weight: 900;
+            color: var(--accent);
+            text-shadow: 0 0 20px rgba(251, 197, 49, 0.5);
+            margin: 20px 0;
+        }
+
+        @media (max-width: 600px) {
+            .options-grid { grid-template-columns: 1fr; }
+            h1 { font-size: 2rem; }
+            .santa-hat { width: 60px; transform: translateX(-60px) rotate(-15deg); top: -35px; }
+            .question-box { font-size: 1.1rem; }
         }
     </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
-    <div id="app" class="container mx-auto px-4 py-8 max-w-4xl">
-        <header class="text-center mb-12">
-            <h1 class="title-font text-4xl md:text-5xl font-bold text-indigo-800 mb-2">Matematik Bilgi Yarışması</h1>
-            <p class="text-lg text-indigo-600">Matematik bilginizi test edin!</p>
-            <div class="w-24 h-1 bg-indigo-400 mx-auto mt-4 rounded-full"></div>
-        </header>
+<body>
 
-        <div id="start-screen" class="bg-white rounded-xl shadow-lg p-8 text-center">
-            <div class="mb-8">
-                <div class="w-32 h-32 mx-auto mb-6">
-                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="100" cy="100" r="80" fill="#6366F1" opacity="0.1"/>
-                        <path fill="#6366F1" d="M100 30L120.7 70.7L165 79.3L132.5 110L140 155L100 135L60 155L67.5 110L35 79.3L79.3 70.7L100 30Z"/>
-                    </svg>
-                </div>
-                <h2 class="title-font text-3xl font-bold text-gray-800 mb-3">8. Sınıf Matematik Bilgi Yarışması</h2>
-                <p class="text-gray-600 mb-6">Matematik bilginizi test eden 15 soruluk bir Quiz.</p>
-            </div>
-            <button id="start-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-lg transition-all transform hover:scale-105 shadow-md">
-                Yarışmayı Başlat
-            </button>
-            <div class="mt-6 text-sm text-gray-500">
-                <i data-feather="alert-circle" class="inline mr-1" width="16"></i>
-                <span>Sadece 1. Ünite Soruları Vardır. İlerde Tüm Üniteler Gelecektir...</span>
-            </div>
+    <div class="snow-container" id="snow"></div>
+
+    <div class="glass-panel">
+        
+        <div class="header-container">
+            <img src="sapka.png" class="santa-hat" alt="Noel Baba Şapkası">
+            <h1>BİLGİ YARIŞMASI</h1>
         </div>
 
-        <div id="quiz-screen" class="hidden bg-white rounded-xl shadow-lg overflow-hidden">
-            <div class="h-2 bg-gray-200">
-                <div id="progress-bar" class="progress-bar h-full bg-indigo-500" style="width: 0%"></div>
-            </div>
-
-            <div class="p-6 md:p-8">
-                <div class="flex justify-between items-center mb-6">
-                    <span id="question-counter" class="text-sm font-medium text-indigo-600 bg-indigo-100 px-3 py-1 rounded-full">Soru 1/15</span>
-                    <span id="score-display" class="text-sm font-medium text-gray-600">Puan: 0</span>
+        <div id="screen-menu" style="display: block;">
+            <p style="text-align: center; margin-bottom: 30px; font-size: 1.1rem; color: #dcdde1;">LGS Matematik - Sonsuz Soru Modu</p>
+            <div class="menu-grid">
+                <div class="card" onclick="startGame(1)">
+                    <h3>1. ÜNİTE</h3>
+                    <p>Çarpanlar Katlar<br>Üslü İfadeler</p>
                 </div>
-
-                <h2 id="question-text" class="text-xl font-semibold text-gray-800 mb-6"></h2>
-
-                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
-                    </div>
-
-                <div class="flex justify-center">
-                    <button id="next-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg transition-all opacity-50 cursor-not-allowed">
-                        Sıradaki Soru
-                    </button>
+                <div class="card" onclick="startGame(2)">
+                    <h3>2. ÜNİTE</h3>
+                    <p>Kareköklü İfadeler<br>Veri Analizi</p>
+                </div>
+                <div class="card" onclick="startGame(3)">
+                    <h3>3. ÜNİTE</h3>
+                    <p>Olasılık & Cebir<br>Özdeşlikler</p>
+                </div>
+                <div class="card" onclick="startGame(0)" style="border-color: var(--primary);">
+                    <h3 style="color: var(--primary);">KARIŞIK</h3>
+                    <p>Tüm Konulardan<br>Rastgele</p>
                 </div>
             </div>
         </div>
 
-        <div id="results-screen" class="hidden bg-white rounded-xl shadow-lg p-8 text-center">
-            <div class="w-24 h-24 mx-auto mb-6 flex items-center justify-center rounded-full bg-indigo-100">
-                <i data-feather="award" class="text-indigo-600" width="48" height="48"></i>
+        <div id="screen-game" class="quiz-container">
+            <div class="info-bar">
+                <span id="q-count">Soru: 1/10</span>
+                <span id="q-score">Puan: 0</span>
             </div>
-            <h2 class="title-font text-3xl font-bold text-gray-800 mb-3">Yarışma Tamamlandı!</h2>
-            <p id="result-score" class="text-4xl font-bold text-indigo-600 mb-2">12/15</p>
-            <p id="result-message" class="text-gray-600 mb-8">Harika iş çıkardın! Çarpanları iyi biliyorsun!</p>
-            <div class="flex justify-center gap-4">
-                <button id="retry-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-6 rounded-lg transition-all">
-                    Tekrar Dene
-                </button>
-                <button id="home-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg transition-all" onclick="window.location.href='https://matsnc.netlify.app/'">
-                    Ana Sayfaya Dön
-                </button>
+
+            <div class="question-box" id="question-text">
+                Soru yükleniyor...
             </div>
+
+            <div class="options-grid" id="options-area">
+                </div>
+
+            <button class="next-btn" id="next-button" onclick="nextQuestion()">SONRAKİ SORU ➔</button>
         </div>
+
+        <div id="screen-result" class="result-screen">
+            <h2>Test Tamamlandı!</h2>
+            <div class="score-big" id="final-score">0</div>
+            <p id="feedback">Harika!</p>
+            <br>
+            <button class="next-btn" style="display:inline-block; width: auto; padding: 10px 40px;" onclick="location.reload()">TEKRAR OYNA</button>
+        </div>
+
     </div>
 
     <script>
-        const questions = [
-            {
-                question: "12 ve 18'in en büyük ortak böleni (EBOB) kaçtır?",
-                options: ["2", "3", "6", "9"],
-                answer: "6"
-            },
-            {
-                question: "Aşağıdakilerden hangisi bir asal sayıdır?",
-                options: ["38", "45", "47", "51"],
-                answer: "47"
-            },
-            {
-                question: "4 ve 6'nın en küçük ortak katı (EKOK) kaçtır?",
-                options: ["12", "24", "36", "48"],
-                answer: "12"
-            },
-            {
-                question: "Hangi sayı tüm tam sayıların çarpanıdır?",
-                options: ["1", "3", "5", "7"],
-                answer: "1"
-            },
-            {
-                question: "28 ile 8 in EBOB'u aşağıdakilerden hangisidir?",
-                options: ["2", "4", "6", "8"],
-                answer: "4"
-            },
-            {
-                question: "Tanım: 2 Basamaklı bir sayının kendisi hariç diğer çarpanlarının toplamının, basamaklarındaki rakamlarının toplamı asal ise o sayı KAYA sayısıdır. Buna göre Tanımı verilen sayı aşağıdakilerden hangisidir?",
-                options: ["10", "15", "20", "21"],
-                answer: "21"
-            },
-            {
-                question: "24 ve 36'nın EKOK'u kaçtır?",
-                options: ["36", "54", "72", "96"],
-                answer: "72"
-            },
-            {
-                question: "5 ve 7'nin EKOK'u kaçtır?",
-                options: ["5", "7", "12", "35"],
-                answer: "35"
-            },
-            {
-                question: "Aşağıdaki sayılardan hangisinin tam olarak üç çarpanı vardır?",
-                options: ["4", "6", "9", "12"],
-                answer: "9"
-            },
-            {
-                question: "15'in tüm çarpanları nelerdir?",
-                options: ["1, 3, 5, 15", "1, 15", "3, 5", "1, 3, 15"],
-                answer: "1, 3, 5, 15"
-            },
-            {
-                question: "Hangi sayı hem 15'İn hem de 4'ün katıdır?",
-                options: ["20", "30", "52", "60"],
-                answer: "12"
-            },
-            {
-                question: "20'nin en büyük asal çarpanı aşağıdakilerde hangisidir?",
-                options: ["7", "5", "3", "2"],
-                answer: "2"
-            },
-            {
-                question: "Hangi küme sadece asal sayılar içerir?",
-                options: ["2, 3, 5", "3, 9, 11", "7, 14, 17", "13, 21, 23"],
-                answer: "2, 3, 5"
-            },
-            {
-                question: "15 ve 25'in EBOB'u kaçtır?",
-                options: ["3", "5", "15", "25"],
-                answer: "5"
-            },
-            {
-                question: "8 ve 12'nin EKOK'u kaçtır?",
-                options: ["24", "48", "96", "8"],
-                answer: "24"
-            },
-            {
-                question: "Aşağıdaki çiftlerden hangisi aralarında asaldır?",
-                options: ["15,9", "12,8", "21,91", "4,56"],
-                answer: "15,9"
-            },
-            {
-                question: "Aşağıdakilerden hangisi tamkaredir?",
-                options: ["2", "3", "4", "5"],
-                answer: "4"
-            },
-            {
-                question: "Aşağıdakilerden hangisi 9 ile 18 in en küçük ortak katıdır(EKOK)?",
-                options: ["9", "18", "27", "36"],
-                answer: "18"
-            },
-            {
-                question: "18 ve 24'ün ortak çarpanları nelerdir?",
-                options: ["1, 2, 3, 6", "1, 2, 3, 6, 9", "2, 3, 4, 6", "1, 6"],
-                answer: "1, 2, 3, 6"
-            },
-            {
-                question: "25'ten sonraki 5'in katı nedir?",
-                options: ["26", "30", "35", "50"],
-                answer: "30"
-            },
-            {
-                question: "Hangi sayı çifti aralarında asaldır?",
-                options: ["8 ve 12", "9 ve 10", "15 ve 20", "21 ve 28"],
-                answer: "9 ve 10"
-            },
-            {
-                question: "İlk beş asal sayının toplamı kaçtır?",
-                options: ["11", "17", "28", "32"],
-                answer: "28"
-            },
-            {
-                question: "1 ile 20 arasında en çok çarpana sahip olan sayı hangisidir?",
-                options: ["12", "16", "18", "20"],
-                answer: "12"
-            },
-            {
-                question: "36 ve 48'in EBOB'u kaçtır?",
-                options: ["6", "12", "18", "24"],
-                answer: "12"
-            },
-            {
-                question: "6 ve 15'in EKOK'u kaçtır?",
-                options: ["15", "30", "45", "90"],
-                answer: "30"
-            },
-            {
-                question: "Aşağıdakilerden hangisi hem 2'ye hem de 3'e bölünebilir?",
-                options: ["10", "15", "18", "25"],
-                answer: "18"
-            },
-            {
-                question: "Hem 4'ün hem de 6'nın katı olan en küçük sayı kaçtır?",
-                options: ["12", "24", "36", "48"],
-                answer: "12"
-            },
-            {
-                question: "1 ile 100 arasında hem tam kare hem de tam küp olan sayı nedir?",
-                options: ["16", "27", "64", "81"],
-                answer: "64"
-            },
-            {
-                question: "28 ve 42'nin en büyük ortak böleni (EBOB) kaçtır?",
-                options: ["7", "14", "21", "28"],
-                answer: "14"
-            },
-            {
-                question: "Aşağıdakilerden hangisi 24'ün çarpan çiftidir?",
-                options: ["2 ve 12", "3 ve 9", "4 ve 7", "6 ve 5"],
-                answer: "2 ve 12"
-            },
-        ];
-        function getRandomQuestions(questionPool, count) {
-            // Havuzu kopyala ve rastgele sırala
-            const shuffled = [...questionPool].sort(() => 0.5 - Math.random());
-            return shuffled.slice(0, count);
+        /* --- JS MOTORU (ENGINE V2) --- */
+
+        // Yardımcı Fonksiyon: Üslü Sayıları Güzel Gösterme (x⁵ gibi)
+        function toSuperscript(num) {
+            const map = {
+                '-': '⁻', '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', 
+                '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹'
+            };
+            return num.toString().split('').map(c => map[c] || c).join('');
         }
-        const startScreen = document.getElementById('start-screen');
-        const quizScreen = document.getElementById('quiz-screen');
-        const resultsScreen = document.getElementById('results-screen');
-        const startBtn = document.getElementById('start-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const retryBtn = document.getElementById('retry-btn');
-        const homeBtn = document.getElementById('home-btn'); 
-        const questionText = document.getElementById('question-text');
-        const optionsContainer = document.getElementById('options-container');
-        const questionCounter = document.getElementById('question-counter');
-        const scoreDisplay = document.getElementById('score-display');
-        const progressBar = document.getElementById('progress-bar');
-        const resultScore = document.getElementById('result-score');
-        const resultMessage = document.getElementById('result-message');
-        let currentQuestionIndex = 0;
-        let score = 0;
-        let selectedQuestions = [];
-        let answerSelected = false;
-        function initQuiz() {
-            if (questions.length < 15) {
-                alert("Uyarı: Soru havuzunda en az 15 soru olmalıdır. Lütfen daha fazla soru ekleyin.");
+
+        // Rastgele Sayı
+        function rnd(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // --- SORU ÜRETİM MERKEZİ ---
+        // Burada 30 farklı soru mantığı (Case) oluşturacağız.
+        
+        function generateQuestion(unitCode) {
+            // Eğer karışık ise rastgele ünite seç
+            if (unitCode === 0) unitCode = rnd(1, 3);
+            
+            let q = {};
+            let type = 0;
+
+            // --- 1. ÜNİTE: ÇARPANLAR, KATLAR, ÜSLÜLER ---
+            if (unitCode === 1) {
+                type = rnd(1, 10); // 10 Farklı Şablon
+                
+                if (type === 1) { // EBOB Hesaplama
+                    let k = rnd(4, 12);
+                    let a = k * rnd(2, 5);
+                    let b = k * rnd(6, 9);
+                    q.text = `EBOB(${a}, ${b}) kaçtır?`;
+                    q.correct = k;
+                    q.options = [k, k*2, Math.floor(k/2)+1, k+2];
+                }
+                else if (type === 2) { // EKOK Hesaplama
+                    let a = rnd(6, 12);
+                    let b = rnd(15, 20);
+                    // EKOK hesapla
+                    const gcd = (x, y) => !y ? x : gcd(y, x % y);
+                    const lcm = (x, y) => (x * y) / gcd(x, y);
+                    let ans = lcm(a, b);
+                    q.text = `EKOK(${a}, ${b}) kaçtır?`;
+                    q.correct = ans;
+                    q.options = [ans, ans/2, ans*2, ans+a];
+                }
+                else if (type === 3) { // Üslü Çarpma (Cevap Üslü)
+                    let base = rnd(2, 5); // Taban
+                    let exp1 = rnd(3, 8);
+                    let exp2 = rnd(3, 8);
+                    let ansExp = exp1 + exp2;
+                    
+                    q.text = `${base}${toSuperscript(exp1)} · ${base}${toSuperscript(exp2)} işleminin sonucu hangisidir?`;
+                    q.correct = `${base}${toSuperscript(ansExp)}`;
+                    q.options = [
+                        `${base}${toSuperscript(ansExp)}`, // Doğru
+                        `${base}${toSuperscript(exp1*exp2)}`, // Çarpım hatası
+                        `${base*base}${toSuperscript(ansExp)}`, // Taban hatası
+                        `${base}${toSuperscript(Math.abs(exp1-exp2))}` // Çıkarma hatası
+                    ];
+                }
+                else if (type === 4) { // Üslü Bölme (Cevap Üslü)
+                    let base = rnd(2, 7);
+                    let exp2 = rnd(3, 10);
+                    let exp1 = exp2 + rnd(2, 6); // Pay daha büyük olsun
+                    let ansExp = exp1 - exp2;
+
+                    q.text = `${base}${toSuperscript(exp1)} ÷ ${base}${toSuperscript(exp2)} işleminin sonucu hangisidir?`;
+                    q.correct = `${base}${toSuperscript(ansExp)}`;
+                    q.options = [
+                        `${base}${toSuperscript(ansExp)}`,
+                        `${base}${toSuperscript(exp1+exp2)}`,
+                        `1`,
+                        `${base}${toSuperscript(Math.floor(exp1/exp2))}`
+                    ];
+                }
+                else if (type === 5) { // Üssün Üssü
+                    let base = rnd(2, 3);
+                    let inExp = rnd(2, 4);
+                    let outExp = rnd(3, 5);
+                    let totalExp = inExp * outExp;
+
+                    q.text = `(${base}${toSuperscript(inExp)})${toSuperscript(outExp)} ifadesinin değeri hangisine eşittir?`;
+                    q.correct = `${base}${toSuperscript(totalExp)}`;
+                    q.options = [
+                        `${base}${toSuperscript(totalExp)}`,
+                        `${base}${toSuperscript(inExp+outExp)}`,
+                        `${base}${toSuperscript(Math.pow(inExp, outExp))}`,
+                        `${base*2}${toSuperscript(totalExp)}`
+                    ];
+                }
+                else if (type === 6) { // Bilimsel Gösterim
+                    let zeros = rnd(5, 9);
+                    let num = rnd(2, 9);
+                    // Örn: 5000000 -> 5 . 10^6
+                    let bigNum = num * Math.pow(10, zeros);
+                    q.text = `${bigNum} sayısının bilimsel gösterimi hangisidir?`;
+                    q.correct = `${num} · 10${toSuperscript(zeros)}`;
+                    q.options = [
+                        `${num} · 10${toSuperscript(zeros)}`,
+                        `${num}0 · 10${toSuperscript(zeros-1)}`,
+                        `0,${num} · 10${toSuperscript(zeros+1)}`,
+                        `${num} · 10${toSuperscript(zeros+2)}`
+                    ];
+                }
+                else if (type === 7) { // Yeni Nesil: Raf/Kitap (Basit)
+                    let kitapKalinlik = rnd(2, 5); // 2^x de olabilir ama basit tutalım
+                    let rafUzunluk = kitapKalinlik * rnd(15, 30);
+                    q.text = `Kalınlığı ${kitapKalinlik} cm olan kitaplardan, uzunluğu ${rafUzunluk} cm olan bir rafa aralarında boşluk kalmadan en çok kaç tane sığdırılabilir?`;
+                    q.correct = rafUzunluk / kitapKalinlik;
+                    q.options = [rafUzunluk / kitapKalinlik, (rafUzunluk/kitapKalinlik)-1, (rafUzunluk/kitapKalinlik)+2, rafUzunluk];
+                }
+                else if (type === 8) { // Toplama -> Çarpma Dönüşümü
+                    // Örn: 3^5 + 3^5 + 3^5 = 3.3^5 = 3^6
+                    let base = rnd(3, 5); // Kaç tane toplanacak (aynı zamanda taban)
+                    let exp = rnd(4, 9);
+                    // base tane base^exp toplamı
+                    let textParts = [];
+                    for(let i=0; i<base; i++) textParts.push(`${base}${toSuperscript(exp)}`);
+                    
+                    q.text = `${textParts.join(' + ')} işleminin sonucu nedir?`;
+                    q.correct = `${base}${toSuperscript(exp+1)}`;
+                    q.options = [
+                         `${base}${toSuperscript(exp+1)}`,
+                         `${base}${toSuperscript(exp*base)}`,
+                         `${base*base}${toSuperscript(exp)}`,
+                         `${base}${toSuperscript(exp)}`
+                    ];
+                }
+                else if (type === 9) { // Ondalık Çözümleme
+                    q.text = "10² + 3·10⁰ + 5·10⁻¹ ifadesinin ondalık gösterimi hangisidir?";
+                    q.correct = "103,5";
+                    q.options = ["103,5", "130,5", "103,05", "13,5"];
+                } 
+                else { // Negatif Üs
+                     let base = rnd(2, 4);
+                     q.text = `${base}⁻² ifadesinin değeri kaçtır?`;
+                     q.correct = `1/${base*base}`;
+                     q.options = [`1/${base*base}`, `-${base*base}`, `1/${base}`, `${base*base}`];
+                }
+            }
+            else if (unitCode === 2) {
+                type = rnd(1, 10);
+
+                if (type === 1) { // Tam Kare
+                    let root = rnd(11, 20);
+                    q.text = `√${root*root} sayısı hangisine eşittir?`;
+                    q.correct = root;
+                    q.options = [root, root-1, root+2, root/2];
+                }
+                else if (type === 2) { // Hangi İki Tam Sayı Arasında (Düzeltildi)
+                    // Base'i 5 ile 10 arasında sınırladık
+                    let base = rnd(5, 10); 
+                    
+                    // base^2 ile (base+1)^2 arasında bir sayı seçelim
+                    // Bu, sayının kesinlikle 'base' ve 'base+1' arasında olmasını garanti eder.
+                    let minNum = base * base + 1;
+                    let maxNum = (base + 1) * (base + 1) - 1;
+                    
+                    let num = rnd(minNum, maxNum);
+                    
+                    q.text = `√${num} sayısı hangi iki ardışık tam sayı arasındadır?`;
+                    q.correct = `${base} ile ${base+1}`;
+                    
+                    // Şıkları güvenilir bir şekilde oluşturmak için Set kullanalım
+                    let allOptions = new Set();
+                    allOptions.add(q.correct);
+                    
+                    // Yanlış ardışık şıklar
+                    if (base > 1) allOptions.add(`${base-1} ile ${base}`);
+                    allOptions.add(`${base+1} ile ${base+2}`);
+                    allOptions.add(`${base+2} ile ${base+3}`);
+                    
+                    // Set'i Array'e dönüştür ve sadece ilk 4 şıkkı al
+                    q.options = Array.from(allOptions).slice(0, 4);
+
+                }
+                else if (type === 3) { // Kök içine alma a√b
+                    let out = rnd(2, 5);
+                    let inner = rnd(2, 5);
+                    q.text = `${out}√${inner} sayısı hangisine eşittir?`;
+                    q.correct = `√${out*out*inner}`;
+                    q.options = [`√${out*out*inner}`, `√${out*inner}`, `√${out+inner}`, `${out*inner}`];
+                }
+                else if (type === 4) { // Karekök Toplama
+                    let c = rnd(2, 5); // ortak kök
+                    let k1 = rnd(2, 6);
+                    let k2 = rnd(2, 6);
+                    q.text = `${k1}√${c} + ${k2}√${c} işleminin sonucu nedir?`;
+                    q.correct = `${k1+k2}√${c}`;
+                    q.options = [`${k1+k2}√${c}`, `${k1+k2}√${c+c}`, `${k1*k2}√${c}`, `√${c}`];
+                }
+                else if (type === 5) { // Karekök Çarpma
+                    let a = rnd(2, 5);
+                    let b = rnd(2, 5);
+                    q.text = `√${a} · √${b} işleminin sonucu nedir?`;
+                    q.correct = `√${a*b}`;
+                    q.options = [`√${a*b}`, `√${a+b}`, `${a*b}`, `√${Math.abs(a-b)}`];
+                }
+                else if (type === 6) { // Alanı Verilen Karenin Kenarı
+                    let s = rnd(8, 15);
+                    q.text = `Alanı ${s*s} cm² olan karenin bir kenar uzunluğu kaç cm'dir?`;
+                    q.correct = s;
+                    q.options = [s, s*2, s*4, s/2];
+                }
+                else if (type === 7) { // Veri Analizi: Derece Hesabı
+                    // Toplam 360, % verip derece soralım
+                    q.text = "Bir daire grafiğinde %25'lik dilime düşen merkez açı kaç derecedir?";
+                    q.correct = "90°";
+                    q.options = ["90°", "45°", "120°", "180°"];
+                }
+                else if (type === 8) { // Çevre Bulma
+                    let a = rnd(3, 8);
+                    q.text = `Bir kenarı 3√${a} olan karenin çevresi nedir?`;
+                    q.correct = `12√${a}`;
+                    q.options = [`12√${a}`, `9√${a}`, `6√${a}`, `12`];
+                }
+                else if (type === 9) { // Yeni Nesil: Tel Bükme
+                    let len = rnd(10, 20) * 4; // 4'e bölünsün
+                    q.text = `Uzunluğu √${len*len} cm olan bir tel bükülerek kare yapılıyor. Karenin bir kenarı kaç cm olur?`;
+                    q.correct = len / 4;
+                    q.options = [len/4, len/2, len, 4];
+                }
+                else { // Ondalık Karekök
+                     let val = rnd(1, 9); // 1.21 gibi olmalı -> 11^2 = 121
+                     let sq = (val+10)*(val+10); // 121, 144..
+                     q.text = `√${sq/100} işleminin sonucu kaçtır?`;
+                     q.correct = (val+10)/10;
+                     q.options = [(val+10)/10, (val+10)/100, val+10, (val)/10];
+                }
+            }
+            // --- 3. ÜNİTE: OLASILIK & CEBİR ---
+            // --- 3. ÜNİTE: OLASILIK & CEBİR (GÜNCELLENDİ) ---
+            else if (unitCode === 3) {
+                type = rnd(1, 12); // 12 Farklı Şablon
+                
+                if (type === 1) { // Basit Olasılık
+                    let total = rnd(10, 20);
+                    let target = rnd(3, 8);
+                    // Sadeleştirilmiş formda sunalım (cevaplar daha temiz olsun)
+                    const gcd = (x, y) => !y ? x : gcd(y, x % y);
+                    let bolen = gcd(target, total);
+                    
+                    q.text = `Bir kutuda ${total} top vardır. Bunlardan ${target} tanesi kırmızıdır. Çekilen topun kırmızı olma olasılığı nedir?`;
+                    q.correct = `${target/bolen}/${total/bolen}`;
+                    q.options = [
+                        q.correct, 
+                        `${total-target}/${total}`, 
+                        `1/${total}`, 
+                        `${target}/${total}` // Sadeleşmemiş hali
+                    ];
+                }
+                else if (type === 2) { // Olmama Olasılığı
+                    let p = rnd(1, 5);
+                    let t = p + rnd(1, 5);
+                    q.text = `Bir olayın olma olasılığı ${p}/${t} ise, OLMAMA olasılığı kaçtır?`;
+                    q.correct = `${t-p}/${t}`;
+                    q.options = [`${t-p}/${t}`, `${p}/${t}`, `1/${t}`, `0`];
+                }
+                else if (type === 3) { // Cebirsel Değer Bulma
+                    let x = rnd(2, 5);
+                    let k = rnd(3, 7);
+                    q.text = `x = ${x} için, 2x² + ${k} ifadesinin değeri kaçtır?`;
+                    q.correct = 2*(x*x) + k;
+                    q.options = [2*(x*x) + k, 2*x + k, x*x + k, 4*x + k];
+                }
+                else if (type === 4) { // Terim Sayısı
+                    q.text = "3x - 2y + 5z + 10 ifadesinin kaç terimi vardır?";
+                    q.correct = "4";
+                    q.options = ["4", "3", "5", "2"];
+                }
+                else if (type === 5) { // Katsayılar Toplamı
+                    let a = rnd(2, 5);
+                    let b = rnd(2, 5);
+                    let c = rnd(1, 3);
+                    q.text = `${a}x² - ${b}y + ${c} ifadesinin katsayılar toplamı kaçtır?`;
+                    q.correct = a - b + c;
+                    q.options = [a - b + c, a + b + c, c, a-b];
+                }
+                else if (type === 6) { // Parantez Çarpma (Dağılma)
+                    let a = rnd(2, 4);
+                    let b = rnd(5, 9);
+                    q.text = `${a}(x + ${b}) ifadesinin eşiti nedir?`;
+                    q.correct = `${a}x + ${a*b}`;
+                    q.options = [`${a}x + ${a*b}`, `${a}x + ${b}`, `x + ${a*b}`, `${a}x - ${a*b}`];
+                }
+                else if (type === 7) { // Özdeşlik: İki Kare Farkı (Basit)
+                    let k = rnd(4, 9);
+                    q.text = `x² - ${k*k} ifadesinin çarpanlarına ayrılmış hali hangisidir?`;
+                    q.correct = `(x - ${k})(x + ${k})`;
+                    q.options = [`(x - ${k})(x + ${k})`, `(x - ${k})²`, `(x + ${k})²`, `x(x - ${k*k})`];
+                }
+                else if (type === 8) { // Özdeşlik: Tam Kare (Toplama)
+                    let k = rnd(2, 5);
+                    q.text = `(x + ${k})² ifadesinin açılımı nedir?`;
+                    q.correct = `x² + ${2*k}x + ${k*k}`;
+                    q.options = [`x² + ${2*k}x + ${k*k}`, `x² + ${k*k}`, `x² + ${k}x + ${k*k}`, `2x + ${2*k}`];
+                }
+                else if (type === 9) { // ✨ YENİ: Ortak Çarpan Parantezine Alma
+                    let ortak = rnd(2, 5);
+                    let k = rnd(3, 7);
+                    q.text = `${ortak}x + ${ortak*k} ifadesinin çarpanlarına ayrılmış hali hangisidir?`;
+                    q.correct = `${ortak}(x + ${k})`;
+                    q.options = [`${ortak}(x + ${k})`, `${ortak}x(1 + ${k})`, `x(${ortak} + ${ortak*k})`, `${ortak} + ${k}x`];
+                }
+                else if (type === 10) { // ✨ YENİ: Farkın Tam Karesi
+                    let k = rnd(2, 5);
+                    q.text = `(x - ${k})² ifadesinin açılımı nedir?`;
+                    q.correct = `x² - ${2*k}x + ${k*k}`;
+                    q.options = [`x² - ${2*k}x + ${k*k}`, `x² + ${2*k}x + ${k*k}`, `x² - ${k*k}`, `x² - ${k}x + ${k}`];
+                }
+                else if (type === 11) { // Geometrik Cebir (Alan) - Bir Tık Zor
+                    let x = rnd(2, 4);
+                    q.text = `Kısa kenarı $${x}x$ ve uzun kenarı $${x}x + 3$ olan bir dikdörtgenin alanı nedir?`;
+                    q.correct = `${x*x}x² + ${3*x}x`;
+                    q.options = [`${x*x}x² + ${3*x}x`, `${x}x + 3`, `${x*x}x² + 3`, `4x + 6`];
+                }
+                else { // Şehirden Şehire (Olasılık)
+                    q.text = "İSTANBUL kelimesinin harfleri torbaya atılıyor. Sesli harf gelme olasılığı nedir?";
+                    // İSTANBUL (8 harf), Sesli: İ, A, U -> 3 tane
+                    q.correct = "3/8";
+                    q.options = ["3/8", "5/8", "1/8", "1/4"]; // 1/4 = 2/8
+                }
+            }
+            return q;
+        }
+
+        // --- OYUN YÖNETİMİ ---
+
+        let state = {
+            unit: 0,
+            qIndex: 0,
+            score: 0,
+            maxQ: 10
+        };
+
+        const screens = {
+            menu: document.getElementById('screen-menu'),
+            game: document.getElementById('screen-game'),
+            result: document.getElementById('screen-result')
+        };
+
+        const ui = {
+            qText: document.getElementById('question-text'),
+            options: document.getElementById('options-area'),
+            nextBtn: document.getElementById('next-button'),
+            count: document.getElementById('q-count'),
+            score: document.getElementById('q-score'),
+            finalScore: document.getElementById('final-score'),
+            feedback: document.getElementById('feedback')
+        };
+
+        // Kar yağışı
+        setInterval(() => {
+            const snow = document.createElement('div');
+            snow.className = 'snowflake';
+            snow.innerText = '❄';
+            snow.style.left = Math.random() * 100 + '%';
+            snow.style.opacity = Math.random();
+            snow.style.fontSize = (Math.random() * 15 + 10) + 'px';
+            snow.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            document.getElementById('snow').appendChild(snow);
+            setTimeout(() => snow.remove(), 5000);
+        }, 200);
+
+        function startGame(u) {
+            state.unit = u;
+            state.qIndex = 0;
+            state.score = 0;
+            screens.menu.style.display = 'none';
+            screens.result.classList.remove('active');
+            screens.game.classList.add('active');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            ui.nextBtn.style.display = 'none';
+            state.qIndex++;
+
+            if (state.qIndex > state.maxQ) {
+                endGame();
                 return;
             }
-            currentQuestionIndex = 0;
-            score = 0;
-            selectedQuestions = getRandomQuestions(questions, 15); 
-            startScreen.classList.add('hidden');
-            quizScreen.classList.remove('hidden');
-            resultsScreen.classList.add('hidden');
+
+            ui.count.innerText = `Soru: ${state.qIndex} / ${state.maxQ}`;
+            ui.score.innerText = `Puan: ${state.score}`;
+
+            // Soru Üret
+            let q = generateQuestion(state.unit);
+            ui.qText.innerHTML = q.text;
+
+            // Şıkları Karıştır
+            let opts = q.options.map(val => val.toString()); // String'e çevir
+            let correctStr = q.correct.toString();
             
-            showQuestion();
-        }
-        function showQuestion() {
-            answerSelected = false;
-            const question = selectedQuestions[currentQuestionIndex];
-            questionText.textContent = question.question;
-            questionCounter.textContent = `Soru ${currentQuestionIndex + 1}/${selectedQuestions.length}`;
-            scoreDisplay.textContent = `Puan: ${score}`;
-            const progressWidth = ((currentQuestionIndex) / selectedQuestions.length) * 100;
-            progressBar.style.width = `${progressWidth}%`;
-            optionsContainer.innerHTML = '';
-            question.options.forEach(option => {
-                const optionElement = document.createElement('button');
-                optionElement.className = 'option-btn text-left bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-4 rounded-lg border border-gray-300';
-                optionElement.textContent = option;
-                optionElement.addEventListener('click', () => selectAnswer(option, optionElement));
-                optionsContainer.appendChild(optionElement);
-            });
-            nextBtn.classList.add('opacity-50');
-            nextBtn.classList.add('cursor-not-allowed');
-        }
-        function selectAnswer(selectedOption, optionElement) {
-            if (answerSelected) return;
-            
-            answerSelected = true;
-            const currentQuestion = selectedQuestions[currentQuestionIndex];
-            document.querySelectorAll('.option-btn').forEach(btn => {
-                btn.classList.remove('selected-answer');
-                btn.disabled = true;
-            });
-            optionElement.classList.add('selected-answer');
-            if (selectedOption === currentQuestion.answer) {
-                optionElement.classList.add('correct-answer');
-                score++;
-                scoreDisplay.textContent = `Puan: ${score}`;
-            } else {
-                optionElement.classList.add('wrong-answer');
-                document.querySelectorAll('.option-btn').forEach(btn => {
-                    if (btn.textContent === currentQuestion.answer) {
-                        btn.classList.add('correct-answer');
+            // Fisher-Yates Shuffle
+            for (let i = opts.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [opts[i], opts[j]] = [opts[j], opts[i]];
+            }
+
+            ui.options.innerHTML = '';
+            let canClick = true;
+
+            opts.forEach(opt => {
+                let btn = document.createElement('div');
+                btn.className = 'opt-btn';
+                btn.innerText = opt;
+                btn.onclick = () => {
+                    if(!canClick) return;
+                    canClick = false;
+                    
+                    if (opt === correctStr) {
+                        btn.classList.add('correct');
+                        state.score += 10;
+                        ui.score.innerText = `Puan: ${state.score}`;
+                    } else {
+                        btn.classList.add('wrong');
+                        // Doğruyu göster
+                        Array.from(ui.options.children).forEach(child => {
+                            if(child.innerText === correctStr) child.classList.add('correct');
+                        });
                     }
-                });
-            }
-            nextBtn.classList.remove('opacity-50');
-            nextBtn.classList.remove('cursor-not-allowed');
+                    ui.nextBtn.style.display = 'block';
+                    // Mobilde kaydır
+                    ui.nextBtn.scrollIntoView({behavior: 'smooth', block: 'center'});
+                };
+                ui.options.appendChild(btn);
+            });
         }
+
         function nextQuestion() {
-            if (!answerSelected) return;
-            currentQuestionIndex++;
-            if (currentQuestionIndex < selectedQuestions.length) {
-                showQuestion();
-            } else {
-                showResults();
-            }
+            loadQuestion();
         }
-        function showResults() {
-            quizScreen.classList.add('hidden');
-            resultsScreen.classList.remove('hidden');
-            progressBar.style.width = '100%'; 
-            const totalQuestions = selectedQuestions.length;
-            const percentage = Math.round((score / totalQuestions) * 100);
-            resultScore.textContent = `${score}/${totalQuestions}`;
-            if (percentage === 100) {
-                resultMessage.textContent = "Mükemmel skor! Sen tam bir Çarpanlar ve Katlar ustasısın!";
-            } else if (percentage >= 80) {
-                resultMessage.textContent = "Harika iş! Bu konuda çok iyi bilgiye sahipsin!";
-            } else if (percentage >= 60) {
-                resultMessage.textContent = "İyi çaba! Puanını yükseltmek için alıştırmaya devam et!";
-            } else {
-                resultMessage.textContent = "Çalışmaya devam et! Daha fazla pratikle çok daha iyi olacaksın!";
-            }
+
+        function endGame() {
+            screens.game.classList.remove('active');
+            screens.result.classList.add('active');
+            
+            // Puan Sayacı Animasyonu
+            let current = 0;
+            let timer = setInterval(() => {
+                if(current >= state.score) clearInterval(timer);
+                else {
+                    current++;
+                    ui.finalScore.innerText = current;
+                }
+            }, 30);
+            
+            ui.finalScore.innerText = state.score;
+
+            if(state.score >= 90) ui.feedback.innerText = "Güzel sonuç, tekrar denemeyi unutma!";
+            else if(state.score >= 50) ui.feedback.innerText = "Güzel deneme, biraz daha çalışırsan efsane olursun!";
+            else ui.feedback.innerText = "Pes etmek yok, tekrar dene!";
         }
-        startBtn.addEventListener('click', initQuiz);
-        nextBtn.addEventListener('click', nextQuestion);
-        retryBtn.addEventListener('click', initQuiz);
-        feather.replace();
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
-        document.onkeydown = function(e) {
-            if (e.key === 'F12' || e.keyCode === 123) {
-                return false;
-            }
-            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.keyCode === 73)) {
-                return false;
-            }
-            if (e.ctrlKey && (e.key === 'U' || e.keyCode === 85)) {
-                return false;
-            }
-        }
-        document.body.onselectstart = function() { return false; }
+
     </script>
 </body>
 </html>
