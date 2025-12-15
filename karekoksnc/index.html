@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karekök Hesaplayıcı | Sayısal Analiz Merkezi</title>
+    
+    <link rel="icon" type="image/png" sizes="32x32" href="../img/favicon.png">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap');
+
+        :root {
+            /* Neon Renk Paleti */
+            --neon-blue: #00eaff;
+            --neon-blue-light: #66e7ff;
+            --neon-green: #39ff14;
+            --neon-purple: #ae00ff;
+            --neon-red: #ff3333;
+            
+            /* Temel Renkler */
+            --dark-bg: #0d1326; /* Koyu arka plan */
+            --text-color: #e0e0e0; /* Açık gri metin */
+            --link-color: #00ff37be;
+            --metin-color: #00f7ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* --- GENEL ARKA PLAN VE TEMA STİLİ --- */
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+
+            /* MEKANİK ARKA PLAN */
+            background-image: url('data:image/svg+xml,%3Csvg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M11 0l11 22 11 -22zm22 0l11 22 11 -22zm22 0l11 22 11 -22zm22 0l11 22 11 -22zm-88 100l11 -22 11 22zm22 0l11 -22 11 22zm22 0l11 -22 11 22zm22 0l11 -22 11 22zm-88 -50l11 22 11 -22zm22 -50l11 22 11 -22zm22 -50l11 22 11 -22zm22 -50l11 22 11 -22zm-88 100l11 -22 11 22zm22 100l11 -22 11 22zm22 100l11 -22 11 22zm22 100l11 -22 11 22zm-88 -50l11 22 11 -22zm22 50l11 22 11 -22zm22 50l11 22 11 -22zm22 50l11 22 11 -22z" fill="%2300EAFF" opacity="0.1" /%3E%3C/svg%3E'),
+                              linear-gradient(135deg, #0d1326 0%, #1a233a 100%);
+            background-size: 50px 50px, cover;
+            background-attachment: fixed;
+        }
+
+        .container {
+            background-color: rgba(13, 19, 38, 0.85);
+            border: 1px solid var(--neon-blue);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0, 234, 255, 0.8),
+                        inset 0 0 15px rgba(0, 234, 255, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-purple); /* Sayfa başlığını mora çevirdik */
+            text-shadow: 0 0 15px var(--neon-purple);
+            margin-bottom: 20px;
+            font-size: 2.2em;
+            letter-spacing: 2px;
+        }
+        
+        p{
+            color: var(--metin-color);
+            margin-bottom: 15px;
+        }
+
+        /* --- KAREKÖK UYGULAMASI ÖZEL STİLİ --- */
+        
+        /* Giriş Alanı Grubu */
+        .input-group {
+            margin: 25px 0;
+            padding: 15px;
+            border: 1px solid var(--neon-purple);
+            border-radius: 10px;
+            background-color: rgba(174, 0, 255, 0.1);
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            color: var(--neon-purple);
+            text-shadow: 0 0 5px var(--neon-purple);
+        }
+
+        .input-group input[type="number"] {
+            width: 80%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            background-color: #1a233a;
+            color: var(--neon-blue);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.2em;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(174, 0, 255, 0.5);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .input-group input[type="number"]:focus {
+            outline: none;
+            box-shadow: 0 0 15px var(--neon-purple);
+        }
+
+        /* Hesapla Butonu */
+        .action-button {
+            background-color: var(--neon-purple);
+            color: var(--dark-bg);
+            border: none;
+            padding: 12px 25px;
+            margin-top: 15px;
+            border-radius: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--neon-purple);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .action-button:hover {
+            background-color: #ff00ff;
+            box-shadow: 0 0 25px #ff00ff;
+            transform: translateY(-2px);
+        }
+
+        /* Sonuç Alanı */
+        .sonuc-alan {
+            margin-top: 30px;
+            padding: 20px;
+            border: 2px solid var(--neon-blue);
+            border-radius: 10px;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 234, 255, 0.1);
+        }
+
+        .sonuc-alan h2 {
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+            margin-bottom: 10px;
+        }
+
+        .sonuc-deger {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 2.5em;
+            font-weight: 700;
+            text-shadow: 0 0 10px currentColor; 
+        }
+
+        /* Ana Menüye Dön Butonu Stili */
+        .main-menu-link {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 10px 20px;
+            background-color: rgba(0, 234, 255, 0.15);
+            border: 1px solid var(--neon-blue);
+            border-radius: 8px;
+            color: var(--neon-blue-light);
+            font-weight: 700;
+            text-shadow: 0 0 8px var(--neon-blue);
+            transition: all 0.3s ease-in-out;
+            text-decoration: none; /* Link olduğu için */
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .main-menu-link:hover {
+            background-color: rgba(0, 234, 255, 0.3);
+            box-shadow: 0 0 20px var(--neon-blue);
+            transform: translateY(-2px);
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Karekök Hesaplayıcı</h1>
+        <p>Hesaplamak istediğiniz pozitif sayıyı ($x$) girin:</p>
+        
+        <div class="input-group">
+            <label for="sayiGiris">Sayı (x):</label>
+            <input type="number" id="sayiGiris" placeholder="Örn: 16 veya 2" min="0">
+        </div>
+
+        <button id="hesaplaBtn" class="action-button">Karekökü Hesapla</button>
+
+        <div class="sonuc-alan" id="sonucAlan">
+            <p>Sonuç burada gösterilecektir.</p>
+        </div>
+        
+        <a href="../index.html" class="main-menu-link">Ana Menüye Dön</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gerekli HTML öğelerini seçme
+            const sayiGiris = document.getElementById('sayiGiris');
+            const hesaplaBtn = document.getElementById('hesaplaBtn');
+            const sonucAlan = document.getElementById('sonucAlan');
+
+            // Hesaplama fonksiyonu
+            function karekokHesapla() {
+                // Giriş değerini al
+                const sayiStr = sayiGiris.value;
+                const sayi = parseFloat(sayiStr);
+
+                // Giriş kontrolü
+                if (sayiStr.trim() === "") {
+                    sonucAlan.innerHTML = '<p style="color: var(--neon-red);">Lütfen bir sayı girin.</p>';
+                    return;
+                }
+
+                if (isNaN(sayi) || sayi < 0) {
+                    sonucAlan.innerHTML = '<p style="color: var(--neon-red);">Lütfen geçerli ve pozitif bir sayı girin.</p>';
+                    return;
+                }
+                
+                // Karekök hesaplama
+                const sonuc = Math.sqrt(sayi);
+                
+                // Sonucu görüntüleme
+                let sonucHTML = `<h2>$\sqrt{${sayi}}$ Sonucu:</h2>`;
+
+                // Tam sayı kontrolü ve sonuç formatlama
+                if (Number.isInteger(sonuc)) {
+                    // Tam sayı ise tam olarak göster
+                    sonucHTML += `<p class="sonuc-deger" style="color: var(--neon-green);">${sonuc}</p>`;
+                } else {
+                    // Ondalık sayı ise, 6 basamak hassasiyetle göster
+                    sonucHTML += `<p class="sonuc-deger" style="color: var(--neon-blue-light);">${sonuc.toFixed(6)} (Yaklaşık Değer)</p>`;
+                }
+
+                sonucAlan.innerHTML = sonucHTML;
+            }
+
+            // Olay dinleyicileri
+            hesaplaBtn.addEventListener('click', karekokHesapla);
+            
+            // Enter tuşuna basıldığında da hesaplama yap
+            sayiGiris.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    karekokHesapla();
+                }
+            });
+
+            // Güvenlik engellemeleri (Ana sayfadan kopyalandı)
+            document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+            document.onkeydown = function(e) {
+                if (e.key === 'F12' || e.keyCode === 123 || 
+                    (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.keyCode === 73)) || 
+                    (e.ctrlKey && (e.key === 'U' || e.keyCode === 85))) {
+                    return false;
+                }
+            }
+            document.body.onselectstart = function() { return false; }
+        });
+    </script>
+</body>
+</html>
