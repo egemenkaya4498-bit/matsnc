@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matematik Test Merkezi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="user-view">
+        <nav class="bg-slate-900 text-white p-5 shadow-xl">
+            <div class="container mx-auto">
+                <h1 class="text-xl font-bold tracking-widest">MATEMATİK <span class="text-blue-400">PDF</span></h1>
+            </div>
+        </nav>
+
+        <main class="container mx-auto mt-12 px-4">
+            <div id="test-list" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                </div>
+        </main>
+    </div>
+
+    <div id="admin-view" class="hidden min-h-screen bg-gray-100">
+        <nav class="bg-red-800 text-white p-4 shadow-md">
+            <div class="container mx-auto flex justify-between items-center">
+                <span class="font-bold uppercase tracking-tighter">Yönetim Paneli</span>
+                <a href="#" class="text-sm bg-red-900 px-3 py-1 rounded">Siteden Çık</a>
+            </div>
+        </nav>
+
+        <div class="container mx-auto mt-10 p-6 max-w-3xl bg-white rounded-2xl shadow-2xl">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800 border-b pb-2">Yeni Test Tanımla</h2>
+            <div class="grid gap-4">
+                <input type="text" id="title" placeholder="Test Başlığı (Örn: Türev-1)" class="p-3 border rounded-lg outline-none focus:ring-2 focus:ring-red-500">
+                <textarea id="desc" placeholder="Açıklama metni..." class="p-3 border rounded-lg outline-none focus:ring-2 focus:ring-red-500"></textarea>
+                <input type="url" id="link" placeholder="Google Drive Linki" class="p-3 border rounded-lg outline-none focus:ring-2 focus:ring-red-500">
+                <button onclick="addTest()" class="bg-red-600 text-white py-3 rounded-lg font-bold hover:bg-red-700 transition">Sisteme Kaydet</button>
+            </div>
+
+            <div class="mt-10">
+                <h3 class="font-semibold text-gray-600 mb-4">Yayındaki Testler</h3>
+                <div id="admin-test-list" class="space-y-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA BÖLÜMÜ ---
+        // Egemen, eğer veritabanı kullanmayacaksan, linkleri buraya manuel ekle ki herkes görsün.
+        const staticTests = [
+        ];
+
+        // --- ROUTING (Yönlendirme) ---
+        function router() {
+            const hash = window.location.hash;
+            if (hash === "#admin") {
+                document.getElementById('user-view').classList.add('hidden');
+                document.getElementById('admin-view').classList.remove('hidden');
+                renderAdmin();
+            } else {
+                document.getElementById('user-view').classList.remove('hidden');
+                document.getElementById('admin-view').classList.add('hidden');
+                renderUser();
+            }
+        }
+
+        window.addEventListener('hashchange', router);
+        window.addEventListener('load', router);
+
+        // --- FONKSİYONLAR ---
+        function getTests() {
+            const localData = JSON.parse(localStorage.getItem('my_tests')) || [];
+            return [...staticTests, ...localData];
+        }
+
+        function renderUser() {
+            const container = document.getElementById('test-list');
+            const tests = getTests();
+            container.innerHTML = tests.map(t => `
+                <div class="bg-white border border-gray-200 p-6 rounded-xl hover:shadow-lg transition-all group">
+                    <h3 class="text-xl font-bold text-gray-800 group-hover:text-blue-600">${t.title}</h3>
+                    <p class="text-gray-500 text-sm mt-2 mb-6">${t.desc}</p>
+                    <a href="${t.link}" target="_blank" class="block text-center bg-gray-900 text-white py-2 rounded-lg hover:bg-blue-600 transition">PDF İndir / Çöz</a>
+                </div>
+            `).join('');
+        }
+
+        function renderAdmin() {
+            const list = document.getElementById('admin-test-list');
+            const tests = JSON.parse(localStorage.getItem('my_tests')) || [];
+            list.innerHTML = tests.map(t => `
+                <div class="flex justify-between items-center bg-gray-50 p-4 rounded-lg border">
+                    <div>
+                        <p class="font-bold text-gray-700">${t.title}</p>
+                        <p class="text-xs text-gray-400">${t.link}</p>
+                    </div>
+                    <button onclick="deleteTest(${t.id})" class="text-red-500 font-bold hover:underline text-sm">SİL</button>
+                </div>
+            `).join('');
+        }
+
+        function addTest() {
+            const title = document.getElementById('title').value;
+            const desc = document.getElementById('desc').value;
+            const link = document.getElementById('link').value;
+
+            if(!title || !link) return alert("Eksik bilgi!");
+
+            const tests = JSON.parse(localStorage.getItem('my_tests')) || [];
+            tests.push({ id: Date.now(), title, desc, link });
+            localStorage.setItem('my_tests', JSON.stringify(tests));
+
+            // Formu temizle
+            document.querySelectorAll('input, textarea').forEach(i => i.value = '');
+            renderAdmin();
+            alert("Test başarıyla eklendi Egemen.");
+        }
+
+        function deleteTest(id) {
+            let tests = JSON.parse(localStorage.getItem('my_tests')) || [];
+            tests = tests.filter(t => t.id !== id);
+            localStorage.setItem('my_tests', JSON.stringify(tests));
+            renderAdmin();
+        }
+    </script>
+</body>
+</html>
