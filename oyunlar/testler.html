@@ -2,65 +2,82 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Netlify Test Portalı</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Paneli</title>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
-        body { font-family: sans-serif; background: #f4f4f4; text-align: center; }
-        .card { background: white; padding: 20px; margin: 20px auto; width: 80%; max-width: 500px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
         .hidden { display: none; }
-        button { padding: 10px 20px; cursor: pointer; background: #00ad9f; color: white; border: none; border-radius: 5px; }
+        input[type="text"], input[type="file"] { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        button { background: #00b894; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; }
+        button:hover { background: #009476; }
+        .admin-note { font-size: 12px; color: #666; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <div id="login-section" class="card">
+    <div id="login-card" class="card">
         <h2>Giriş Yap</h2>
-        <input type="text" id="username" placeholder="Kullanıcı Adı"><br><br>
-        <div class="g-recaptcha" data-sitekey="6LeXHT4sAAAAAO0czr4fnMqoG0Id1ER2fwbNbNWj"></div><br>
-        <button onclick="login()">Giriş Yap</button>
+        <input type="text" id="username" placeholder="Kullanıcı Adı">
+        
+        <div class="g-recaptcha" data-sitekey="6LeXHT4sAAAAAO0czr4fnMqoG0Id1ER2fwbNbNWj" style="margin-bottom: 15px;"></div>
+        
+        <button onclick="checkLogin()">Giriş Yap</button>
     </div>
 
-    <div id="user-section" class="card hidden">
-        <h2 id="welcome"></h2>
-        <form name="test-yukleme" method="POST" data-netlify="true" enctype="multipart/form-data">
-            <p>Bize Test Gönderin:</p>
-            <input type="file" name="dosya" required><br><br>
-            <button type="submit">Dosyayı Gönder</button>
+    <div id="upload-card" class="card hidden">
+        <h2 id="welcome-text">Hoş geldin!</h2>
+        <p>Test dosyasını buraya yükle:</p>
+        
+        <form name="test-dosyalari" method="POST" data-netlify="true" enctype="multipart/form-data">
+            <input type="hidden" name="form-name" value="test-dosyalari">
+            <input type="text" name="gonderen-kisi" id="hidden-user" class="hidden">
+            <input type="file" name="dosya" required>
+            <button type="submit">Dosyayı Bana Gönder</button>
         </form>
-        <br>
-        <button onclick="logout()" style="background: #ff4b2b;">Çıkış Yap</button>
+        
+        <button onclick="logout()" style="background:#ff7675; margin-top: 10px;">Çıkış Yap</button>
+        <p class="admin-note">Gönderdiğin dosyalar yönetici paneline düşecektir.</p>
     </div>
 
     <script>
-        // Giriş Durumu Kontrolü (Local Storage)
-        if(localStorage.getItem('girisYapildi')) {
-            showUserPage(localStorage.getItem('isim'));
-        }
+        // Tarayıcı hafızasında oturum kontrolü
+        window.onload = function() {
+            const savedUser = localStorage.getItem('site_user');
+            if (savedUser) {
+                showUploadPage(savedUser);
+            }
+        };
 
-        async function login() {
+        function checkLogin() {
             const user = document.getElementById('username').value;
-            const response = grecaptcha.getResponse();
+            const captchaResponse = grecaptcha.getResponse();
 
-            if(!user || !response) {
-                alert("Lütfen tüm alanları doldurun!");
+            if (user.length < 2) {
+                alert("Lütfen geçerli bir kullanıcı adı girin.");
                 return;
             }
 
-            // Burada normalde sunucu doğrulaması yapılır, 
-            // ama Netlify'da hızlıca simüle ediyoruz:
-            localStorage.setItem('girisYapildi', 'true');
-            localStorage.setItem('isim', user);
-            showUserPage(user);
+            if (captchaResponse.length === 0) {
+                alert("Lütfen robot olmadığınızı doğrulayın.");
+                return;
+            }
+
+            // Başarılı giriş
+            localStorage.setItem('site_user', user);
+            showUploadPage(user);
         }
 
-        function showUserPage(name) {
-            document.getElementById('login-section').classList.add('hidden');
-            document.getElementById('user-section').classList.remove('hidden');
-            document.getElementById('welcome').innerText = "Hoş geldin, " + name;
+        function showUploadPage(name) {
+            document.getElementById('login-card').classList.add('hidden');
+            document.getElementById('upload-card').classList.remove('hidden');
+            document.getElementById('welcome-text').innerText = "Merhaba, " + name;
+            document.getElementById('hidden-user').value = name;
         }
 
         function logout() {
-            localStorage.clear();
+            localStorage.removeItem('site_user');
             location.reload();
         }
     </script>
