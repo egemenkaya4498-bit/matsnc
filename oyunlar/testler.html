@@ -546,7 +546,7 @@
         
         <!-- Footer -->
         <footer>
-            <p>© 2023 LGS Matematik Testleri - Tüm hakları saklıdır.</p>
+            <p>© 2026 LGS Matematik Testleri - Tüm hakları saklıdır.</p>
             <p>Bu site eğitim amaçlı hazırlanmıştır. PDF'ler Google Drive üzerinden paylaşılmaktadır.</p>
         </footer>
     </div>
@@ -594,124 +594,6 @@
             };
             document.head.appendChild(script);
             
-            // Canvas grafik oluşturma
-            const canvas = document.getElementById('successChart');
-            const ctx = canvas.getContext('2d');
-            
-            // Canvas boyutunu ayarla
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
-            
-            // Grafik çiz
-            function drawChart() {
-                // Temizle
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
-                // Veriler
-                const topics = ['Çarpanlar', 'Üslü İf.', 'Karekök', 'Veri Analizi', 'Olasılık', 'Cebirsel'];
-                const successRates = [75, 68, 62, 80, 72, 65];
-                const colors = ['#6a11cb', '#2575fc', '#00b09b', '#ff0080', '#ff9a00', '#6a11cb'];
-                
-                // Grafik alanı
-                const margin = 40;
-                const chartWidth = canvas.width - 2 * margin;
-                const chartHeight = canvas.height - 2 * margin;
-                const barWidth = chartWidth / topics.length * 0.7;
-                const maxRate = Math.max(...successRates);
-                
-                // Eksenler
-                ctx.beginPath();
-                ctx.moveTo(margin, margin);
-                ctx.lineTo(margin, canvas.height - margin);
-                ctx.lineTo(canvas.width - margin, canvas.height - margin);
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-                
-                // Y ekseni etiketleri
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-                ctx.font = '14px Arial';
-                ctx.textAlign = 'right';
-                for (let i = 0; i <= 100; i += 20) {
-                    const y = canvas.height - margin - (i / 100) * chartHeight;
-                    ctx.fillText(i + '%', margin - 10, y + 4);
-                    
-                    // Grid çizgileri
-                    ctx.beginPath();
-                    ctx.moveTo(margin, y);
-                    ctx.lineTo(canvas.width - margin, y);
-                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-                    ctx.lineWidth = 1;
-                    ctx.stroke();
-                }
-                
-                // Çubuklar
-                for (let i = 0; i < topics.length; i++) {
-                    const x = margin + i * (chartWidth / topics.length) + (chartWidth / topics.length - barWidth) / 2;
-                    const barHeight = (successRates[i] / 100) * chartHeight;
-                    const y = canvas.height - margin - barHeight;
-                    
-                    // Çubuk gölgesi
-                    ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-                    ctx.fillRect(x + 3, y + 3, barWidth, barHeight);
-                    
-                    // Gradient çubuk
-                    const gradient = ctx.createLinearGradient(x, y, x, y + barHeight);
-                    gradient.addColorStop(0, colors[i]);
-                    gradient.addColorStop(1, colors[i] + 'aa');
-                    
-                    ctx.fillStyle = gradient;
-                    ctx.fillRect(x, y, barWidth, barHeight);
-                    
-                    // Çubuk kenarlığı
-                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-                    ctx.lineWidth = 1;
-                    ctx.strokeRect(x, y, barWidth, barHeight);
-                    
-                    // Konu isimleri
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-                    ctx.font = '14px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.fillText(topics[i], x + barWidth / 2, canvas.height - margin + 20);
-                    
-                    // Başarı oranı yazısı
-                    ctx.fillStyle = 'white';
-                    ctx.font = 'bold 16px Arial';
-                    ctx.fillText(successRates[i] + '%', x + barWidth / 2, y - 10);
-                }
-                
-                // Başlık
-                ctx.fillStyle = 'white';
-                ctx.font = 'bold 18px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText('Konulara Göre Başarı Oranları', canvas.width / 2, 30);
-            }
-            
-            // Grafiği çiz
-            drawChart();
-            
-            // Pencere boyutu değiştiğinde grafiği yeniden çiz
-            window.addEventListener('resize', function() {
-                canvas.width = canvas.offsetWidth;
-                canvas.height = canvas.offsetHeight;
-                drawChart();
-            });
-            
-            // Konu kartlarına tıklama
-            document.querySelectorAll('.topic-card').forEach(card => {
-                card.addEventListener('click', function() {
-                    const link = this.getAttribute('data-link');
-                    
-                    // Loading ekranını göster
-                    document.getElementById('loader').style.display = 'flex';
-                    
-                    // 1.5 saniye sonra linke yönlendir (loading efekti için)
-                    setTimeout(() => {
-                        window.open(link, '_blank');
-                        document.getElementById('loader').style.display = 'none';
-                    }, 1500);
-                });
-            });
             
             // Geri dön butonu
             document.getElementById('backButton').addEventListener('click', function() {
@@ -719,36 +601,6 @@
                 window.location.href = 'anasayfa.html';
             });
             
-            // İstatistik sayılarına animasyon ekle
-            function animateCounter(element, target, duration = 2000) {
-                let start = 0;
-                const increment = target / (duration / 16); // 60fps
-                const timer = setInterval(() => {
-                    start += increment;
-                    if (start >= target) {
-                        element.textContent = target;
-                        clearInterval(timer);
-                    } else {
-                        element.textContent = Math.floor(start);
-                    }
-                }, 16);
-            }
-            
-            // Sayfa yüklendiğinde istatistikleri animasyonlu göster
-            setTimeout(() => {
-                animateCounter(document.getElementById('totalQuestions'), 120);
-                animateCounter(document.getElementById('yearCount'), 5);
-                animateCounter(document.getElementById('topicCount'), 6);
-                
-                // Yüzde animasyonu
-                const averageScore = document.getElementById('averageScore');
-                let score = 0;
-                const scoreInterval = setInterval(() => {
-                    score += 1;
-                    averageScore.textContent = '%' + score;
-                    if (score >= 68) clearInterval(scoreInterval);
-                }, 30);
-            }, 1000);
             
             // Rastgele ışık efektleri ekle
             function addRandomLights() {
@@ -789,3 +641,4 @@
     </script>
 </body>
 </html>
+
