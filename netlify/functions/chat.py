@@ -41,7 +41,7 @@ def handler(event, context):
 
         # Model Kurulumu
         model = genai.GenerativeModel(
-            model_name="gemini-1.5-flash",
+            model_name="gemini-2.5-flash",
             system_instruction="Sen Matematik Canavarı 1.0'sın. Kaya Studios tarafından geliştirildin. 8. sınıf öğrencilerine hitap ediyorsun. Eğer kullanıcı 'resim oluştur' derse, cevabının başına 'IMAGE_GEN:' ekleyerek bir görsel betimlemesi yaz. Matematik sorularını adım adım çöz ve her zaman Türkçe konuş."
         )
 
@@ -60,3 +60,4 @@ def handler(event, context):
             'statusCode': 500,
             'body': json.dumps({'error': str(e)})
         }
+
