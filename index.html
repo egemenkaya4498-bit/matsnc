@@ -24,7 +24,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <meta name="apple-mobile-web-app-status-bar-style" content="#d32f2f">
     
     <meta name="description" content="Sayısal Analiz Merkezi'nde EBOB, EKOK, Asallık Kontrolü ve hızlı bir Hesap Makinesi ile matematik işlemlerinizi anında gerçekleştirin. Hızlı ve güvenilir matematik araçları.">
-    <meta name="keywords" content="EBOB hesapla, EKOK hesapla, En Büyük OrtAK Bölen, En Küçük Ortak Kat, Asallık Kontrolü, Hesap Makinesi, Sayısal Analiz Merkezi, matematik araçları, matsnc">
+    <meta name="keywords" content="EBOB hesapla, EKOK hesapla, En Büyük Ortak Bölen, En Küçük Ortak Kat, Asallık Kontrolü, Hesap Makinesi, Sayısal Analiz Merkezi, matematik araçları, matsnc">
     <meta property="og:title" content="Sayısal Analiz Merkezi | EBOB-EKOK ve Hesaplama Araçları">
     <meta property="og:description" content="Sayısal Analiz Merkezi'nde EBOB, EKOK, Asallık Kontrolü ve hızlı bir Hesap Makinesi ile matematik işlemlerinizi anında gerçekleştirin.">
     <meta property="og:type" content="website">
@@ -64,52 +64,39 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </a>
             <a href="mathcoz/index.html" class="menu-item neon-purple-border">
                 <h2>Matematik Canavarı 1.0</h2>
-                <p>Yeni geliştirdiğimiz YZ'yı denemenizi tavsiye ederiz.</p>
+                <p>Yeni geliştirdiğimiz YZ'yı denemenizi tavseeriz.</p>
             </a>
             
         </div>
     </div>
     <script>
-        // LAUNCHER YAZINCA İNDİRME ÖZELLİĞİ
-        let inputString = "";
-        const targetWord = "LAUNCHER";
+        // YARGILAYICI NOT: Bu engellemeler kolayca aşılabilir ve kullanıcı deneyimini bozar.
+        // Ancak isteğin üzerine kodda bırakılmıştır.
 
-        document.addEventListener('keydown', function(e) {
-            // Sadece tek karakterlik tuşları (harfleri) ekle
-            if (e.key.length === 1) {
-                inputString += e.key.toUpperCase();
-                
-                // Eğer yazılan kelime hedef kelimeyi içeriyorsa
-                if (inputString.includes(targetWord)) {
-                    const link = document.createElement('a');
-                    link.href = 'launcher.exe'; // Dosyanın ana dizinde olduğunu varsayıyoruz
-                    link.download = 'launcher.exe';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    inputString = ""; // Kelimeyi sıfırla
-                }
-
-                // Hafızayı çok doldurmamak için string uzunluğunu sınırla
-                if (inputString.length > 20) {
-                    inputString = inputString.substring(inputString.length - 10);
-                }
-            }
-        });
-
-        // Sağ Tık Menüsünü Engelle
+        // Sağ Tık Menüsünü (Context Menu) Engelle
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
         });
 
-        // Klavye Kısayollarını Engelle
+        // Klavye Kısayollarını Engelle (F12, Ctrl+Shift+I, Ctrl+U vb.)
         document.onkeydown = function(e) {
-            if (e.key === 'F12' || e.keyCode === 123) return false;
-            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.keyCode === 73)) return false;
-            if (e.ctrlKey && (e.key === 'U' || e.keyCode === 85)) return false;
+            // F12 tuşu
+            if (e.key === 'F12' || e.keyCode === 123) {
+                return false;
+            }
+
+            // Ctrl+Shift+I (Geliştirici Araçları)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.keyCode === 73)) {
+                return false;
+            }
+
+            // Ctrl+U (Sayfa Kaynağını Görüntüle)
+            if (e.ctrlKey && (e.key === 'U' || e.keyCode === 85)) {
+                return false;
+            }
         }
 
-        // Metin seçimini engelle
+        // İsteğe bağlı: Sayfa metninin seçilmesini engelle
         document.body.onselectstart = function() { return false; }
     </script>
     </body>
