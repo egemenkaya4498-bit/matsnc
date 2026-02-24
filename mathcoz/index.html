@@ -3,139 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MATH CANAVARI 1.0 | KAYA STUDIOS</title>
+    <title>MATH CANAVARI | KAYA STUDIOS</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Syncopate:wght@700&display=swap');
-
-        :root {
-            --primary: #00f2ff;
-            --secondary: #7000ff;
-            --bg-dark: #050505;
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background: var(--bg-dark);
-            color: #fff;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            display: flex;
-            height: 100vh;
-        }
-
-        /* Sidebar - Geçmiş Sohbetler */
-        .sidebar {
-            width: 280px;
-            background: rgba(10, 10, 10, 0.8);
-            border-right: 1px solid var(--glass-border);
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            backdrop-filter: blur(20px);
-        }
-
-        .new-chat-btn {
-            background: linear-gradient(90deg, var(--secondary), var(--primary));
-            border: none; color: white;
-            padding: 12px; border-radius: 12px;
-            font-weight: 700; cursor: pointer;
-            margin-bottom: 20px;
-            font-family: 'Syncopate', sans-serif; font-size: 0.7rem;
-        }
-
-        .history-list {
-            flex: 1; overflow-y: auto;
-            display: flex; flex-direction: column; gap: 10px;
-        }
-
-        .history-item {
-            padding: 12px; background: var(--glass);
-            border-radius: 10px; cursor: pointer;
-            font-size: 0.85rem; border: 1px solid transparent;
-            transition: 0.3s;
-        }
-
-        .history-item:hover { border-color: var(--primary); background: rgba(0, 242, 255, 0.05); }
-
-        /* Ana Chat Alanı */
-        .main-content {
-            flex: 1; display: flex; flex-direction: column; position: relative;
-        }
-
-        header {
-            padding: 20px 40px; border-bottom: 1px solid var(--glass-border);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-
-        #chatBox {
-            flex: 1; overflow-y: auto; padding: 30px 15%;
-            display: flex; flex-direction: column; gap: 20px;
-        }
-
-        .msg {
-            max-width: 80%; padding: 15px 20px; border-radius: 20px;
-            line-height: 1.6; animation: fadeIn 0.4s ease;
-        }
-
-        .ai-msg { align-self: flex-start; background: var(--glass); border: 1px solid var(--glass-border); }
-        .user-msg { align-self: flex-end; background: var(--secondary); box-shadow: 0 10px 20px rgba(112,0,255,0.2); }
-
-        .input-area {
-            padding: 30px 15%; background: linear-gradient(to top, var(--bg-dark), transparent);
-        }
-
-        .input-box {
-            background: rgba(25, 25, 25, 0.8); border: 1px solid var(--glass-border);
-            border-radius: 24px; padding: 10px 20px; display: flex; align-items: center; gap: 15px;
-        }
-
-        input[type="text"] {
-            flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 1rem;
-        }
-
-        .code-block {
-            background: #000; color: #00ff87; padding: 15px; border-radius: 10px;
-            font-family: 'Courier New', monospace; margin-top: 10px; overflow-x: auto;
-        }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } }
+        /* Modern CSS buraya (Önceki tasarımın aynısı + sidebar geliştirmesi) */
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;600;800&family=Syncopate:wght@700&display=swap');
+        :root { --primary: #00f2ff; --secondary: #7000ff; --bg: #050505; --glass: rgba(255,255,255,0.05); }
+        body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; display: flex; height: 100vh; margin:0; }
+        
+        .sidebar { width: 300px; background: #0a0a0a; border-right: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; padding: 20px; }
+        .new-chat-btn { background: var(--secondary); border: none; color: white; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-bottom: 20px; }
+        .history-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+        .history-item { padding: 12px; background: var(--glass); border-radius: 8px; cursor: pointer; font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .history-item:hover { background: rgba(0,242,255,0.1); }
+        
+        .chat-container { flex: 1; display: flex; flex-direction: column; }
+        #chatBox { flex: 1; overflow-y: auto; padding: 40px 10%; display: flex; flex-direction: column; gap: 20px; }
+        .msg { max-width: 80%; padding: 15px; border-radius: 15px; line-height: 1.5; }
+        .user-msg { align-self: flex-end; background: var(--secondary); }
+        .ai-msg { align-self: flex-start; background: var(--glass); border: 1px solid rgba(255,255,255,0.1); }
+        
+        .input-panel { padding: 20px 10%; background: linear-gradient(transparent, var(--bg)); }
+        .input-wrapper { background: #111; border: 1px solid #222; border-radius: 20px; padding: 10px 20px; display: flex; gap: 10px; }
+        input[type="text"] { flex: 1; background: transparent; border: none; color: #fff; outline: none; }
+        button#sendBtn { background: var(--primary); border: none; padding: 10px 20px; border-radius: 12px; font-weight: 800; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <button class="new-chat-btn" onclick="startNewChat()">+ YENİ SOHBET</button>
+    <button class="new-chat-btn" onclick="createNewChat()">+ YENİ SOHBET</button>
     <div class="history-list" id="historyList"></div>
 </div>
 
-<div class="main-content">
-    <header>
-        <div style="font-family:'Syncopate'; color:var(--primary); letter-spacing:3px;">MATH CANAVARI 1.0</div>
-        <div id="userStatus" style="font-size:0.7rem; color:#00ff87;">● BULUT SENKRONİZE</div>
-    </header>
-
+<div class="chat-container">
     <div id="chatBox"></div>
-
-    <div class="input-area">
-        <div class="input-box">
-            <input type="file" id="imageInput" hidden onchange="handleImage(this)">
-            <button onclick="document.getElementById('imageInput').click()" style="background:none; border:none; cursor:pointer;">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-            </button>
-            <input type="text" id="userInput" placeholder="Soru yaz veya resim at...">
-            <button onclick="sendMessage()" style="background:var(--primary); border:none; padding:8px 20px; border-radius:15px; font-weight:bold; cursor:pointer;">GÖNDER</button>
+    <div class="input-panel">
+        <div class="input-wrapper">
+            <input type="text" id="userInput" placeholder="Sorunu sor Egemen...">
+            <button id="sendBtn" onclick="sendMessage()">TARA</button>
         </div>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getDatabase, ref, set, push, onValue, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyC-THkxhmLBkKtST5iFMIHEDYvWmy0bbNA",
         authDomain: "kayastudiosai.firebaseapp.com",
+        databaseURL: "https://kayastudiosai-default-rtdb.firebaseio.com",
         projectId: "kayastudiosai",
         storageBucket: "kayastudiosai.firebasestorage.app",
         messagingSenderId: "885497166483",
@@ -143,92 +60,84 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    let currentChatHistory = [];
+    const db = getDatabase(app);
+    let currentChatId = Date.now().toString();
 
-    // Geçmişi Getir
-    const q = query(collection(db, "chats"), orderBy("timestamp", "desc"));
-    onSnapshot(q, (snapshot) => {
-        const historyList = document.getElementById('historyList');
-        historyList.innerHTML = "";
-        snapshot.forEach((doc) => {
-            const data = doc.data();
-            const div = document.createElement('div');
-            div.className = "history-item";
-            div.innerText = data.message.substring(0, 30) + "...";
-            historyList.appendChild(div);
+    // Sohbet Geçmişini Yükle
+    function loadSidebar() {
+        const historyRef = ref(db, 'chats');
+        onValue(historyRef, (snapshot) => {
+            const list = document.getElementById('historyList');
+            list.innerHTML = "";
+            snapshot.forEach((child) => {
+                const data = child.val();
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.innerText = data.title || "Yeni Sohbet";
+                div.onclick = () => loadChat(child.key);
+                list.appendChild(div);
+            });
         });
-    });
+    }
 
-    window.sendMessage = async () => {
+    // Belirli bir sohbeti ekrana getir
+    window.loadChat = (id) => {
+        currentChatId = id;
+        const chatRef = ref(db, `chats/${id}/messages`);
+        get(chatRef).then(snapshot => {
+            const chatBox = document.getElementById('chatBox');
+            chatBox.innerHTML = "";
+            snapshot.forEach(msg => {
+                const data = msg.val();
+                renderMessage(data.role, data.text);
+            });
+        });
+    };
+
+    window.createNewChat = () => {
+        currentChatId = Date.now().toString();
+        document.getElementById('chatBox').innerHTML = "";
+        renderMessage('ai', "Yeni bir sayfa açtık. Nasıl yardımcı olabilirim?");
+    };
+
+    async function sendMessage() {
         const input = document.getElementById('userInput');
         const text = input.value;
         if(!text) return;
 
-        // Ekrana yaz
-        addMessageToBox('user', text);
-        
-        // Firebase'e kaydet
-        await addDoc(collection(db, "chats"), {
-            message: text,
-            timestamp: serverTimestamp(),
-            type: "text"
-        });
-
+        renderMessage('user', text);
         input.value = "";
 
-        // Netlify Function'a gönder (Hafıza ile birlikte)
+        // Firebase'e kaydet (Kullanıcı)
+        const msgRef = ref(db, `chats/${currentChatId}/messages`);
+        push(msgRef, { role: 'user', text: text });
+        set(ref(db, `chats/${currentChatId}/title`), text.substring(0, 25));
+
         try {
             const response = await fetch('/.netlify/functions/chat', {
                 method: 'POST',
-                body: JSON.stringify({ 
-                    message: text,
-                    history: currentChatHistory 
-                })
+                body: JSON.stringify({ message: text, chatId: currentChatId })
             });
             const data = await response.json();
             
-            // Eğer resim oluşturma isteğiyse (Örnek mantık)
-            if(data.text.includes("IMAGE_GEN:")) {
-                const prompt = data.text.replace("IMAGE_GEN:", "");
-                addMessageToBox('ai', `İstediğin resmi senin için tasarladım:`);
-                const img = document.createElement('img');
-                img.src = `https://pollinations.ai/p/${encodeURIComponent(prompt)}?width=1024&height=1024&nologo=true`;
-                img.style.width = "100%"; img.style.borderRadius = "15px";
-                document.getElementById('chatBox').appendChild(img);
-            } else {
-                addMessageToBox('ai', data.text);
-            }
-
-            // Hafızayı güncelle
-            currentChatHistory.push({ role: "user", parts: [text] });
-            currentChatHistory.push({ role: "model", parts: [data.text] });
-
+            renderMessage('ai', data.text);
+            push(msgRef, { role: 'ai', text: data.text });
         } catch (e) {
-            addMessageToBox('ai', "Bağlantı hatası oluştu.");
+            renderMessage('ai', "Hata: Sunucu uyanamadı.");
         }
-    };
+    }
 
-    function addMessageToBox(role, text) {
+    function renderMessage(role, text) {
         const box = document.getElementById('chatBox');
         const div = document.createElement('div');
-        div.className = `msg ${role}-msg`;
-        
-        // Kod bloğu kontrolü
-        if(text.includes("```")) {
-            const parts = text.split("```");
-            div.innerText = parts[0];
-            const code = document.createElement('div');
-            code.className = "code-block";
-            code.innerText = parts[1];
-            div.appendChild(code);
-        } else {
-            div.innerText = text;
-        }
-
+        div.className = `msg ${role === 'user' ? 'user-msg' : 'ai-msg'}`;
+        div.innerText = text;
         box.appendChild(div);
         box.scrollTop = box.scrollHeight;
     }
+
+    window.sendMessage = sendMessage;
+    loadSidebar();
 </script>
 </body>
 </html>
