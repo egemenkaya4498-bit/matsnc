@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mantık ve Zeka Geliştirme</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700;800&display=swap');
+        :root { --bg: #050505; --card: #111111; --accent: #f59e0b; --correct: #10b981; --wrong: #ef4444; --text: #ffffff; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; }
+        body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; overflow-x: hidden; }
+        .container { width: 100%; max-width: 950px; background: var(--card); border: 1px solid #222; border-radius: 35px; padding: 40px; box-shadow: 0 0 60px rgba(0,0,0,0.8); position: relative; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #222; padding-bottom: 20px; }
+        .score-box { background: #000; padding: 12px 25px; border-radius: 15px; border: 1px solid var(--accent); color: var(--accent); font-weight: 800; font-size: 1.2rem; }
+        .progress-rail { width: 100%; height: 6px; background: #222; border-radius: 10px; margin-bottom: 30px; }
+        .progress-bar { height: 100%; background: var(--accent); width: 0%; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .q-tag { font-size: 0.85rem; text-transform: uppercase; color: #555; letter-spacing: 3px; font-weight: 700; }
+        .q-text { font-size: 1.65rem; margin: 25px 0 45px; line-height: 1.6; font-weight: 300; min-height: 100px; }
+        .options { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+        .opt { background: #181818; border: 1px solid #333; padding: 22px; border-radius: 18px; cursor: pointer; transition: 0.3s; font-size: 1.15rem; display: flex; align-items: center; gap: 15px; }
+        .opt:hover { border-color: var(--accent); background: #222; transform: translateY(-2px); }
+        .opt.active { border-color: var(--accent); background: rgba(245, 158, 11, 0.15); }
+        .opt.correct { background: var(--correct) !important; border: none; color: white; font-weight: 700; }
+        .opt.wrong { background: var(--wrong) !important; border: none; color: white; }
+        .btn { width: 100%; margin-top: 35px; padding: 22px; border-radius: 20px; border: none; background: var(--accent); color: #000; font-weight: 800; font-size: 1.2rem; cursor: pointer; transition: 0.4s; text-transform: uppercase; letter-spacing: 1px; }
+        .btn:disabled { opacity: 0.1; cursor: not-allowed; }
+        sup { font-size: 0.7em; } b { color: var(--accent); }
+        @media (max-width: 768px) { .options { grid-template-columns: 1fr; } .q-text { font-size: 1.3rem; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div>
+            <h2 style="font-weight:800; color: var(--accent)">Mantık ve Zeka Geliştirme</h2>
+            <p style="font-size: 0.8rem; color: #666">LGS DİNAMİK ÇALIŞMA V2.0</p>
+        </div>
+        <div class="score-box"><span id="score">0</span> / 100</div>
+    </div>
+    <div class="progress-rail"><div class="progress-bar" id="bar"></div></div>
+    <div id="game">
+        <div class="q-tag" id="q-idx">ADIM 01</div>
+        <div class="q-text" id="q-text">Motor başlatılıyor...</div>
+        <div class="options" id="opts"></div>
+        <button class="btn" id="btn" disabled onclick="action()">KONTROL ET</button>
+    </div>
+</div>
+
+<script>
+    const rand = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
+
+    const Factory = {
+        templates: [
+            // --- ÜSLÜ SAYILAR (1-10) ---
+            () => { let e = rand(8,16); return { q: `2<sup>${e}</sup> sayısının <b>yarısının çeyreği</b>, 2<sup>x</sup> ise x kaçtır?`, a: [e-3, e-2, e-4, e/2], c: 0 }; },
+            () => { let b = rand(2,5); return { q: `(-${b})<sup>2</sup> ile -${b}<sup>2</sup> arasındaki fark kaçtır?`, a: [2*(b*b), 0, b*b, -2*(b*b)], c: 0 }; },
+            () => { return { q: `4<sup>5</sup> tane elmanın yarısı, her biri 2<sup>3</sup> elma alan kutulara konulacaktır. <b>Kaç kutu gerekir?</b>`, a: [`2<sup>6</sup>`,`2<sup>7</sup>`,`2<sup>5</sup>`,`2<sup>4</sup>`], c: 0 }; },
+            () => { return { q: `8<sup>4</sup> sayısının <b>yarısı</b> kaçtır?`, a: [`2<sup>11</sup>`,`2<sup>12</sup>`,`4<sup>6</sup>`,`2<sup>6</sup>`], c: 0 }; },
+            () => { return { q: `0,00045 sayısının bilimsel gösterimi a.10<sup>n</sup> ise <b>a+n</b> toplamı kaçtır?`, a: [`0,5`,`4,5`,`8,5`,`-4`], c: 0 }; },
+            () => { return { q: `10<sup>12</sup> sayısının <b>%10'u</b> kaç basamaklıdır?`, a: [`12`,`11`,`13`,`10`], c: 0 }; },
+            () => { return { q: `5<sup>-2</sup> sayısı aşağıdakilerden hangisine <b>eşittir?</b>`, a: [`0,04`,`0,4`,`-25`,`0,25`], c: 0 }; },
+            () => { return { q: `(-1)<sup>2026</sup> + (-1)<sup>2025</sup> + 1<sup>0</sup> işleminin sonucu?`, a: [`1`,`0`,`3`,`-1`], c: 0 }; },
+            () => { return { q: `2<sup>10</sup> gramlık bir kütlenin <b>1/4'ü</b> kaç gramdır?`, a: [`2<sup>8</sup>`,`2<sup>5</sup>`,`512`,`2<sup>9</sup>`], c: 0 }; },
+            () => { return { q: `3<sup>x</sup> = 81 ve 2<sup>y</sup> = 32 ise <b>x<sup>y</sup></b> kaçtır?`, a: [`1024`,`256`,`125`,`20`], c: 0 }; },
+
+            // --- KAREKÖKLÜ SAYILAR (11-20) ---
+            () => { let n = rand(50,80); return { q: `√${n} sayısına <b>en yakın</b> tam sayı kaçtır?`, a: [Math.round(Math.sqrt(n)), Math.floor(Math.sqrt(n)), Math.ceil(Math.sqrt(n)), n/2], c: 0 }; },
+            () => { return { q: `√1,44 - √0,49 işleminin <b>10 katı</b> kaçtır?`, a: [`5`,`7`,`12`,`19`], c: 0 }; },
+            () => { return { q: `Alanı 108 cm<sup>2</sup> olan bir karenin çevresi <b>√x</b> cm ise x kaçtır?`, a: [`1728`,`432`,`108`,`216`], c: 0 }; },
+            () => { return { q: `√27 + √x = √75 ise <b>x</b> kaçtır?`, a: [`12`,`48`,`3`,`9`], c: 0 }; },
+            () => { return { q: `a = √2, b = √3 ise <b>√72</b>'nin a ve b türünden değeri nedir?`, a: [`a<sup>3</sup>.b<sup>2</sup>`,`a<sup>2</sup>.b<sup>3</sup>`,`a.b`,`a<sup>4</sup>.b`], c: 0 }; },
+            () => { return { q: `√0,0016 sayısı aşağıdakilerden hangisine <b>eşittir?</b>`, a: [`0,04`,`0,4`,`0,004`,`4`], c: 0 }; },
+            () => { return { q: `√48 sayısı hangi sayı ile çarpılırsa sonuç <b>12</b> olur?`, a: [`√3`,`√2`,`3`,`2`], c: 0 }; },
+            () => { return { q: `Hangi sayı <b>tam kare</b> bir sayı değildir?`, a: [`91`,`121`,`169`,`225`], c: 0 }; },
+            () => { return { q: `√(-4)<sup>2</sup> + √3<sup>2</sup> işleminin sonucu?`, a: [`7`,`1`,`-1`,`12`], c: 0 }; },
+            () => { return { q: `√125 sayısı <b>a√b</b> şeklinde yazıldığında a+b en az kaç olur?`, a: [`10`,`30`,`6`,`25`], c: 0 }; },
+
+            // --- CEBİRSEL İFADELER (21-30) ---
+            () => { let a = rand(2,5); return { q: `(x - ${a})<sup>2</sup> ifadesinin açılımında <b>x'li terimin katsayısı</b> kaçtır?`, a: [-2*a, 2*a, a*a, -a], c: 0 }; },
+            () => { return { q: `x<sup>2</sup> - 16 ifadesi hangisine <b>tam bölünür?</b>`, a: [`x+4`,`x-16`,`x+16`,`x+8`], c: 0 }; },
+            () => { return { q: `Alanı 4x<sup>2</sup> + 20x + 25 olan bir karenin <b>çevresi</b> nedir?`, a: [`8x+20`,`2x+5`,`4x+10`,`4x+25`], c: 0 }; },
+            () => { return { q: `(3a - 2b) . (3a + 2b) çarpımının sonucu nedir?`, a: [`9a<sup>2</sup> - 4b<sup>2</sup>`,`9a<sup>2</sup> + 4b<sup>2</sup>`,`6a<sup>2</sup> - 4b<sup>2</sup>`,`3a<sup>2</sup> - 2b<sup>2</sup>`], c: 0 }; },
+            () => { return { q: `x = √5 + 2 ve y = √5 - 2 ise <b>x.y</b> kaçtır?`, a: [`1`,`9`,`5`,`4`], c: 0 }; },
+            () => { return { q: `25x<sup>2</sup> - 60x + 36 ifadesi hangisinin <b>karesidir?</b>`, a: [`5x-6`,`5x+6`,`6x-5`,`5x-12`], c: 0 }; },
+            () => { return { q: `Kenarları (x+3) ve (x-3) olan bir dikdörtgenin <b>alanı</b> nedir?`, a: [`x<sup>2</sup>-9`,`x<sup>2</sup>-6x+9`,`2x`,`4x`], c: 0 }; },
+            () => { return { q: `a+b=10 ve a.b=20 ise <b>a<sup>2</sup>+b<sup>2</sup></b> kaçtır?`, a: [`60`,`80`,`100`,`140`], c: 0 }; },
+            () => { return { q: `3x<sup>2</sup>y - 6xy<sup>2</sup> ifadesinin <b>ortak çarpanı</b> hangisidir?`, a: [`3xy`,`3x`,`3y`,`xy`], c: 0 }; },
+            () => { return { q: `(x+y)<sup>2</sup> - (x-y)<sup>2</sup> işleminin sonucu nedir?`, a: [`4xy`,`2x<sup>2</sup>+2y<sup>2</sup>`,`0`,`2xy`], c: 0 }; },
+
+            // --- OLASILIK (31-40) ---
+            () => { return { q: `Bir torbadaki 12 kırmızı bilyeden rastgele seçilen birinin <b>mavi olmama</b> olasılığı?`, a: [`1`,`0`,`1/2`,`1/12`], c: 0 }; },
+            () => { return { q: `Havaya atılan bir zarın üst yüzüne gelen sayının <b>asal olmama</b> olasılığı?`, a: [`1/2`,`1/3`,`2/3`,`1/6`], c: 0 }; },
+            () => { return { q: `LGS kelimesinin harfleri arasından rastgele seçilen birinin <b>sesli harf</b> olma olasılığı?`, a: [`0`,`1/3`,`1`,`2/3`], c: 0 }; },
+            () => { return { q: `İki madeni para atıldığında <b>en az birinin tura</b> gelme olasılığı?`, a: [`3/4`,`1/4`,`1/2`,`1`], c: 0 }; },
+            () => { return { q: `30 sayısının pozitif çarpanları içinden seçilen birinin <b>asal</b> olma olasılığı?`, a: [`3/8`,`1/2`,`1/4`,`5/8`], c: 0 }; },
+            () => { return { q: `Bir sınıfta 12 kız, 18 erkek vardır. Seçilen birinin <b>kız</b> olma olasılığı?`, a: [`2/5`,`3/5`,`12/18`,`1/2`], c: 0 }; },
+            () => { return { q: `Hangi olasılık değeri <b>imkansız olayı</b> temsil eder?`, a: [`0`,`1`,`0,5`,`%1`], c: 0 }; },
+            () => { return { q: `Bir desteden çekilen bir kartın <b>Siyah veya Kırmızı</b> olma olasılığı?`, a: [`1`,`1/2`,`0`,`1/4`], c: 0 }; },
+            () => { return { q: `Rakamlar (0-9) içinden seçilen birinin <b>çift</b> olma olasılığı?`, a: [`5/10`,`4/10`,`6/10`,`1/2`], c: 0 }; },
+            () => { return { q: `Zar atıldığında <b>7'den küçük</b> gelme olasılığı?`, a: [`1`,`0`,`5/6`,`1/6`], c: 0 }; },
+
+            // --- ÇARPANLAR VE KATLAR (41-50) ---
+            () => { return { q: `Aralarında asal iki sayının EKOK'u 60 ise bu sayıların <b>toplamı en az</b> kaçtır?`, a: [`17`,`19`,`16`,`23`], c: 0 }; },
+            () => { return { q: `45 ve 60 sayılarının <b>EBOB</b>'u kaçtır?`, a: [`15`,`5`,`30`,`45`], c: 0 }; },
+            () => { return { q: `En küçük asal sayı ile iki basamaklı en küçük asal sayının <b>çarpımı</b>?`, a: [`22`,`26`,`33`,`11`], c: 0 }; },
+            () => { return { q: `24 sayısının <b>asal olmayan</b> kaç tane pozitif çarpanı vardır?`, a: [`6`,`8`,`2`,`4`], c: 0 }; },
+            () => { return { q: `Aralarında asal iki sayının EBOB'u ile EKOK'unun çarpımı 72 ise bu sayılar hangisidir?`, a: [`8 ve 9`,`6 ve 12`,`2 ve 36`,`4 ve 18`], c: 0 }; },
+            () => { return { q: `120 sayısının asal çarpanlarına ayrılmış hali hangisidir?`, a: [`2<sup>3</sup>.3.5`,`2<sup>2</sup>.3<sup>2</sup>.5`,`2.3.5`,`2<sup>4</sup>.3.5`], c: 0 }; },
+            () => { return { q: `İki zilden biri 12 dk, diğeri 15 dk arayla çalıyor. Birlikte çaldıktan <b>en az</b> kaç dk sonra yine birlikte çalarlar?`, a: [`60`,`30`,`120`,`90`], c: 0 }; },
+            () => { return { q: `Hangi sayı çift olmasına rağmen <b>asaldır?</b>`, a: [`2`,`4`,`0`,`Hiçbiri`], c: 0 }; },
+            () => { return { q: `EBOB(x, y) = 1 ise x ve y için hangisi <b>daima doğrudur?</b>`, a: [`Aralarında asaldırlar`,`Asal sayılardır`,`Ardışık sayılardır`,`Biri diğerinin katıdır`], c: 0 }; },
+            () => { return { q: `91 sayısının en büyük <b>asal çarpanı</b> kaçtır?`, a: [`13`,`7`,`91`,`17`], c: 0 }; }
+        ],
+        getSet(n) { 
+            let shuffled = [...this.templates].sort(() => Math.random() - 0.5);
+            return shuffled.slice(0, n).map(f => f()); 
+        }
+    };
+
+    let questions = Factory.getSet(10), cur = 0, score = 0, selected = null, locked = false;
+
+    function render() {
+        if(cur >= 10) { finish(); return; }
+        locked = false; selected = null;
+        let q = questions[cur];
+        document.getElementById('q-idx').innerText = `ADIM ${String(cur+1).padStart(2, '0')}`;
+        document.getElementById('q-text').innerHTML = q.q;
+        document.getElementById('bar').style.width = `${(cur/10)*100}%`;
+        
+        let opts = document.getElementById('opts');
+        opts.innerHTML = '';
+        let order = [0,1,2,3].sort(() => Math.random() - 0.5);
+        order.forEach(i => {
+            let d = document.createElement('div');
+            d.className = 'opt';
+            d.innerHTML = `<b>${String.fromCharCode(65+order.indexOf(i))}</b> ${q.a[i]}`;
+            d.onclick = () => { if(!locked) { 
+                selected = i; 
+                document.querySelectorAll('.opt').forEach(x => x.classList.remove('active'));
+                d.classList.add('active');
+                document.getElementById('btn').disabled = false;
+            }};
+            d.dataset.idx = i;
+            opts.appendChild(d);
+        });
+        document.getElementById('btn').innerText = "KONTROL ET";
+        document.getElementById('btn').disabled = true;
+    }
+
+    function action() {
+        let btn = document.getElementById('btn');
+        if(!locked) {
+            locked = true;
+            let correct = questions[cur].c;
+            document.querySelectorAll('.opt').forEach(o => {
+                let idx = parseInt(o.dataset.idx);
+                if(idx === correct) o.classList.add('correct');
+                else if(idx === selected) o.classList.add('wrong');
+            });
+            if(selected === correct) { score += 10; document.getElementById('score').innerText = score; }
+            btn.innerText = "DEVAM ET";
+        } else { cur++; render(); }
+    }
+
+    function finish() {
+        document.getElementById('game').innerHTML = `
+            <div style="text-align:center; padding: 40px 0;">
+                <h1 style="font-size:5rem; color:var(--accent); margin-bottom: 10px;">${score}</h1>
+                <p style="letter-spacing: 5px; color: #666; font-weight: 700;">LGS MANTIK PUANI</p>
+                <div style="margin: 30px 0; font-size: 1.2rem; line-height: 1.8;">
+                    ${score === 100 ? "OLAĞANÜSTÜ! Tam bir LGS canavarısın. Tebrikler" : 
+                      score >= 70 ? "Çok iyi! Birkaç kelime oyununa takılmışsın o kadar." : "Güzel deneme, kelime oyunlarına daha dikkat etmelisin."}
+                </div>
+                <button class="btn" onclick="location.reload()">SİSTEMİ YENİDEN BAŞLAT</button>
+            </div>`;
+    }
+
+    render();
+</script>
+</body>
+</html>
