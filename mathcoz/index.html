@@ -28,7 +28,6 @@
             --glass-border: rgba(255, 255, 255, 0.08);
             --text: #eef5ff;
             --text-muted: #9aaec9;
-            --sidebar-width: 300px;
         }
 
         body {
@@ -58,136 +57,6 @@
             backdrop-filter: blur(2px);
         }
 
-        .sidebar {
-            width: var(--sidebar-width);
-            background: var(--glass-bg);
-            border-right: 1px solid var(--glass-border);
-            backdrop-filter: blur(20px);
-            display: flex;
-            flex-direction: column;
-            padding: 24px 16px;
-            gap: 24px;
-            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.45);
-        }
-
-        .brand-badge {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding-left: 8px;
-            color: var(--primary);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 0.78rem;
-        }
-
-        .brand-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: var(--primary);
-            box-shadow: 0 0 14px var(--primary-glow);
-        }
-
-        .brand-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 2rem;
-            font-weight: 700;
-            line-height: 1;
-        }
-
-        .brand-copy {
-            margin-top: 10px;
-            color: var(--text-muted);
-            line-height: 1.6;
-            font-size: 0.93rem;
-        }
-
-        .new-chat-btn {
-            background: linear-gradient(135deg, var(--secondary), #b060f0);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 16px;
-            border-radius: 20px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 8px 20px var(--secondary-glow);
-        }
-
-        .new-chat-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px var(--secondary-glow);
-        }
-
-        .history-list {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            padding-right: 4px;
-            scrollbar-width: thin;
-            scrollbar-color: var(--primary) transparent;
-        }
-
-        .history-item {
-            padding: 14px 16px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--glass-border);
-            border-radius: 18px;
-            transition: all 0.2s ease;
-        }
-
-        .history-item.active {
-            background: rgba(0, 240, 255, 0.1);
-            border-color: var(--primary);
-            box-shadow: 0 0 12px var(--primary-glow);
-        }
-
-        .history-main {
-            width: 100%;
-            background: none;
-            border: none;
-            color: inherit;
-            text-align: left;
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            color: var(--text-muted);
-        }
-
-        .history-item.active .history-main,
-        .history-main:hover {
-            color: white;
-        }
-
-        .delete-btn {
-            margin-top: 10px;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 0.75rem;
-            cursor: pointer;
-        }
-
-        .delete-btn:hover {
-            color: #ff9e9e;
-        }
-
-        .sidebar-footer {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 16px;
-            text-align: center;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
         .chat-main {
             flex: 1;
             display: flex;
@@ -197,7 +66,7 @@
 
         .topbar {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             padding: 18px 22px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -207,12 +76,6 @@
             font-family: 'Space Grotesk', sans-serif;
             font-size: 2rem;
             font-weight: 700;
-        }
-
-        .topbar-copy {
-            margin-top: 6px;
-            color: var(--text-muted);
-            font-size: 0.92rem;
         }
 
         #chatBox {
@@ -373,67 +236,14 @@
             cursor: not-allowed;
             transform: none;
         }
-
-        .mobile-new-chat {
-            display: none;
-        }
-
-        @media (max-width: 900px) {
-            .sidebar {
-                display: none;
-            }
-
-            #chatBox,
-            .input-panel {
-                padding-left: 18px;
-                padding-right: 18px;
-            }
-
-            .msg {
-                max-width: 92%;
-            }
-
-            .topbar-title {
-                font-size: 1.6rem;
-            }
-
-            .mobile-new-chat {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                border: 1px solid rgba(0, 240, 255, 0.35);
-                background: transparent;
-                color: #c8f9ff;
-                border-radius: 999px;
-                padding: 10px 14px;
-                cursor: pointer;
-            }
-        }
     </style>
 </head>
 <body>
     <canvas id="particle-canvas"></canvas>
     <div class="app">
-        <aside class="sidebar">
-            <div>
-                <div class="brand-badge">
-                    <span class="brand-dot"></span>
-                    KAYA STUDIOS PLUS
-                </div>
-                <div class="brand-title">MATH CANAVARI</div>
-            </div>
-
-            <button class="new-chat-btn" id="newChatBtn">YENI SOHBET</button>
-            <div class="history-list" id="historyList"></div>
-            <div class="sidebar-footer">MATH CANAVARI v2.0</div>
-        </aside>
-
         <main class="chat-main">
             <div class="topbar">
-                <div>
-                    <div class="topbar-title">MATH CANAVARI</div>
-                </div>
-                <button class="mobile-new-chat" id="mobileNewChatBtn">Yeni Sohbet</button>
+                <div class="topbar-title">MATH CANAVARI</div>
             </div>
 
             <div id="chatBox"></div>
@@ -448,58 +258,17 @@
     </div>
 
     <script>
-        const STORAGE_KEY = 'math-canavari-chats';
         const SERVER_URL = '/.netlify/functions/chat';
 
-        const starterMessage = {
-            id: 'starter',
-            role: 'ai',
-            text: 'Selam. Ben Matematik Canavarı! Çözmemi istediğin soruları getir birlikte çözelim.'
-        };
-
-        let sessions = loadStoredSessions();
-        if (!sessions.length) {
-            sessions = [createSession()];
-        }
-        let activeChatId = sessions[0].id;
-        let isWaitingForAI = false;
-        let renamingChatId = null;
-
-        function createSession() {
-            const id = Date.now().toString() + Math.floor(Math.random() * 1000).toString();
-            return {
-                id,
-                title: 'Yeni Sohbet',
-                timestamp: Date.now(),
-                messages: [{ ...starterMessage, id: 'starter-' + id }]
-            };
-        }
-
-        function loadStoredSessions() {
-            try {
-                const raw = localStorage.getItem(STORAGE_KEY);
-                if (!raw) return [];
-                const parsed = JSON.parse(raw);
-                return Array.isArray(parsed) ? parsed : [];
-            } catch {
-                return [];
+        // Tek bir mesaj dizisi (sayfa yenilenince kaybolur)
+        let messages = [
+            {
+                id: 'starter',
+                role: 'ai',
+                text: 'Selam. Ben Matematik Canavarı! Çözmemi istediğin soruları getir birlikte çözelim.'
             }
-        }
-
-        function saveSessions() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions));
-        }
-
-        function getActiveSession() {
-            return sessions.find((session) => session.id === activeChatId) || sessions[0];
-        }
-
-        function updateSession(sessionId, updater) {
-            sessions = sessions.map((session) => session.id === sessionId ? updater(session) : session);
-            saveSessions();
-            renderSidebar();
-            renderMessages();
-        }
+        ];
+        let isWaitingForAI = false;
 
         function renderTextWithMath(text) {
             const wrapper = document.createElement('div');
@@ -529,10 +298,9 @@
 
         function renderMessages() {
             const chatBox = document.getElementById('chatBox');
-            const activeSession = getActiveSession();
             chatBox.innerHTML = '';
 
-            activeSession.messages.forEach((message) => {
+            messages.forEach((message) => {
                 const div = document.createElement('div');
                 div.className = 'msg ' + (message.role === 'user' ? 'user-msg' : 'ai-msg') + (message.isError ? ' error-msg' : '');
                 div.appendChild(renderTextWithMath(message.text));
@@ -550,103 +318,17 @@
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        function renderSidebar() {
-            const historyList = document.getElementById('historyList');
-            historyList.innerHTML = '';
-
-            sessions
-                .slice()
-                .sort((a, b) => b.timestamp - a.timestamp)
-                .forEach((session) => {
-                    const item = document.createElement('div');
-                    item.className = 'history-item' + (session.id === activeChatId ? ' active' : '');
-
-                    const mainBtn = document.createElement('button');
-                    mainBtn.className = 'history-main';
-                    mainBtn.textContent = renamingChatId === session.id ? 'Sohbet adlandiriliyor...' : session.title;
-                    mainBtn.onclick = () => {
-                        activeChatId = session.id;
-                        renderSidebar();
-                        renderMessages();
-                    };
-
-                    const deleteBtn = document.createElement('button');
-                    deleteBtn.className = 'delete-btn';
-                    deleteBtn.textContent = 'Sohbeti Sil';
-                    deleteBtn.onclick = () => deleteChat(session.id);
-
-                    item.appendChild(mainBtn);
-                    item.appendChild(deleteBtn);
-                    historyList.appendChild(item);
-                });
-        }
-
-        function createNewChat() {
-            const session = createSession();
-            sessions.unshift(session);
-            activeChatId = session.id;
-            saveSessions();
-            renderSidebar();
-            renderMessages();
-            document.getElementById('userInput').value = '';
-        }
-
-        function deleteChat(chatId) {
-            sessions = sessions.filter((session) => session.id !== chatId);
-
-            if (!sessions.length) {
-                const fallback = createSession();
-                sessions = [fallback];
-                activeChatId = fallback.id;
-            } else if (activeChatId === chatId) {
-                activeChatId = sessions[0].id;
-            }
-
-            saveSessions();
-            renderSidebar();
-            renderMessages();
-        }
-
-        async function generateChatTitle(firstUserMessage, sessionId) {
-            const formData = new FormData();
-            formData.append('message', 'Su konusmaya Turkce, cok kisa ve 2-4 kelimelik bir sohbet basligi ver. Sadece basligi yaz. Konusma: ' + firstUserMessage);
-
-            const response = await fetch(SERVER_URL, {
-                method: 'POST',
-                body: formData
-            });
-
-            const title = (await response.text()).trim();
-            if (!response.ok) {
-                throw new Error(title || 'Baslik olusturulamadi');
-            }
-
-            updateSession(sessionId, (session) => ({
-                ...session,
-                title: title.replace(/^"|"$/g, '').slice(0, 40) || 'Yeni Sohbet'
-            }));
-        }
-
         async function sendMessage() {
             const input = document.getElementById('userInput');
             const text = input.value.trim();
-            const session = getActiveSession();
-            if (!text || isWaitingForAI || !session) return;
+            if (!text || isWaitingForAI) return;
 
             const userMessage = {
                 id: Date.now() + '-user',
                 role: 'user',
                 text
             };
-
-            const firstUserMessage = session.messages.filter((message) => message.role === 'user').length === 0;
-
-            updateSession(session.id, (current) => ({
-                ...current,
-                timestamp: Date.now(),
-                messages: [...current.messages, userMessage]
-            }));
-
+            messages.push(userMessage);
             input.value = '';
             isWaitingForAI = true;
             renderMessages();
@@ -670,29 +352,7 @@
                     role: 'ai',
                     text: replyText
                 };
-
-                updateSession(session.id, (current) => ({
-                    ...current,
-                    timestamp: Date.now(),
-                    messages: [...current.messages, aiMessage]
-                }));
-
-                if (firstUserMessage) {
-                    renamingChatId = session.id;
-                    renderSidebar();
-
-                    generateChatTitle(text, session.id)
-                        .catch(() => {
-                            updateSession(session.id, (current) => ({
-                                ...current,
-                                title: text.slice(0, 30) || 'Yeni Sohbet'
-                            }));
-                        })
-                        .finally(() => {
-                            renamingChatId = null;
-                            renderSidebar();
-                        });
-                }
+                messages.push(aiMessage);
             } catch (error) {
                 const errorMessage = {
                     id: Date.now() + '-error',
@@ -700,18 +360,14 @@
                     text: 'Sunucuya baglanirken hata olustu. ' + (error && error.message ? error.message : 'AI sunucusuna ulasilamadi.'),
                     isError: true
                 };
-
-                updateSession(session.id, (current) => ({
-                    ...current,
-                    timestamp: Date.now(),
-                    messages: [...current.messages, errorMessage]
-                }));
+                messages.push(errorMessage);
             } finally {
                 isWaitingForAI = false;
                 renderMessages();
             }
         }
 
+        // Particle arka plan (aynen kalır)
         const canvas = document.getElementById('particle-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -776,8 +432,6 @@
             requestAnimationFrame(drawParticles);
         }
 
-        document.getElementById('newChatBtn').addEventListener('click', createNewChat);
-        document.getElementById('mobileNewChatBtn').addEventListener('click', createNewChat);
         document.getElementById('sendBtn').addEventListener('click', sendMessage);
         document.getElementById('userInput').addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
@@ -789,7 +443,6 @@
 
         initParticles();
         drawParticles();
-        renderSidebar();
         renderMessages();
     </script>
 </body>
