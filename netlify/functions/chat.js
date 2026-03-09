@@ -14,9 +14,7 @@ exports.handler = async function (event) {
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
-      headers: {
-        'Access-Control-Allow-Origin': '*'
-      },
+      headers: { 'Access-Control-Allow-Origin': '*' },
       body: 'Method Not Allowed'
     };
   }
@@ -26,9 +24,7 @@ exports.handler = async function (event) {
 
     const response = await fetch('https://serverai-wtpr.onrender.com/chat', {
       method: 'POST',
-      headers: {
-        'Content-Type': contentType
-      },
+      headers: { 'Content-Type': contentType },
       body: event.body,
       duplex: 'half'
     });
@@ -50,7 +46,7 @@ exports.handler = async function (event) {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'text/plain; charset=utf-8'
       },
-      body: 'Proxy sunucusu hatasi: ' + (error && error.message ? error.message : 'Bilinmeyen hata')
+      body: 'Proxy sunucusu hatası: ' + (error.message || 'Bilinmeyen hata')
     };
   }
 };
