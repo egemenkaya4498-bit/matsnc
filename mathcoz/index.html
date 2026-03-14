@@ -97,13 +97,6 @@
             line-height: 1;
         }
 
-        .brand-copy {
-            margin-top: 10px;
-            color: var(--text-muted);
-            line-height: 1.6;
-            font-size: 0.93rem;
-        }
-
         .new-chat-btn {
             background: linear-gradient(135deg, var(--secondary), #b060f0);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -207,12 +200,6 @@
             font-family: 'Space Grotesk', sans-serif;
             font-size: 2rem;
             font-weight: 700;
-        }
-
-        .topbar-copy {
-            margin-top: 6px;
-            color: var(--text-muted);
-            font-size: 0.92rem;
         }
 
         #chatBox {
@@ -448,15 +435,21 @@
     </div>
 
     <script>
+        // =============================================================
+        // YAPILANDIRMA
+        // =============================================================
         const STORAGE_KEY = 'math-canavari-chats';
         const SERVER_URL = 'https://serverai-wtpr.onrender.com/chat';
 
         const starterMessage = {
             id: 'starter',
             role: 'ai',
-            text: 'Selam. Ben Matematik Canavarı! Çözmemi istediğin soruları getir birlikte çözelim.'
+            text: 'Selam! Ben Matematik Canavarı 🧠 Çözmemi istediğin soruları getir, birlikte çözelim!'
         };
 
+        // =============================================================
+        // DURUM YÖNETİMİ
+        // =============================================================
         let sessions = loadStoredSessions();
         if (!sessions.length) {
             sessions = [createSession()];
@@ -465,6 +458,9 @@
         let isWaitingForAI = false;
         let renamingChatId = null;
 
+        // =============================================================
+        // OTURUM FONKSİYONLARI
+        // =============================================================
         function createSession() {
             const id = Date.now().toString() + Math.floor(Math.random() * 1000).toString();
             return {
@@ -501,6 +497,9 @@
             renderMessages();
         }
 
+        // =============================================================
+        // RENDER FONKSİYONLARI
+        // =============================================================
         function renderTextWithMath(text) {
             const wrapper = document.createElement('div');
             wrapper.innerHTML = text.replace(/\n/g, '<br>');
@@ -563,7 +562,7 @@
 
                     const mainBtn = document.createElement('button');
                     mainBtn.className = 'history-main';
-                    mainBtn.textContent = renamingChatId === session.id ? 'Sohbet adlandiriliyor...' : session.title;
+                    mainBtn.textContent = renamingChatId === session.id ? 'Adlandırılıyor...' : session.title;
                     mainBtn.onclick = () => {
                         activeChatId = session.id;
                         renderSidebar();
@@ -573,7 +572,10 @@
                     const deleteBtn = document.createElement('button');
                     deleteBtn.className = 'delete-btn';
                     deleteBtn.textContent = 'Sohbeti Sil';
-                    deleteBtn.onclick = () => deleteChat(session.id);
+                    deleteBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        deleteChat(session.id);
+                    };
 
                     item.appendChild(mainBtn);
                     item.appendChild(deleteBtn);
@@ -581,6 +583,9 @@
                 });
         }
 
+        // =============================================================
+        // SOHBET İŞLEMLERİ
+        // =============================================================
         function createNewChat() {
             const session = createSession();
             sessions.unshift(session);
@@ -589,6 +594,7 @@
             renderSidebar();
             renderMessages();
             document.getElementById('userInput').value = '';
+            document.getElementById('userInput').focus();
         }
 
         function deleteChat(chatId) {
@@ -607,39 +613,60 @@
             renderMessages();
         }
 
+        // =============================================================
+        // BAŞLIK OLUŞTURMA
+        // =============================================================
         async function generateChatTitle(firstUserMessage, sessionId) {
-            const formData = new FormData();
-            formData.append('message', 'Su konusmaya Turkce, cok kisa ve 2-4 kelimelik bir sohbet basligi ver. Sadece basligi yaz. Konusma: ' + firstUserMessage);
+            try {
+                const formData = new FormData();
+                formData.append('message', 'Şu mesaja Türkçe, çok kısa (2-4 kelime) bir sohbet başlığı ver. Sadece başlığı yaz, başka bir şey yazma: ' + firstUserMessage);
 
-            const response = await fetch(SERVER_URL, {
-                method: 'POST',
-                body: formData
-            });
+                const response = await fetch(SERVER_URL, {
+                    method: 'POST',
+                    body: formData
+                });
 
-            const title = (await response.text()).trim();
-            if (!response.ok) {
-                throw new Error(title || 'Baslik olusturulamadi');
+                if (!response.ok) {
+                    throw new Error('Başlık alınamadı');
+                }
+
+                const title = (await response.text()).trim();
+                
+                updateSession(sessionId, (session) => ({
+                    ...session,
+                    title: title.replace(/^"|"$/g, '').replace(/\*\*/g, '').slice(0, 40) || 'Yeni Sohbet'
+                }));
+            } catch (error) {
+                console.error('Başlık hatası:', error);
+                updateSession(sessionId, (session) => ({
+                    ...session,
+                    title: firstUserMessage.slice(0, 30) || 'Yeni Sohbet'
+                }));
+            } finally {
+                renamingChatId = null;
+                renderSidebar();
             }
-
-            updateSession(sessionId, (session) => ({
-                ...session,
-                title: title.replace(/^"|"$/g, '').slice(0, 40) || 'Yeni Sohbet'
-            }));
         }
 
+        // =============================================================
+        // MESAJ GÖNDERME
+        // =============================================================
         async function sendMessage() {
             const input = document.getElementById('userInput');
+            const sendBtn = document.getElementById('sendBtn');
             const text = input.value.trim();
             const session = getActiveSession();
+            
             if (!text || isWaitingForAI || !session) return;
 
+            // Kullanıcı mesajını ekle
             const userMessage = {
                 id: Date.now() + '-user',
                 role: 'user',
                 text
             };
 
-            const firstUserMessage = session.messages.filter((message) => message.role === 'user').length === 0;
+            const isFirstUserMessage = session.messages.filter((m) => m.role === 'user').length === 0;
 
             updateSession(session.id, (current) => ({
                 ...current,
@@ -648,6 +675,8 @@
             }));
 
             input.value = '';
+            input.disabled = true;
+            sendBtn.disabled = true;
             isWaitingForAI = true;
             renderMessages();
 
@@ -655,16 +684,22 @@
                 const formData = new FormData();
                 formData.append('message', text);
 
+                console.log('İstek gönderiliyor:', SERVER_URL);
+
                 const response = await fetch(SERVER_URL, {
                     method: 'POST',
                     body: formData
                 });
 
+                console.log('Yanıt durumu:', response.status);
+
                 const replyText = await response.text();
+                
                 if (!response.ok) {
-                    throw new Error(replyText || ('Sunucu hatasi: ' + response.status));
+                    throw new Error(replyText || 'Sunucu hatası: ' + response.status);
                 }
 
+                // AI yanıtını ekle
                 const aiMessage = {
                     id: Date.now() + '-ai',
                     role: 'ai',
@@ -677,27 +712,20 @@
                     messages: [...current.messages, aiMessage]
                 }));
 
-                if (firstUserMessage) {
+                // İlk mesajsa başlık oluştur
+                if (isFirstUserMessage) {
                     renamingChatId = session.id;
                     renderSidebar();
-
-                    generateChatTitle(text, session.id)
-                        .catch(() => {
-                            updateSession(session.id, (current) => ({
-                                ...current,
-                                title: text.slice(0, 30) || 'Yeni Sohbet'
-                            }));
-                        })
-                        .finally(() => {
-                            renamingChatId = null;
-                            renderSidebar();
-                        });
+                    generateChatTitle(text, session.id);
                 }
+
             } catch (error) {
+                console.error('Hata:', error);
+                
                 const errorMessage = {
                     id: Date.now() + '-error',
                     role: 'ai',
-                    text: 'Sunucuya baglanirken hata olustu. ' + (error && error.message ? error.message : 'AI sunucusuna ulasilamadi.'),
+                    text: '❌ Bağlantı hatası: ' + (error.message || 'Sunucuya ulaşılamadı. Lütfen tekrar deneyin.'),
                     isError: true
                 };
 
@@ -708,10 +736,16 @@
                 }));
             } finally {
                 isWaitingForAI = false;
+                input.disabled = false;
+                sendBtn.disabled = false;
+                input.focus();
                 renderMessages();
             }
         }
 
+        // =============================================================
+        // PARTİKÜL ANİMASYONU
+        // =============================================================
         const canvas = document.getElementById('particle-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -725,7 +759,9 @@
             canvas.height = height;
             particles = [];
 
-            for (let i = 0; i < 72; i += 1) {
+            const particleCount = Math.min(72, Math.floor((width * height) / 15000));
+
+            for (let i = 0; i < particleCount; i++) {
                 particles.push({
                     x: Math.random() * width,
                     y: Math.random() * height,
@@ -756,8 +792,8 @@
 
             ctx.shadowBlur = 0;
 
-            for (let i = 0; i < particles.length; i += 1) {
-                for (let j = i + 1; j < particles.length; j += 1) {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
                     const dx = particles[i].x - particles[j].x;
                     const dy = particles[i].y - particles[j].y;
                     const dist = Math.sqrt(dx * dx + dy * dy);
@@ -776,21 +812,31 @@
             requestAnimationFrame(drawParticles);
         }
 
+        // =============================================================
+        // OLAY DİNLEYİCİLERİ
+        // =============================================================
         document.getElementById('newChatBtn').addEventListener('click', createNewChat);
         document.getElementById('mobileNewChatBtn').addEventListener('click', createNewChat);
         document.getElementById('sendBtn').addEventListener('click', sendMessage);
         document.getElementById('userInput').addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
                 sendMessage();
             }
         });
 
         window.addEventListener('resize', initParticles);
 
+        // =============================================================
+        // UYGULAMA BAŞLAT
+        // =============================================================
         initParticles();
         drawParticles();
         renderSidebar();
         renderMessages();
+
+        console.log('Math Canavari v2.0 başlatıldı!');
+        console.log('Sunucu URL:', SERVER_URL);
     </script>
 </body>
 </html>
