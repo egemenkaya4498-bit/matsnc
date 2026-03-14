@@ -619,7 +619,7 @@
         async function generateChatTitle(firstUserMessage, sessionId) {
             try {
                 const formData = new FormData();
-                formData.append('message', 'Şu mesaja Türkçe, çok kısa (2-4 kelime) bir sohbet başlığı ver. Sadece başlığı yaz, başka bir şey yazma: ' + firstUserMessage);
+                formData.append('message', 'Şu mesaja Türkçe bir sohbet başlığı ver. İlk yazdığı mesajla alakalı olsun, alakasız olmasın: ' + firstUserMessage);
 
                 const response = await fetch(SERVER_URL, {
                     method: 'POST',
