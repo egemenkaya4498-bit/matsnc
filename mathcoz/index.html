@@ -412,7 +412,7 @@
 
             <button class="new-chat-btn" id="newChatBtn">YENI SOHBET</button>
             <div class="history-list" id="historyList"></div>
-            <div class="sidebar-footer">MATH CANAVARI v2.0</div>
+            <div class="sidebar-footer">MATH CANAVARI v3.0 · AKILLI AKIŞ</div>
         </aside>
 
         <main class="chat-main">
@@ -427,7 +427,7 @@
 
             <div class="input-panel">
                 <div class="input-wrapper">
-                    <input type="text" id="userInput" placeholder="Matematik sorusu sor, denklem yaz, LaTeX kullanma..." autofocus>
+                    <input type="text" id="userInput" placeholder="Matematik sorusu sor, LaTeX kullanabilirsin..." autofocus>
                     <button id="sendBtn">&gt;</button>
                 </div>
             </div>
@@ -457,6 +457,8 @@
         let activeChatId = sessions[0].id;
         let isWaitingForAI = false;
         let renamingChatId = null;
+        let currentStreamTimeout = null;   // kelime kelime yazma zamanlayıcısı
+        let streamingMessageId = null;      // hangi mesaj akıyor
 
         // =============================================================
         // OTURUM FONKSİYONLARI
@@ -498,7 +500,7 @@
         }
 
         // =============================================================
-        // RENDER FONKSİYONLARI
+        // RENDER (KaTeX ile destekli)
         // =============================================================
         function renderTextWithMath(text) {
             const wrapper = document.createElement('div');
@@ -538,7 +540,7 @@
                 chatBox.appendChild(div);
             });
 
-            if (isWaitingForAI) {
+            if (isWaitingForAI && !streamingMessageId) {
                 const indicator = document.createElement('div');
                 indicator.className = 'typing-indicator';
                 indicator.id = 'typingIndicator';
@@ -564,9 +566,14 @@
                     mainBtn.className = 'history-main';
                     mainBtn.textContent = renamingChatId === session.id ? 'Adlandırılıyor...' : session.title;
                     mainBtn.onclick = () => {
+                        if (currentStreamTimeout) clearTimeout(currentStreamTimeout);
+                        streamingMessageId = null;
+                        isWaitingForAI = false;
                         activeChatId = session.id;
                         renderSidebar();
                         renderMessages();
+                        document.getElementById('userInput').disabled = false;
+                        document.getElementById('sendBtn').disabled = false;
                     };
 
                     const deleteBtn = document.createElement('button');
@@ -587,6 +594,9 @@
         // SOHBET İŞLEMLERİ
         // =============================================================
         function createNewChat() {
+            if (currentStreamTimeout) clearTimeout(currentStreamTimeout);
+            streamingMessageId = null;
+            isWaitingForAI = false;
             const session = createSession();
             sessions.unshift(session);
             activeChatId = session.id;
@@ -594,10 +604,15 @@
             renderSidebar();
             renderMessages();
             document.getElementById('userInput').value = '';
+            document.getElementById('userInput').disabled = false;
+            document.getElementById('sendBtn').disabled = false;
             document.getElementById('userInput').focus();
         }
 
         function deleteChat(chatId) {
+            if (currentStreamTimeout) clearTimeout(currentStreamTimeout);
+            streamingMessageId = null;
+            isWaitingForAI = false;
             sessions = sessions.filter((session) => session.id !== chatId);
 
             if (!sessions.length) {
@@ -614,34 +629,77 @@
         }
 
         // =============================================================
-        // KONUŞMA GEÇMİŞİ İLE BAŞLIK OLUŞTURMA (ilk mesajdan başlık)
+        // AKIŞLI YAZMA (KELİME KELİME)
+        // =============================================================
+        function startStreamingMessage(sessionId, messageId, fullText) {
+            // fullText içinde istenmeyen ifadeleri temizle (asla "Google kurdu")
+            let cleanText = fullText.replace(/Google\s*kurdu/gi, '');
+            // bullet pointleri dönüştür: satır başında * olanları - ile değiştir
+            cleanText = cleanText.replace(/^\s*\*\s+/gm, '- ');
+            
+            const session = sessions.find(s => s.id === sessionId);
+            if (!session) return;
+            
+            const messageIndex = session.messages.findIndex(m => m.id === messageId);
+            if (messageIndex === -1) return;
+            
+            let currentPos = 0;
+            const totalLen = cleanText.length;
+            
+            function typeNextChunk() {
+                if (!sessions.find(s => s.id === sessionId)) return; // oturum silindi
+                const curSession = sessions.find(s => s.id === sessionId);
+                const msg = curSession.messages.find(m => m.id === messageId);
+                if (!msg) return;
+                
+                // her adımda 1-3 karakter ekleyelim (akıcı görünür)
+                const step = Math.floor(Math.random() * 3) + 1;
+                currentPos = Math.min(currentPos + step, totalLen);
+                const partial = cleanText.substring(0, currentPos);
+                msg.text = partial;
+                
+                // güncelle
+                updateSession(sessionId, (s) => ({
+                    ...s,
+                    messages: s.messages.map(m => m.id === messageId ? { ...m, text: partial } : m)
+                }));
+                
+                if (currentPos < totalLen) {
+                    currentStreamTimeout = setTimeout(typeNextChunk, 35 + Math.random() * 20);
+                } else {
+                    // bitince temizlik
+                    currentStreamTimeout = null;
+                    streamingMessageId = null;
+                    isWaitingForAI = false;
+                    document.getElementById('userInput').disabled = false;
+                    document.getElementById('sendBtn').disabled = false;
+                    document.getElementById('userInput').focus();
+                    renderMessages();
+                }
+            }
+            
+            typeNextChunk();
+        }
+
+        // =============================================================
+        // BAŞLIK OLUŞTUR (ilk mesaj)
         // =============================================================
         async function generateChatTitle(firstUserMessage, sessionId) {
             try {
                 const formData = new FormData();
                 formData.append('message', 'Şu mesaja Türkçe bir sohbet başlığı ver. İlk yazdığı mesajla alakalı olsun, alakasız olmasın: ' + firstUserMessage);
 
-                const response = await fetch(SERVER_URL, {
-                    method: 'POST',
-                    body: formData
-                });
+                const response = await fetch(SERVER_URL, { method: 'POST', body: formData });
+                if (!response.ok) throw new Error('Başlık alınamadı');
 
-                if (!response.ok) {
-                    throw new Error('Başlık alınamadı');
-                }
-
-                const title = (await response.text()).trim();
+                let title = (await response.text()).trim();
+                title = title.replace(/^"|"$/g, '').replace(/\*\*/g, '').slice(0, 40);
+                if (!title) title = firstUserMessage.slice(0, 30);
                 
-                updateSession(sessionId, (session) => ({
-                    ...session,
-                    title: title.replace(/^"|"$/g, '').replace(/\*\*/g, '').slice(0, 40) || 'Yeni Sohbet'
-                }));
+                updateSession(sessionId, (session) => ({ ...session, title: title || 'Yeni Sohbet' }));
             } catch (error) {
                 console.error('Başlık hatası:', error);
-                updateSession(sessionId, (session) => ({
-                    ...session,
-                    title: firstUserMessage.slice(0, 30) || 'Yeni Sohbet'
-                }));
+                updateSession(sessionId, (session) => ({ ...session, title: firstUserMessage.slice(0, 30) || 'Yeni Sohbet' }));
             } finally {
                 renamingChatId = null;
                 renderSidebar();
@@ -649,32 +707,28 @@
         }
 
         // =============================================================
-        // KONUŞMA GEÇMİŞİNİ İÇEREN PROMPT OLUŞTUR (BELLEK)
+        // BAĞLAMLI PROMPT (LATEX + BULLET DÜZENİ + YASAK İFADE)
         // =============================================================
         function buildContextPrompt(sessionMessages, currentUserText) {
-            // sistem talimatı: LaTeX kullanma, düz metin, bağlamı hatırla
-            let systemInstruction = "Sen bir matematik asistanısın. Tüm konuşma geçmişini dikkate alarak cevap ver. **ÖNEMLİ: Cevaplarında LaTeX formatı (örneğin $...$, $$...$$, \\(...\\), \\[...\\]) KESİNLİKLE KULLANMA.** Matematik ifadelerini düz metin olarak yaz (örnek: x^2, √x, 3/4, log_2(8) gibi). Açıklamalarını anlaşılır ve akıcı Türkçe yap.";
-            
-            // son 15 mesajı al (token sınırını aşmamak için)
+            let systemInstruction = `Sen bir matematik asistanısın. Tüm konuşma geçmişini dikkate alarak cevap ver.
+**KURALLAR:**
+1. Matematik ifadelerini LaTeX ile yaz (örnek: $x^2$, $\\sqrt{4}$, $\\frac{3}{4}$). 
+2. Madde işaretleri için ASLA "*" kullanma; bunun yerine "-" kullan (örnek: - ilk madde, - ikinci madde).
+3. ASLA "Google kurdu" veya benzeri bir ifadeyi kullanma. Kullanıcıya saygılı ve yardımsever ol.
+4. Cevabını doğal Türkçe ve anlaşılır bir dille yaz.`;
+
             const recentMessages = sessionMessages.slice(-15);
-            
             let conversationHistory = "";
             for (const msg of recentMessages) {
-                if (msg.role === 'user') {
-                    conversationHistory += `Kullanıcı: ${msg.text}\n`;
-                } else if (msg.role === 'ai' && !msg.isError) {
-                    conversationHistory += `Asistan: ${msg.text}\n`;
-                }
+                if (msg.role === 'user') conversationHistory += `Kullanıcı: ${msg.text}\n`;
+                else if (msg.role === 'ai' && !msg.isError) conversationHistory += `Asistan: ${msg.text}\n`;
             }
-            
-            // son kullanıcı mesajını ekle
             conversationHistory += `Kullanıcı: ${currentUserText}\nAsistan:`;
-            
             return `${systemInstruction}\n\n[Geçmiş konuşma]\n${conversationHistory}`;
         }
 
         // =============================================================
-        // MESAJ GÖNDERME (BELLEKLİ + DÜZ METİN)
+        // MESAJ GÖNDER (AKIŞLI + BELLEK)
         // =============================================================
         async function sendMessage() {
             const input = document.getElementById('userInput');
@@ -683,75 +737,71 @@
             const session = getActiveSession();
             
             if (!text || isWaitingForAI || !session) return;
-
-            // Kullanıcı mesajını hazırla
+            
+            // önceki akış varsa temizle
+            if (currentStreamTimeout) {
+                clearTimeout(currentStreamTimeout);
+                currentStreamTimeout = null;
+            }
+            streamingMessageId = null;
+            
             const userMessage = {
                 id: Date.now() + '-user',
                 role: 'user',
                 text
             };
-
-            const isFirstUserMessage = session.messages.filter((m) => m.role === 'user').length === 0;
-
-            // 1. Geçmişi de içeren prompt oluştur (yeni mesaj dahil)
-            const fullPrompt = buildContextPrompt(session.messages, text);
+            const isFirstUserMessage = session.messages.filter(m => m.role === 'user').length === 0;
             
-            // 2. Kullanıcı mesajını session'a ekle (gönderimden önce ekleyelim ki render doğru olsun)
+            // kullanıcı mesajını ekle
             updateSession(session.id, (current) => ({
                 ...current,
                 timestamp: Date.now(),
                 messages: [...current.messages, userMessage]
             }));
-
+            
             input.value = '';
             input.disabled = true;
             sendBtn.disabled = true;
             isWaitingForAI = true;
-            renderMessages();
-
+            renderMessages();   // gösterirken bekliyor
+            
+            // full prompt (geçmiş + kural)
+            const fullPrompt = buildContextPrompt(session.messages, text);
+            
             try {
                 const formData = new FormData();
-                // tüm bağlamı tek mesaj olarak gönder
                 formData.append('message', fullPrompt);
-
-                console.log('İstek gönderiliyor (bellek aktif):', SERVER_URL);
-                const response = await fetch(SERVER_URL, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                let replyText = '';
-                if (response.ok) {
-                    replyText = await response.text();
-                } else {
-                    throw new Error(`Sunucu hatası: ${response.status}`);
-                }
                 
-                // Yanıtı temizle: LaTeX kalıntılarını düz metine çevirmek için basit temizlik
-                // (opsiyonel: $ sembollerini kaldır, ama AI zaten talimatla LaTeX kullanmayacak)
-                replyText = replyText.replace(/\$\$?([^$]+)\$\$?/g, (match, p1) => p1.trim());
-                replyText = replyText.replace(/\\\(/g, '').replace(/\\\)/g, '');
-                replyText = replyText.replace(/\\\[/g, '').replace(/\\\]/g, '');
+                const response = await fetch(SERVER_URL, { method: 'POST', body: formData });
+                if (!response.ok) throw new Error(`Sunucu hatası: ${response.status}`);
                 
-                const aiMessage = {
-                    id: Date.now() + '-ai',
+                let replyText = await response.text();
+                // Ekstra güvenlik: "Google kurdu" ifadesini tamamen kaldır
+                replyText = replyText.replace(/Google\s*kurdu/gi, '');
+                
+                // Geçici boş mesaj oluştur, sonra akışla doldur
+                const tempId = Date.now() + '-ai-stream';
+                const aiPlaceholder = {
+                    id: tempId,
                     role: 'ai',
-                    text: replyText || "Yanıt boş geldi, lütfen tekrar dene."
+                    text: ''
                 };
-
+                
                 updateSession(session.id, (current) => ({
                     ...current,
-                    timestamp: Date.now(),
-                    messages: [...current.messages, aiMessage]
+                    messages: [...current.messages, aiPlaceholder]
                 }));
-
-                // İlk mesajsa başlık oluştur (orijinal kullanıcı mesajı ile)
+                
+                streamingMessageId = tempId;
+                startStreamingMessage(session.id, tempId, replyText);
+                
+                // ilk mesajsa başlık oluştur (arka planda)
                 if (isFirstUserMessage) {
                     renamingChatId = session.id;
                     renderSidebar();
                     generateChatTitle(text, session.id);
                 }
-
+                
             } catch (error) {
                 console.error('Hata:', error);
                 const errorMessage = {
@@ -762,26 +812,25 @@
                 };
                 updateSession(session.id, (current) => ({
                     ...current,
-                    timestamp: Date.now(),
                     messages: [...current.messages, errorMessage]
                 }));
-            } finally {
                 isWaitingForAI = false;
+                streamingMessageId = null;
                 input.disabled = false;
                 sendBtn.disabled = false;
-                input.focus();
                 renderMessages();
+                input.focus();
             }
+            // Not: Akış devam ederken isWaitingForAI true kalır, send butonu kilitli. Akış bitince startStreamingMessage içinde false yapılır.
         }
 
         // =============================================================
-        // PARTİKÜL ANİMASYONU (değişmedi)
+        // PARTİKÜL ANİMASYONU
         // =============================================================
         const canvas = document.getElementById('particle-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
-        let width = 0;
-        let height = 0;
+        let width = 0, height = 0;
 
         function initParticles() {
             width = window.innerWidth;
@@ -789,9 +838,7 @@
             canvas.width = width;
             canvas.height = height;
             particles = [];
-
             const particleCount = Math.min(72, Math.floor((width * height) / 15000));
-
             for (let i = 0; i < particleCount; i++) {
                 particles.push({
                     x: Math.random() * width,
@@ -805,14 +852,11 @@
 
         function drawParticles() {
             ctx.clearRect(0, 0, width, height);
-
-            particles.forEach((p) => {
+            particles.forEach(p => {
                 p.x += p.vx;
                 p.y += p.vy;
-
                 if (p.x < 0 || p.x > width) p.vx *= -1;
                 if (p.y < 0 || p.y > height) p.vy *= -1;
-
                 ctx.beginPath();
                 ctx.fillStyle = 'rgba(0, 240, 255, 0.9)';
                 ctx.shadowColor = 'rgba(0, 240, 255, 0.5)';
@@ -820,15 +864,12 @@
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                 ctx.fill();
             });
-
             ctx.shadowBlur = 0;
-
             for (let i = 0; i < particles.length; i++) {
                 for (let j = i + 1; j < particles.length; j++) {
                     const dx = particles[i].x - particles[j].x;
                     const dy = particles[i].y - particles[j].y;
                     const dist = Math.sqrt(dx * dx + dy * dy);
-
                     if (dist < 140) {
                         ctx.beginPath();
                         ctx.moveTo(particles[i].x, particles[i].y);
@@ -839,7 +880,6 @@
                     }
                 }
             }
-
             requestAnimationFrame(drawParticles);
         }
 
@@ -855,19 +895,14 @@
                 sendMessage();
             }
         });
-
         window.addEventListener('resize', initParticles);
-
-        // =============================================================
-        // UYGULAMA BAŞLAT
-        // =============================================================
+        
+        // BAŞLAT
         initParticles();
         drawParticles();
         renderSidebar();
         renderMessages();
-
-        console.log('Math Canavari v2.0 (Bellek + Düz Metin) başlatıldı!');
-        console.log('Sunucu URL:', SERVER_URL);
+        console.log('Math Canavari v3.0 (LaTeX, - madde işareti, kelime kelime akış, Google kurdu yasak)');
     </script>
 </body>
 </html>
