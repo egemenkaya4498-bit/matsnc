@@ -427,7 +427,7 @@
 
             <div class="input-panel">
                 <div class="input-wrapper">
-                    <input type="text" id="userInput" placeholder="Matematik sorusu sor, denklem yaz, LaTeX kullan..." autofocus>
+                    <input type="text" id="userInput" placeholder="Matematik sorusu sor, denklem yaz, LaTeX kullanma..." autofocus>
                     <button id="sendBtn">&gt;</button>
                 </div>
             </div>
@@ -614,7 +614,7 @@
         }
 
         // =============================================================
-        // BAŞLIK OLUŞTURMA
+        // KONUŞMA GEÇMİŞİ İLE BAŞLIK OLUŞTURMA (ilk mesajdan başlık)
         // =============================================================
         async function generateChatTitle(firstUserMessage, sessionId) {
             try {
@@ -649,7 +649,32 @@
         }
 
         // =============================================================
-        // MESAJ GÖNDERME
+        // KONUŞMA GEÇMİŞİNİ İÇEREN PROMPT OLUŞTUR (BELLEK)
+        // =============================================================
+        function buildContextPrompt(sessionMessages, currentUserText) {
+            // sistem talimatı: LaTeX kullanma, düz metin, bağlamı hatırla
+            let systemInstruction = "Sen bir matematik asistanısın. Tüm konuşma geçmişini dikkate alarak cevap ver. **ÖNEMLİ: Cevaplarında LaTeX formatı (örneğin $...$, $$...$$, \\(...\\), \\[...\\]) KESİNLİKLE KULLANMA.** Matematik ifadelerini düz metin olarak yaz (örnek: x^2, √x, 3/4, log_2(8) gibi). Açıklamalarını anlaşılır ve akıcı Türkçe yap.";
+            
+            // son 15 mesajı al (token sınırını aşmamak için)
+            const recentMessages = sessionMessages.slice(-15);
+            
+            let conversationHistory = "";
+            for (const msg of recentMessages) {
+                if (msg.role === 'user') {
+                    conversationHistory += `Kullanıcı: ${msg.text}\n`;
+                } else if (msg.role === 'ai' && !msg.isError) {
+                    conversationHistory += `Asistan: ${msg.text}\n`;
+                }
+            }
+            
+            // son kullanıcı mesajını ekle
+            conversationHistory += `Kullanıcı: ${currentUserText}\nAsistan:`;
+            
+            return `${systemInstruction}\n\n[Geçmiş konuşma]\n${conversationHistory}`;
+        }
+
+        // =============================================================
+        // MESAJ GÖNDERME (BELLEKLİ + DÜZ METİN)
         // =============================================================
         async function sendMessage() {
             const input = document.getElementById('userInput');
@@ -659,7 +684,7 @@
             
             if (!text || isWaitingForAI || !session) return;
 
-            // Kullanıcı mesajını ekle
+            // Kullanıcı mesajını hazırla
             const userMessage = {
                 id: Date.now() + '-user',
                 role: 'user',
@@ -668,6 +693,10 @@
 
             const isFirstUserMessage = session.messages.filter((m) => m.role === 'user').length === 0;
 
+            // 1. Geçmişi de içeren prompt oluştur (yeni mesaj dahil)
+            const fullPrompt = buildContextPrompt(session.messages, text);
+            
+            // 2. Kullanıcı mesajını session'a ekle (gönderimden önce ekleyelim ki render doğru olsun)
             updateSession(session.id, (current) => ({
                 ...current,
                 timestamp: Date.now(),
@@ -682,28 +711,32 @@
 
             try {
                 const formData = new FormData();
-                formData.append('message', text);
+                // tüm bağlamı tek mesaj olarak gönder
+                formData.append('message', fullPrompt);
 
-                console.log('İstek gönderiliyor:', SERVER_URL);
-
+                console.log('İstek gönderiliyor (bellek aktif):', SERVER_URL);
                 const response = await fetch(SERVER_URL, {
                     method: 'POST',
                     body: formData
                 });
 
-                console.log('Yanıt durumu:', response.status);
-
-                const replyText = await response.text();
-                
-                if (!response.ok) {
-                    throw new Error(replyText || 'Sunucu hatası: ' + response.status);
+                let replyText = '';
+                if (response.ok) {
+                    replyText = await response.text();
+                } else {
+                    throw new Error(`Sunucu hatası: ${response.status}`);
                 }
-
-                // AI yanıtını ekle
+                
+                // Yanıtı temizle: LaTeX kalıntılarını düz metine çevirmek için basit temizlik
+                // (opsiyonel: $ sembollerini kaldır, ama AI zaten talimatla LaTeX kullanmayacak)
+                replyText = replyText.replace(/\$\$?([^$]+)\$\$?/g, (match, p1) => p1.trim());
+                replyText = replyText.replace(/\\\(/g, '').replace(/\\\)/g, '');
+                replyText = replyText.replace(/\\\[/g, '').replace(/\\\]/g, '');
+                
                 const aiMessage = {
                     id: Date.now() + '-ai',
                     role: 'ai',
-                    text: replyText
+                    text: replyText || "Yanıt boş geldi, lütfen tekrar dene."
                 };
 
                 updateSession(session.id, (current) => ({
@@ -712,7 +745,7 @@
                     messages: [...current.messages, aiMessage]
                 }));
 
-                // İlk mesajsa başlık oluştur
+                // İlk mesajsa başlık oluştur (orijinal kullanıcı mesajı ile)
                 if (isFirstUserMessage) {
                     renamingChatId = session.id;
                     renderSidebar();
@@ -721,14 +754,12 @@
 
             } catch (error) {
                 console.error('Hata:', error);
-                
                 const errorMessage = {
                     id: Date.now() + '-error',
                     role: 'ai',
-                    text: '❌ Bağlantı hatası: ' + (error.message || 'Sunucuya ulaşılamadı. Lütfen tekrar deneyin.'),
+                    text: `❌ Bağlantı hatası: ${error.message || 'Sunucuya ulaşılamadı. Lütfen tekrar deneyin.'}`,
                     isError: true
                 };
-
                 updateSession(session.id, (current) => ({
                     ...current,
                     timestamp: Date.now(),
@@ -744,7 +775,7 @@
         }
 
         // =============================================================
-        // PARTİKÜL ANİMASYONU
+        // PARTİKÜL ANİMASYONU (değişmedi)
         // =============================================================
         const canvas = document.getElementById('particle-canvas');
         const ctx = canvas.getContext('2d');
@@ -835,7 +866,7 @@
         renderSidebar();
         renderMessages();
 
-        console.log('Math Canavari v2.0 başlatıldı!');
+        console.log('Math Canavari v2.0 (Bellek + Düz Metin) başlatıldı!');
         console.log('Sunucu URL:', SERVER_URL);
     </script>
 </body>
