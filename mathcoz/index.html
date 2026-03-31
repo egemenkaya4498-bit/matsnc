@@ -115,6 +115,24 @@
             box-shadow: 0 15px 30px var(--secondary-glow);
         }
 
+        .kaya-plus-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .kaya-plus-btn:hover {
+            background: rgba(0, 240, 255, 0.15);
+            box-shadow: 0 0 12px var(--primary-glow);
+        }
+
         .history-list {
             flex: 1;
             overflow-y: auto;
@@ -194,6 +212,16 @@
             font-family: 'Space Grotesk', sans-serif;
             font-size: 2rem;
             font-weight: 700;
+        }
+
+        .quality-badge {
+            background: linear-gradient(135deg, #ffd966, #ffb347);
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #1e2a3a;
+            box-shadow: 0 0 12px rgba(255, 180, 70, 0.6);
         }
 
         #chatBox {
@@ -355,6 +383,100 @@
             transform: none;
         }
 
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(12px);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--bg-panel);
+            border-radius: 32px;
+            padding: 32px;
+            width: 90%;
+            max-width: 450px;
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 30px var(--primary-glow);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 14px 16px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .modal-content input:focus {
+            border-color: var(--primary);
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .modal-buttons button {
+            padding: 10px 20px;
+            border-radius: 40px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .submit-btn {
+            background: var(--primary);
+            color: #0a0c10;
+        }
+
+        .cancel-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e2a3a;
+            color: #c8f9ff;
+            padding: 14px 24px;
+            border-radius: 60px;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            z-index: 1100;
+            font-weight: 500;
+            animation: fadeInOut 3s ease forwards;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-20px); visibility: hidden; }
+        }
+
         .mobile-new-chat {
             display: none;
         }
@@ -404,8 +526,9 @@
                 <div class="brand-title">MATH CANAVARI</div>
             </div>
             <button class="new-chat-btn" id="newChatBtn">YENI SOHBET</button>
+            <button class="kaya-plus-btn" id="kayaPlusBtn">✨ KAYA STUDIOS PLUS SAHİBİ OL</button>
             <div class="history-list" id="historyList"></div>
-            <div class="sidebar-footer">MATH CANAVARI v3.0</div>
+            <div class="sidebar-footer">MATH CANAVARI v3.0 · Dünyanın En İyisi</div>
         </aside>
 
         <main class="chat-main">
@@ -413,7 +536,10 @@
                 <div>
                     <div class="topbar-title">MATH CANAVARI</div>
                 </div>
-                <button class="mobile-new-chat" id="mobileNewChatBtn">Yeni Sohbet</button>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <div class="quality-badge">🏆 Dünyanın En Kaliteli Matematik Chatbot'u</div>
+                    <button class="mobile-new-chat" id="mobileNewChatBtn">Yeni Sohbet</button>
+                </div>
             </div>
             <div id="chatBox"></div>
             <div class="input-panel">
@@ -425,17 +551,31 @@
         </main>
     </div>
 
+    <!-- Kaya Studios Plus Modal -->
+    <div id="kayaModal" class="modal">
+        <div class="modal-content">
+            <h2>KAYA STUDIOS PLUS SAHİBİ OL</h2>
+            <input type="text" id="firstName" placeholder="Adınız" autocomplete="off">
+            <input type="text" id="lastName" placeholder="Soyadınız" autocomplete="off">
+            <input type="email" id="gmail" placeholder="Gmail adresiniz" autocomplete="off">
+            <div class="modal-buttons">
+                <button class="cancel-btn" id="closeModalBtn">Vazgeç</button>
+                <button class="submit-btn" id="submitRequestBtn">Başvur</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ==================== KONFİGÜRASYON ====================
         const STORAGE_KEY = 'math-canavari-v3';
-        const API_URL = 'https://matesonucai.onrender.com/chat';
+        const API_BASE = 'https://matesonucai.onrender.com';   // Backend URL
 
         // ==================== VERİ MODELLERİ ====================
         let sessions = [];
         let activeId = null;
-        let isStreaming = false;          // yanıt akarken true
-        let streamCancel = null;           // akışı durdurmak için
-        let currentStreamElement = null;   // akış sırasında güncellenen mesaj DOM'u
+        let isStreaming = false;
+        let streamCancel = null;
+        let currentStreamElement = null;
 
         // ==================== BAŞLANGIÇ MESAJI ====================
         const welcomeMsg = {
@@ -460,7 +600,6 @@
                     }
                 }
             } catch (e) {}
-            // yeni oturum oluştur
             const newId = Date.now().toString() + Math.random().toString(36);
             sessions = [{
                 id: newId,
@@ -480,11 +619,10 @@
             sessions = sessions.map(s => s.id === activeId ? updater(s) : s);
             saveToLocal();
             renderSidebar();
-            // Mesajları yeniden render et (eğer akış yoksa)
             if (!isStreaming) renderMessages();
         }
 
-        // ==================== RENDER (SADECE GEREKTİĞİNDE) ====================
+        // ==================== RENDER ====================
         function renderTextWithMath(text) {
             const container = document.createElement('div');
             container.innerHTML = text.replace(/\n/g, '<br>');
@@ -519,7 +657,6 @@
                 chatBox.appendChild(div);
             });
             if (isStreaming && !currentStreamElement) {
-                // akış başlamış ama henüz mesaj DOM'u yoksa gösterge
                 const indicator = document.createElement('div');
                 indicator.className = 'typing-indicator';
                 indicator.id = 'typingIndicator';
@@ -575,7 +712,7 @@
             });
         }
 
-        // ==================== AKIŞLI YAZMA (KELİME KELİME, SADECE TEK BİR ELEMENT) ====================
+        // ==================== AKIŞLI YAZMA ====================
         function stopStreaming() {
             if (streamCancel) {
                 clearInterval(streamCancel);
@@ -585,14 +722,12 @@
             currentStreamElement = null;
             document.getElementById('userInput').disabled = false;
             document.getElementById('sendBtn').disabled = false;
-            renderMessages(); // kalan göstergeyi kaldır
+            renderMessages();
         }
 
         function startStreaming(sessionId, messageId, fullTextRaw) {
-            // Temizleme: Google kurdu yasak, * -> - dönüşümü
             let cleanText = fullTextRaw.replace(/Google\s*kurdu/gi, '');
             cleanText = cleanText.replace(/^\s*\*\s+/gm, '- ');
-            // satır başı * olmayanları da dönüştür (liste içinde)
             cleanText = cleanText.replace(/(\n\s*)\*\s+/g, '$1- ');
 
             const session = sessions.find(s => s.id === sessionId);
@@ -600,11 +735,9 @@
             const msgIndex = session.messages.findIndex(m => m.id === messageId);
             if (msgIndex === -1) return;
 
-            // Mesaj DOM'unu doğrudan al
             const chatBox = document.getElementById('chatBox');
             const msgElements = chatBox.querySelectorAll('.msg');
             let targetDiv = null;
-            // Son eklenen AI mesajı (kullanıcıdan sonra)
             for (let i = msgElements.length - 1; i >= 0; i--) {
                 if (msgElements[i].classList.contains('ai-msg') && !msgElements[i].classList.contains('error-msg')) {
                     targetDiv = msgElements[i];
@@ -612,7 +745,6 @@
                 }
             }
             if (!targetDiv) {
-                // eğer yoksa yeni oluştur (güvenlik)
                 const newDiv = document.createElement('div');
                 newDiv.className = 'msg ai-msg';
                 chatBox.appendChild(newDiv);
@@ -628,10 +760,9 @@
                     stopStreaming();
                     return;
                 }
-                const step = Math.floor(Math.random() * 4) + 2; // 2-5 karakter
+                const step = Math.floor(Math.random() * 4) + 2;
                 currentPos = Math.min(currentPos + step, totalLen);
                 const partial = cleanText.substring(0, currentPos);
-                // Mesajı güncelle (DOM)
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = partial.replace(/\n/g, '<br>');
                 if (window.renderMathInElement) {
@@ -654,7 +785,6 @@
                 currentStreamElement.innerHTML = '';
                 while (tempDiv.firstChild) currentStreamElement.appendChild(tempDiv.firstChild);
 
-                // Modeli de güncelle (veri tutarlılığı)
                 updateActiveSession(s => ({
                     ...s,
                     messages: s.messages.map(m => m.id === messageId ? { ...m, text: partial } : m)
@@ -663,21 +793,20 @@
                 chatBox.scrollTop = chatBox.scrollHeight;
 
                 if (currentPos >= totalLen) {
-                    // bitti
                     stopStreaming();
                 }
             }
 
-            streamCancel = setInterval(updateChunk, 45); // akıcı hız
+            streamCancel = setInterval(updateChunk, 45);
             isStreaming = true;
         }
 
-        // ==================== BAŞLIK OLUŞTUR (İLK MESAJ) ====================
+        // ==================== BAŞLIK OLUŞTUR ====================
         async function generateTitleAsync(firstUserMsg, sessionId) {
             try {
                 const form = new FormData();
                 form.append('message', `Şu mesaja Türkçe bir sohbet başlığı ver. Sadece başlığı yaz: ${firstUserMsg}`);
-                const res = await fetch(API_URL, { method: 'POST', body: form });
+                const res = await fetch(`${API_BASE}/chat`, { method: 'POST', body: form });
                 if (res.ok) {
                     let title = (await res.text()).trim().slice(0, 40);
                     title = title.replace(/^"|"$/g, '').replace(/\*\*/g, '');
@@ -690,10 +819,10 @@
             } catch(e) { /* sessiz */ }
         }
 
-        // ==================== BAĞLAM OLUŞTUR (SADECE AKTİF SOHBETİN MESAJLARI) ====================
+        // ==================== BAĞLAM OLUŞTUR ====================
         function buildContext() {
             const session = getActiveSession();
-            const recent = session.messages.slice(-20); // son 20 mesaj
+            const recent = session.messages.slice(-20);
             let history = "";
             for (const msg of recent) {
                 if (msg.role === 'user') history += `Kullanıcı: ${msg.text}\n`;
@@ -704,7 +833,8 @@ Kurallar:
 - Matematik ifadelerini LaTeX ile yaz ($...$ veya $$...$$).
 - Madde işaretleri için asla "*" kullanma, "-" kullan.
 - Asla "Google kurdu" ifadesini kullanma.
-- Doğal Türkçe cevap ver.`;
+- Adım adım çözüm yap, anlaşılır ve doğal Türkçe cevap ver.
+- 8. sınıf seviyesine uygun detaylandır.`;
             return `${system}\n\n[Geçmiş]\n${history}\nAsistan:`;
         }
 
@@ -719,7 +849,6 @@ Kurallar:
             const session = getActiveSession();
             const isFirstUser = session.messages.filter(m => m.role === 'user').length === 0;
 
-            // kullanıcı mesajını ekle
             const userMsg = {
                 id: Date.now() + '-user',
                 role: 'user',
@@ -735,7 +864,6 @@ Kurallar:
             input.disabled = true;
             btn.disabled = true;
 
-            // boş AI mesajı ekle (akış için)
             const aiMsgId = Date.now() + '-ai-stream';
             updateActiveSession(s => ({
                 ...s,
@@ -749,18 +877,14 @@ Kurallar:
             try {
                 const form = new FormData();
                 form.append('message', fullPrompt);
-                const response = await fetch(API_URL, { method: 'POST', body: form });
+                const response = await fetch(`${API_BASE}/chat`, { method: 'POST', body: form });
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const rawReply = await response.text();
-
-                // akışı başlat
                 startStreaming(activeId, aiMsgId, rawReply);
-
                 if (isFirstUser) {
                     generateTitleAsync(text, activeId);
                 }
             } catch (err) {
-                // hata mesajı
                 updateActiveSession(s => ({
                     ...s,
                     messages: s.messages.map(m => m.id === aiMsgId ? { ...m, text: `❌ Hata: ${err.message}`, isError: true } : m)
@@ -789,6 +913,59 @@ Kurallar:
             document.getElementById('userInput').disabled = false;
             document.getElementById('sendBtn').disabled = false;
             document.getElementById('userInput').focus();
+        }
+
+        // ==================== KAYA STUDIOS PLUS ====================
+        function showToast(message, isError = false) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            if (isError) toast.style.borderLeftColor = '#ff5e5e';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        async function submitPlusRequest() {
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('gmail').value.trim();
+
+            if (!firstName || !lastName || !email) {
+                showToast('Lütfen tüm alanları doldurun.', true);
+                return;
+            }
+            if (!email.endsWith('@gmail.com')) {
+                showToast('Lütfen geçerli bir Gmail adresi girin.', true);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/kaya-plus-request`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: firstName, surname: lastName, email })
+                });
+                if (response.ok) {
+                    showToast('İsteğiniz Beklemeye Alındı. 24 Saat içinde size Gmail üzerinden bilgilendireceğiz.');
+                    closeModal();
+                    // form temizle
+                    document.getElementById('firstName').value = '';
+                    document.getElementById('lastName').value = '';
+                    document.getElementById('gmail').value = '';
+                } else {
+                    const err = await response.text();
+                    showToast(`Hata: ${err}`, true);
+                }
+            } catch (err) {
+                showToast('Bağlantı hatası. Lütfen daha sonra tekrar deneyin.', true);
+            }
+        }
+
+        function openModal() {
+            document.getElementById('kayaModal').style.display = 'flex';
+        }
+        function closeModal() {
+            document.getElementById('kayaModal').style.display = 'none';
         }
 
         // ==================== PARTİKÜL ANİMASYONU ====================
@@ -862,6 +1039,14 @@ Kurallar:
                 sendMessage();
             }
         });
+        document.getElementById('kayaPlusBtn').addEventListener('click', openModal);
+        document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+        document.getElementById('submitRequestBtn').addEventListener('click', submitPlusRequest);
+        // modal dışına tıklayınca kapat
+        window.onclick = (e) => {
+            const modal = document.getElementById('kayaModal');
+            if (e.target === modal) closeModal();
+        };
 
         // ==================== BAŞLAT ====================
         loadSessions();
@@ -870,7 +1055,7 @@ Kurallar:
         renderMessages();
         initParticles();
         drawParticles();
-        console.log('Math Canavari v3.0 - Akıllı, hızlı, hatasız');
+        console.log('Math Canavari v3.0 - Kaya Studios Plus eklendi');
     </script>
 </body>
 </html>
