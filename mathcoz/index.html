@@ -337,6 +337,7 @@
             align-items: center;
             gap: 12px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(0, 240, 255, 0.18) inset;
+            flex-wrap: wrap;
         }
 
         .input-wrapper:focus-within {
@@ -352,10 +353,44 @@
             color: white;
             font-size: 1rem;
             outline: none;
+            min-width: 120px;
         }
 
         #userInput::placeholder {
             color: var(--text-muted);
+        }
+
+        .image-preview-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 40px;
+            padding: 4px 12px 4px 8px;
+            margin-right: 8px;
+        }
+
+        .image-preview {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 8px var(--primary-glow);
+        }
+
+        .remove-image {
+            background: none;
+            border: none;
+            color: #ffa0a0;
+            font-size: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            padding: 0 4px;
+        }
+
+        .remove-image:hover {
+            color: #ff5e5e;
         }
 
         #sendBtn {
@@ -543,8 +578,9 @@
             </div>
             <div id="chatBox"></div>
             <div class="input-panel">
-                <div class="input-wrapper">
-                    <input type="text" id="userInput" placeholder="Matematik sorusu sor, LaTeX kullanabilirsin..." autofocus>
+                <div class="input-wrapper" id="inputWrapper">
+                    <input type="text" id="userInput" placeholder="Matematik sorusu sor, LaTeX kullanabilirsin... (resim yapıştırmak için Ctrl+V)" autofocus>
+                    <div id="imagePreviewArea" style="display: flex; align-items: center;"></div>
                     <button id="sendBtn">&gt;</button>
                 </div>
             </div>
@@ -576,6 +612,10 @@
         let isStreaming = false;
         let streamCancel = null;
         let currentStreamElement = null;
+        
+        // Resim yapıştırma için değişkenler
+        let pendingImageFile = null;      // Yapıştırılan resim dosyası
+        let pendingImageUrl = null;       // Preview için URL
 
         // ==================== BAŞLANGIÇ MESAJI ====================
         const welcomeMsg = {
@@ -620,6 +660,73 @@
             saveToLocal();
             renderSidebar();
             if (!isStreaming) renderMessages();
+        }
+
+        // ==================== RESİM ÖNİZLEME VE TEMİZLEME ====================
+        function clearPendingImage() {
+            if (pendingImageUrl) {
+                URL.revokeObjectURL(pendingImageUrl);
+                pendingImageUrl = null;
+            }
+            pendingImageFile = null;
+            const container = document.getElementById('imagePreviewArea');
+            if (container) container.innerHTML = '';
+        }
+
+        function showImagePreview(file) {
+            clearPendingImage();
+            pendingImageFile = file;
+            const url = URL.createObjectURL(file);
+            pendingImageUrl = url;
+            const container = document.getElementById('imagePreviewArea');
+            const previewDiv = document.createElement('div');
+            previewDiv.className = 'image-preview-container';
+            previewDiv.innerHTML = `
+                <img class="image-preview" src="${url}" alt="resim önizleme">
+                <button class="remove-image" title="Resmi kaldır">✕</button>
+            `;
+            const removeBtn = previewDiv.querySelector('.remove-image');
+            removeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                clearPendingImage();
+            });
+            container.appendChild(previewDiv);
+        }
+
+        // ==================== YAPIŞTIRMA OLAYI ====================
+        function setupPasteHandler() {
+            const inputEl = document.getElementById('userInput');
+            inputEl.addEventListener('paste', async (e) => {
+                const items = e.clipboardData?.items;
+                if (!items) return;
+                
+                let imageFile = null;
+                let plainText = null;
+                
+                for (const item of items) {
+                    if (item.type.indexOf('image') !== -1) {
+                        imageFile = item.getAsFile();
+                    } else if (item.type === 'text/plain') {
+                        plainText = await new Promise(resolve => {
+                            item.getAsString(resolve);
+                        });
+                    }
+                }
+                
+                if (imageFile) {
+                    e.preventDefault();  // resim varsa varsayılan yapıştırmayı engelle
+                    showImagePreview(imageFile);
+                    // Eğer aynı anda metin de varsa, onu input'a manuel ekle
+                    if (plainText) {
+                        const start = inputEl.selectionStart;
+                        const end = inputEl.selectionEnd;
+                        const currentVal = inputEl.value;
+                        inputEl.value = currentVal.substring(0, start) + plainText + currentVal.substring(end);
+                        inputEl.selectionStart = inputEl.selectionEnd = start + plainText.length;
+                    }
+                }
+                // eğer sadece metin varsa hiçbir şey yapma (varsayılan davranış devam eder)
+            });
         }
 
         // ==================== RENDER ====================
@@ -682,6 +789,7 @@
                     renderMessages();
                     document.getElementById('userInput').disabled = false;
                     document.getElementById('sendBtn').disabled = false;
+                    clearPendingImage();  // sohbet değişince resim temizlensin
                 };
                 const delBtn = document.createElement('button');
                 delBtn.className = 'delete-btn';
@@ -705,6 +813,7 @@
                     renderMessages();
                     document.getElementById('userInput').disabled = false;
                     document.getElementById('sendBtn').disabled = false;
+                    clearPendingImage();
                 };
                 item.appendChild(titleSpan);
                 item.appendChild(delBtn);
@@ -838,21 +947,26 @@ Kurallar:
             return `${system}\n\n[Geçmiş]\n${history}\nAsistan:`;
         }
 
-        // ==================== MESAJ GÖNDERME ====================
+        // ==================== MESAJ GÖNDERME (Resim + Metin) ====================
         async function sendMessage() {
             if (isStreaming) return;
             const input = document.getElementById('userInput');
             const btn = document.getElementById('sendBtn');
             const text = input.value.trim();
-            if (!text) return;
+            if (!text && !pendingImageFile) return;
 
             const session = getActiveSession();
             const isFirstUser = session.messages.filter(m => m.role === 'user').length === 0;
 
+            // Kullanıcı mesajını göster (resim varsa metinle birlikte)
+            let userDisplayText = text;
+            if (pendingImageFile) {
+                userDisplayText = text ? `${text} 📎 [Resim eklendi]` : `📎 [Resim]`;
+            }
             const userMsg = {
                 id: Date.now() + '-user',
                 role: 'user',
-                text: text
+                text: userDisplayText
             };
             updateActiveSession(s => ({
                 ...s,
@@ -871,19 +985,38 @@ Kurallar:
             }));
             renderMessages();
 
-            const context = buildContext();
-            const fullPrompt = context + `\nKullanıcı: ${text}\nAsistan:`;
+            // API'ye gönderilecek form-data
+            const formData = new FormData();
+            // Bağlam + kullanıcı mesajı (resim yoksa bağlamı gönder, resim varsa da metni gönder)
+            let promptText = text;
+            if (!pendingImageFile) {
+                const context = buildContext();
+                promptText = context + `\nKullanıcı: ${text}\nAsistan:`;
+            } else {
+                // Resim varsa, direkt mesajı gönder (bağlamı eklemek isteğe bağlı ama karışıklığı önlemek için sadece mesaj)
+                // Ancak daha iyi sonuç için bağlamı da ekleyebiliriz. Fakat resim analizi için basit tutalım.
+                // Yine de sohbet bütünlüğü için bağlamı ekleyelim.
+                const context = buildContext();
+                promptText = context + `\nKullanıcı: ${text}\nAsistan:`;
+            }
+            formData.append('message', promptText);
+            if (pendingImageFile) {
+                formData.append('image', pendingImageFile, pendingImageFile.name || 'pasted_image.png');
+            }
 
             try {
-                const form = new FormData();
-                form.append('message', fullPrompt);
-                const response = await fetch(`${API_BASE}/chat`, { method: 'POST', body: form });
+                const response = await fetch(`${API_BASE}/chat`, {
+                    method: 'POST',
+                    body: formData
+                });
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const rawReply = await response.text();
                 startStreaming(activeId, aiMsgId, rawReply);
-                if (isFirstUser) {
+                if (isFirstUser && text) {
                     generateTitleAsync(text, activeId);
                 }
+                // Resim gönderildikten sonra temizle
+                clearPendingImage();
             } catch (err) {
                 updateActiveSession(s => ({
                     ...s,
@@ -892,6 +1025,7 @@ Kurallar:
                 renderMessages();
                 input.disabled = false;
                 btn.disabled = false;
+                clearPendingImage();
             }
         }
 
@@ -913,6 +1047,7 @@ Kurallar:
             document.getElementById('userInput').disabled = false;
             document.getElementById('sendBtn').disabled = false;
             document.getElementById('userInput').focus();
+            clearPendingImage();
         }
 
         // ==================== KAYA STUDIOS PLUS ====================
@@ -948,7 +1083,6 @@ Kurallar:
                 if (response.ok) {
                     showToast('İsteğiniz Beklemeye Alındı. 24 Saat içinde size Gmail üzerinden bilgilendireceğiz.');
                     closeModal();
-                    // form temizle
                     document.getElementById('firstName').value = '';
                     document.getElementById('lastName').value = '';
                     document.getElementById('gmail').value = '';
@@ -1042,11 +1176,13 @@ Kurallar:
         document.getElementById('kayaPlusBtn').addEventListener('click', openModal);
         document.getElementById('closeModalBtn').addEventListener('click', closeModal);
         document.getElementById('submitRequestBtn').addEventListener('click', submitPlusRequest);
-        // modal dışına tıklayınca kapat
         window.onclick = (e) => {
             const modal = document.getElementById('kayaModal');
             if (e.target === modal) closeModal();
         };
+        
+        // Yapıştırma olayını bağla
+        setupPasteHandler();
 
         // ==================== BAŞLAT ====================
         loadSessions();
@@ -1055,7 +1191,7 @@ Kurallar:
         renderMessages();
         initParticles();
         drawParticles();
-        console.log('Math Canavari v3.0 - Kaya Studios Plus eklendi');
+        console.log('Math Canavari v3.0 - Resim yapıştırma eklendi');
     </script>
 </body>
 </html>
