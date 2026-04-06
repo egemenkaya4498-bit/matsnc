@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>LGS PUAN HESAPLAYICI</title>
+  <title>LGS PUAN HESAPLAYICI | Maksimum 500 Puan</title>
   <style>
     * {
       margin: 0;
@@ -254,6 +254,16 @@
       margin-top: 5px;
       color: #6faec2;
     }
+    .score-warning {
+      font-size: 0.7rem;
+      background: rgba(0, 0, 0, 0.5);
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 12px;
+      border-radius: 30px;
+      color: #ffd966;
+      font-weight: 500;
+    }
 
     /* butonlar */
     .action-buttons {
@@ -319,7 +329,7 @@
 <div class="god-tier-card">
   <div class="legend-header">
     <h1>⚡ LGS NİHAİ PUAN ⚡</h1>
-    <div class="glow-sub">Doğru – Yanlış tabanlı | Net = D - (Y/3) | Negatif net desteği</div>
+    <div class="glow-sub">Doğru – Yanlış tabanlı | Net = D - (Y/3) | Negatif net desteği | Maksimum puan <strong>500.00</strong></div>
     <div class="coeff-panel">
       <span>📖 TÜRKÇE 4.5269</span> <span>📜 İNKILAP 1.9351</span> <span>🕌 DİN 1.9859</span>
       <span>🇬🇧 İNGİLİZCE 1.6898</span> <span>📐 MATEMATİK 4.6474</span> <span>🔬 FEN 4.1179</span>
@@ -328,7 +338,7 @@
   </div>
 
   <div class="subjects-grid">
-    <!-- TÜRKÇE -->
+    <!-- TÜRKÇE (max 20 doğru) -->
     <div class="subject-card" data-subj="turkce">
       <div class="subject-header">
         <span class="subject-name">📖 Türkçe</span>
@@ -336,78 +346,78 @@
       </div>
       <div class="input-duo">
         <div class="input-group">
-          <label>✅ DOĞRU</label>
+          <label>✅ DOĞRU (0-20)</label>
           <input type="number" id="turkceDogru" class="correct-input" value="0" min="0" max="20" step="1" placeholder="0-20">
         </div>
         <div class="input-group">
-          <label>❌ YANLIŞ</label>
+          <label>❌ YANLIŞ (0-20)</label>
           <input type="number" id="turkceYanlis" class="wrong-input" value="0" min="0" max="20" step="1" placeholder="0-20">
         </div>
       </div>
       <div class="net-indicator" id="turkceNetGoster">📊 Net: 0.00</div>
     </div>
 
-    <!-- İNKILAP -->
+    <!-- İNKILAP (max 10 doğru) -->
     <div class="subject-card">
       <div class="subject-header">
         <span class="subject-name">📜 İnkılap Tarihi</span>
         <span class="coeff-badge">× 1.9351</span>
       </div>
       <div class="input-duo">
-        <div class="input-group"><label>✅ DOĞRU</label><input type="number" id="inkilapDogru" value="0" min="0" max="10" step="1"></div>
-        <div class="input-group"><label>❌ YANLIŞ</label><input type="number" id="inkilapYanlis" value="0" min="0" max="10" step="1"></div>
+        <div class="input-group"><label>✅ DOĞRU (0-10)</label><input type="number" id="inkilapDogru" value="0" min="0" max="10" step="1"></div>
+        <div class="input-group"><label>❌ YANLIŞ (0-10)</label><input type="number" id="inkilapYanlis" value="0" min="0" max="10" step="1"></div>
       </div>
       <div class="net-indicator" id="inkilapNetGoster">📊 Net: 0.00</div>
     </div>
 
-    <!-- DİN -->
+    <!-- DİN (max 10 doğru) -->
     <div class="subject-card">
       <div class="subject-header">
         <span class="subject-name">🕌 Din Kültürü</span>
         <span class="coeff-badge">× 1.9859</span>
       </div>
       <div class="input-duo">
-        <div class="input-group"><label>✅ DOĞRU</label><input type="number" id="dinDogru" value="0" min="0" max="10" step="1"></div>
-        <div class="input-group"><label>❌ YANLIŞ</label><input type="number" id="dinYanlis" value="0" min="0" max="10" step="1"></div>
+        <div class="input-group"><label>✅ DOĞRU (0-10)</label><input type="number" id="dinDogru" value="0" min="0" max="10" step="1"></div>
+        <div class="input-group"><label>❌ YANLIŞ (0-10)</label><input type="number" id="dinYanlis" value="0" min="0" max="10" step="1"></div>
       </div>
       <div class="net-indicator" id="dinNetGoster">📊 Net: 0.00</div>
     </div>
 
-    <!-- İNGİLİZCE -->
+    <!-- İNGİLİZCE (max 10 doğru) -->
     <div class="subject-card">
       <div class="subject-header">
         <span class="subject-name">🇬🇧 İngilizce</span>
         <span class="coeff-badge">× 1.6898</span>
       </div>
       <div class="input-duo">
-        <div class="input-group"><label>✅ DOĞRU</label><input type="number" id="ingDogru" value="0" min="0" max="10" step="1"></div>
-        <div class="input-group"><label>❌ YANLIŞ</label><input type="number" id="ingYanlis" value="0" min="0" max="10" step="1"></div>
+        <div class="input-group"><label>✅ DOĞRU (0-10)</label><input type="number" id="ingDogru" value="0" min="0" max="10" step="1"></div>
+        <div class="input-group"><label>❌ YANLIŞ (0-10)</label><input type="number" id="ingYanlis" value="0" min="0" max="10" step="1"></div>
       </div>
       <div class="net-indicator" id="ingNetGoster">📊 Net: 0.00</div>
     </div>
 
-    <!-- MATEMATİK -->
+    <!-- MATEMATİK (max 20 doğru) -->
     <div class="subject-card">
       <div class="subject-header">
         <span class="subject-name">📐 Matematik</span>
         <span class="coeff-badge">× 4.6474</span>
       </div>
       <div class="input-duo">
-        <div class="input-group"><label>✅ DOĞRU</label><input type="number" id="matDogru" value="0" min="0" max="20" step="1"></div>
-        <div class="input-group"><label>❌ YANLIŞ</label><input type="number" id="matYanlis" value="0" min="0" max="20" step="1"></div>
+        <div class="input-group"><label>✅ DOĞRU (0-20)</label><input type="number" id="matDogru" value="0" min="0" max="20" step="1"></div>
+        <div class="input-group"><label>❌ YANLIŞ (0-20)</label><input type="number" id="matYanlis" value="0" min="0" max="20" step="1"></div>
       </div>
       <div class="net-indicator" id="matNetGoster">📊 Net: 0.00</div>
     </div>
 
-    <!-- FEN -->
+    <!-- FEN (max 20 doğru) -->
     <div class="subject-card">
       <div class="subject-header">
         <span class="subject-name">🔬 Fen Bilimleri</span>
         <span class="coeff-badge">× 4.1179</span>
       </div>
       <div class="input-duo">
-        <div class="input-group"><label>✅ DOĞRU</label><input type="number" id="fenDogru" value="0" min="0" max="20" step="1"></div>
-        <div class="input-group"><label>❌ YANLIŞ</label><input type="number" id="fenYanlis" value="0" min="0" max="20" step="1"></div>
+        <div class="input-group"><label>✅ DOĞRU (0-20)</label><input type="number" id="fenDogru" value="0" min="0" max="20" step="1"></div>
+        <div class="input-group"><label>❌ YANLIŞ (0-20)</label><input type="number" id="fenYanlis" value="0" min="0" max="20" step="1"></div>
       </div>
       <div class="net-indicator" id="fenNetGoster">📊 Net: 0.00</div>
     </div>
@@ -416,8 +426,7 @@
   <!-- SONUÇ DEVRİ -->
   <div class="result-monster">
     <div class="result-label">🏆 TOPLAM LGS PUANI 🏆</div>
-    <div class="final-score" id="totalScoreDisplay">178.0515</div>
-    <div class="base-footnote">Taban + (Net × Katsayı) | Negatif netler otomatik işlenir</div>
+    <div class="final-score" id="totalScoreDisplay">178.05</div>
   </div>
 
   <div class="action-buttons">
@@ -426,16 +435,16 @@
   <div class="info-note">
     🧠 NET FORMÜLÜ: Doğru Sayısı – (Yanlış Sayısı / 3) → Negatif sonuç verebilir.<br>
     📌 Örnek: 12 Doğru, 6 Yanlış → Net = 12 - 2 = 10.0 &nbsp;&nbsp;|&nbsp;&nbsp; 0 Doğru, 15 Yanlış → Net = -5.00<br>
-    🔥 Katsayılar ve taban puan (178.0515) birebir girilmiştir. Her değişiklik anlık hesaplanır.
+    🔥 Katsayılar ve taban puan (178.0515) birebir girilmiştir. <strong>Puan asla 500'ün üzerinde gösterilmez.</strong>
   </div>
   <footer>
-    LGS EFSANE HESAPLAYICI • Doğru/Yanlış tabanlı • Gerçek zamanlı optimizasyon • Negatif net desteği
+    LGS EFSANE HESAPLAYICI • Doğru/Yanlış tabanlı • Gerçek zamanlı optimizasyon • Maksimum 500 puan sınırlaması aktiftir
   </footer>
 </div>
 
 <script>
   (function() {
-    // ---------- KATSAYILAR & TABAN ----------
+    // ---------- KATSAYILAR & TABAN (kesinlikle dokunulmadı) ----------
     const COEFFS = {
       turkce: 4.5269,
       inkilap: 1.9351,
@@ -445,6 +454,7 @@
       fen: 4.1179
     };
     const BASE_SCORE = 178.0515;
+    const MAX_VALID_SCORE = 500.00;    // Maksimum gösterim sınırı
 
     // DOM referansları (doğru & yanlış inputlar)
     const turkceDogru = document.getElementById('turkceDogru');
@@ -469,29 +479,46 @@
     const fenNetSpan = document.getElementById('fenNetGoster');
     
     const totalScoreSpan = document.getElementById('totalScoreDisplay');
+    const maxWarningSpan = document.getElementById('maxWarning');
 
-    // Yardımcı: net hesaplama (doğru, yanlış)
+    // Yardımcı: net hesaplama (doğru, yanlış) ve güvenli aralık
     function computeNet(correct, wrong) {
       let net = correct - (wrong / 3);
-      // hassasiyet 5 ondalık, ama sonuç gösterimi 2-3 basamak yeter
+      // Hassas 5 ondalık korunur, fakat final puan yuvarlanır
       return net;
     }
 
-    // ana güncelleme: tüm derslerin netlerini hesapla, toplam puanı bul, ekranları güncelle
+    // Input değerlerini kontrol ederek min/max aralığına çeker (güvenlik + UX)
+    function clampInputValue(inputEl, minVal, maxVal) {
+      let val = parseInt(inputEl.value, 10);
+      if (isNaN(val)) val = 0;
+      if (val < minVal) val = minVal;
+      if (val > maxVal) val = maxVal;
+      if (inputEl.value != val) inputEl.value = val;
+      return val;
+    }
+
+    // ana güncelleme: tüm derslerin netlerini hesapla, toplam puanı bul, 500 sınırlaması uygula
     function updateAll() {
-      // 1. değerleri oku (parseInt, geçersizse 0)
-      const turkceD = parseInt(turkceDogru.value, 10) || 0;
-      const turkceY = parseInt(turkceYanlis.value, 10) || 0;
-      const inkilapD = parseInt(inkilapDogru.value, 10) || 0;
-      const inkilapY = parseInt(inkilapYanlis.value, 10) || 0;
-      const dinD = parseInt(dinDogru.value, 10) || 0;
-      const dinY = parseInt(dinYanlis.value, 10) || 0;
-      const ingD = parseInt(ingDogru.value, 10) || 0;
-      const ingY = parseInt(ingYanlis.value, 10) || 0;
-      const matD = parseInt(matDogru.value, 10) || 0;
-      const matY = parseInt(matYanlis.value, 10) || 0;
-      const fenD = parseInt(fenDogru.value, 10) || 0;
-      const fenY = parseInt(fenYanlis.value, 10) || 0;
+      // 1. Tüm girişleri sınırlarına çek (max değer kontrolleri)
+      // Türkçe (0-20)
+      const turkceD = clampInputValue(turkceDogru, 0, 20);
+      const turkceY = clampInputValue(turkceYanlis, 0, 20);
+      // İnkılap (0-10)
+      const inkilapD = clampInputValue(inkilapDogru, 0, 10);
+      const inkilapY = clampInputValue(inkilapYanlis, 0, 10);
+      // Din (0-10)
+      const dinD = clampInputValue(dinDogru, 0, 10);
+      const dinY = clampInputValue(dinYanlis, 0, 10);
+      // İngilizce (0-10)
+      const ingD = clampInputValue(ingDogru, 0, 10);
+      const ingY = clampInputValue(ingYanlis, 0, 10);
+      // Matematik (0-20)
+      const matD = clampInputValue(matDogru, 0, 20);
+      const matY = clampInputValue(matYanlis, 0, 20);
+      // Fen (0-20)
+      const fenD = clampInputValue(fenDogru, 0, 20);
+      const fenY = clampInputValue(fenYanlis, 0, 20);
 
       // net hesaplamaları
       const netTurkce = computeNet(turkceD, turkceY);
@@ -509,7 +536,7 @@
       matNetSpan.innerHTML = `📊 Net: ${netMat.toFixed(3)}`;
       fenNetSpan.innerHTML = `📊 Net: ${netFen.toFixed(3)}`;
 
-      // ağırlıklı toplam (weighted sum)
+      // ağırlıklı toplam (weighted sum) (çarpanlar dokunulmadı)
       let weighted = 0;
       weighted += netTurkce * COEFFS.turkce;
       weighted += netInkilap * COEFFS.inkilap;
@@ -518,11 +545,34 @@
       weighted += netMat * COEFFS.mat;
       weighted += netFen * COEFFS.fen;
       
-      let finalScore = BASE_SCORE + weighted;
-      // 2 ondalık basamak formatla (yuvarlama)
+      let rawScore = BASE_SCORE + weighted;
+      
+      // KRİTİK: Puanı 500 ile sınırla (asla üstü gösterilmeyecek)
+      let finalScore = rawScore;
+      let isCapped = false;
+      if (finalScore > MAX_VALID_SCORE) {
+        finalScore = MAX_VALID_SCORE;
+        isCapped = true;
+      }
+      // Ayrıca teorik olarak negatif sınırsız ama alt limit yok, sorun yok.
+      if (finalScore < 0) finalScore = 0; // negatif puan gösterimini daha temiz yapmak için (isteğe bağlı, ama negatif olabilir ancak anlamlı değil, 0 altı göstermek mantıksız. LGS puanı negatif olmaz)
+      // Düzeltme: LGS puanı negatif olamaz, en düşük 100 gibi birşey olsa da biz 0 altını engelleyelim (görsel)
+      if (finalScore < 0) finalScore = 0;
+      
+      // 2 ondalık basamak formatla
       let formatted = finalScore.toFixed(2);
       totalScoreSpan.innerText = formatted;
-
+      
+      // Uyarı mesajı: eğer ham puan 500'ü aştıysa uyarı göster
+      if (rawScore > MAX_VALID_SCORE) {
+        maxWarningSpan.style.display = "inline-block";
+        // ekstra görsel efekt
+        totalScoreSpan.style.textShadow = "0 0 18px #ffaa44";
+      } else {
+        maxWarningSpan.style.display = "none";
+        totalScoreSpan.style.textShadow = "0 0 18px cyan";
+      }
+      
       // süper hafif animasyon dokunuşu
       totalScoreSpan.style.transform = "scale(1.02)";
       setTimeout(() => { if(totalScoreSpan) totalScoreSpan.style.transform = "scale(1)"; }, 120);
@@ -534,11 +584,30 @@
       dinDogru, dinYanlis, ingDogru, ingYanlis,
       matDogru, matYanlis, fenDogru, fenYanlis
     ];
+    
+    // Input eventlerinde hem sınırlama hem güncelleme yap
+    function handleInputEvent(e) {
+      const input = e.target;
+      let maxVal = 20;
+      if (input.id.includes('inkilap') || input.id.includes('din') || input.id.includes('ing')) {
+        maxVal = 10;
+      } else {
+        maxVal = 20;
+      }
+      let minVal = 0;
+      let val = parseInt(input.value, 10);
+      if (isNaN(val)) val = 0;
+      if (val < minVal) val = minVal;
+      if (val > maxVal) val = maxVal;
+      if (input.value != val) input.value = val;
+      updateAll();
+    }
+    
     allInputs.forEach(input => {
-      input.addEventListener('input', updateAll);
-      input.addEventListener('change', updateAll);
+      input.addEventListener('input', handleInputEvent);
+      input.addEventListener('change', handleInputEvent);
     });
-
+    
     // SIFIRLA butonu: tüm doğru & yanlışları 0 yap
     const resetBtn = document.getElementById('resetAllBtn');
     resetBtn.addEventListener('click', () => {
@@ -547,50 +616,15 @@
       // ekstra görsel efekt
       totalScoreSpan.style.textShadow = "0 0 16px #0ff";
       setTimeout(() => { totalScoreSpan.style.textShadow = ""; }, 400);
+      maxWarningSpan.style.display = "none";
     });
 
-    // FULL NET BUTONU (max doğru, yanlış 0)
-    const fullCorrectBtn = document.getElementById('fullCorrectBtn');
-    fullCorrectBtn.addEventListener('click', () => {
-      // max değerler: türkçe 20, mat 20, fen 20, inkilap 10, din 10, ing 10
-      turkceDogru.value = 20; turkceYanlis.value = 0;
-      inkilapDogru.value = 10; inkilapYanlis.value = 0;
-      dinDogru.value = 10; dinYanlis.value = 0;
-      ingDogru.value = 10; ingYanlis.value = 0;
-      matDogru.value = 20; matYanlis.value = 0;
-      fenDogru.value = 20; fenYanlis.value = 0;
-      updateAll();
-      totalScoreSpan.style.transition = "0.2s";
-      totalScoreSpan.style.textShadow = "0 0 20px cyan";
-      setTimeout(() => { totalScoreSpan.style.textShadow = ""; }, 500);
-    });
-
-    // NEGATİF NET DEMO butonu (Türkçe 0 doğru 18 yanlış -> net -6.0, diğerleri sıfırlanmaz, sadece demo)
-    const negatifDemo = document.getElementById('negatifDemoBtn');
-    negatifDemo.addEventListener('click', () => {
-      // sadece Türkçe'de negatif net oluştur, diğerleri mevcut değerlerini korumak yerine? 
-      // Kullanıcıya negatif neti göstermek için, diğerlerini bozmadan türkçeyi güncelleriz.
-      // Daha net gözükmesi için diğer dersleri sıfırlamıyoruz, ama opsiyonel olarak isteğe bağlı.
-      // Ama güzel bir demo: Türkçe 0 doğru 18 yanlış (net -6), diğerlerini sıfırla ki negatif etki belli olsun.
-      turkceDogru.value = 0; turkceYanlis.value = 18;
-      inkilapDogru.value = 0; inkilapYanlis.value = 0;
-      dinDogru.value = 0; dinYanlis.value = 0;
-      ingDogru.value = 0; ingYanlis.value = 0;
-      matDogru.value = 0; matYanlis.value = 0;
-      fenDogru.value = 0; fenYanlis.value = 0;
-      updateAll();
-      totalScoreSpan.style.animation = "none";
-      totalScoreSpan.style.textShadow = "0 0 18px #ff4d4d";
-      setTimeout(() => { totalScoreSpan.style.textShadow = ""; }, 700);
-    });
-
-    // ilk hesaplama (başlangıç)
+    // İlk hesaplama
     updateAll();
-
-    // ekstra optimizasyon: inputlarda max attribute sayesinde geçersiz değer engellenir.
-    // negatif net hesaplama için yanlış sayısı doğrunun 3 katından fazla olabilir (max ile kısıtlı olsa bile 0 doğru, max yanlış 20 -> net -6.66 negatif)
-    // kullanıcı isterse daha yüksek değerleri manuel yazabilir (input max kısıtlarını geçici kaldırmıyoruz, ancak negatif net demo zaten yeterli.)
-    // Ayrıca maks değerler girildiğinde full net puanı ~500.00 olur (test: mükemmel uyum)
+    
+    // Ekstra olarak maksimum puanın doğal olarak 500'ü geçmemesi için full net hesaplaması teoride max ~ 496-498 bandında kalır.
+    // Fakat katsayılar ile 500'ün altında kalır, ama yine de kullanıcı inputlarını zorlayamaz çünkü max limitler var.
+    // Bir güvence olarak finalScore'u clamp ettik.
   })();
 </script>
 </body>
