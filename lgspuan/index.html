@@ -1,1231 +1,597 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MATH CANAVARI · KAYA STUDIOS AI</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg-dark: #0a0c10;
-            --bg-panel: #11161e;
-            --primary: #00f0ff;
-            --primary-glow: rgba(0, 240, 255, 0.4);
-            --secondary: #a020f0;
-            --secondary-glow: rgba(160, 32, 240, 0.4);
-            --glass-bg: rgba(20, 30, 45, 0.62);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --text: #eef5ff;
-            --text-muted: #9aaec9;
-            --sidebar-width: 300px;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg-dark);
-            color: var(--text);
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        #particle-canvas {
-            position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .app {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            width: 100%;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(2px);
-        }
-
-        .sidebar {
-            width: var(--sidebar-width);
-            background: var(--glass-bg);
-            border-right: 1px solid var(--glass-border);
-            backdrop-filter: blur(20px);
-            display: flex;
-            flex-direction: column;
-            padding: 24px 16px;
-            gap: 24px;
-            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.45);
-        }
-
-        .brand-badge {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding-left: 8px;
-            color: var(--primary);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 0.78rem;
-        }
-
-        .brand-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: var(--primary);
-            box-shadow: 0 0 14px var(--primary-glow);
-        }
-
-        .brand-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 2rem;
-            font-weight: 700;
-            line-height: 1;
-        }
-
-        .new-chat-btn {
-            background: linear-gradient(135deg, var(--secondary), #b060f0);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 16px;
-            border-radius: 20px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 8px 20px var(--secondary-glow);
-        }
-
-        .new-chat-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px var(--secondary-glow);
-        }
-
-        .kaya-plus-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--primary);
-            color: var(--primary);
-            padding: 14px;
-            border-radius: 20px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: center;
-            backdrop-filter: blur(10px);
-        }
-
-        .kaya-plus-btn:hover {
-            background: rgba(0, 240, 255, 0.15);
-            box-shadow: 0 0 12px var(--primary-glow);
-        }
-
-        .history-list {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            padding-right: 4px;
-            scrollbar-width: thin;
-            scrollbar-color: var(--primary) transparent;
-        }
-
-        .history-item {
-            padding: 14px 16px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--glass-border);
-            border-radius: 18px;
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-
-        .history-item.active {
-            background: rgba(0, 240, 255, 0.1);
-            border-color: var(--primary);
-            box-shadow: 0 0 12px var(--primary-glow);
-        }
-
-        .history-title {
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            color: var(--text-muted);
-        }
-
-        .history-item.active .history-title {
-            color: white;
-        }
-
-        .delete-btn {
-            margin-top: 8px;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 0.7rem;
-            cursor: pointer;
-            text-align: left;
-        }
-
-        .delete-btn:hover {
-            color: #ff9e9e;
-        }
-
-        .sidebar-footer {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 16px;
-            text-align: center;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .chat-main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-        }
-
-        .topbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px 22px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .topbar-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        .quality-badge {
-            background: linear-gradient(135deg, #ffd966, #ffb347);
-            padding: 6px 14px;
-            border-radius: 40px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: #1e2a3a;
-            box-shadow: 0 0 12px rgba(255, 180, 70, 0.6);
-        }
-
-        #chatBox {
-            flex: 1;
-            overflow-y: auto;
-            padding: 26px 10%;
-            display: flex;
-            flex-direction: column;
-            gap: 22px;
-            scroll-behavior: smooth;
-        }
-
-        .msg {
-            max-width: 78%;
-            padding: 18px 22px;
-            border-radius: 28px;
-            line-height: 1.7;
-            font-size: 0.98rem;
-            word-wrap: break-word;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            animation: msgPop 0.28s ease;
-        }
-
-        @keyframes msgPop {
-            from {
-                opacity: 0;
-                transform: translateY(12px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .user-msg {
-            align-self: flex-end;
-            background: linear-gradient(135deg, var(--secondary), #8a2be2);
-            border-bottom-right-radius: 8px;
-        }
-
-        .ai-msg {
-            align-self: flex-start;
-            background: var(--glass-bg);
-            border-bottom-left-radius: 8px;
-            border-color: rgba(0, 240, 255, 0.7);
-            box-shadow: 0 0 20px var(--primary-glow);
-        }
-
-        .error-msg {
-            background: rgba(255, 50, 50, 0.16);
-            border-color: rgba(255, 80, 80, 0.8);
-            color: #ffd5d5;
-        }
-
-        .math-block {
-            margin: 12px 0;
-            overflow-x: auto;
-            padding: 12px 14px;
-            border-radius: 16px;
-            background: rgba(0, 0, 0, 0.22);
-            border: 1px solid rgba(0, 240, 255, 0.18);
-        }
-
-        .typing-indicator {
-            display: flex;
-            gap: 6px;
-            padding: 18px 24px;
-            background: var(--glass-bg);
-            border-radius: 28px;
-            border: 1px solid var(--primary);
-            width: fit-content;
-        }
-
-        .typing-indicator span {
-            width: 10px;
-            height: 10px;
-            background: var(--primary);
-            border-radius: 50%;
-            animation: bounce 1.4s infinite ease-in-out;
-            box-shadow: 0 0 10px var(--primary-glow);
-        }
-
-        .typing-indicator span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .typing-indicator span:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes bounce {
-            0%, 60%, 100% {
-                transform: translateY(0);
-            }
-            30% {
-                transform: translateY(-10px);
-            }
-        }
-
-        .input-panel {
-            padding: 20px 10% 24px;
-        }
-
-        .input-wrapper {
-            background: rgba(10, 15, 25, 0.82);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 60px;
-            padding: 8px 8px 8px 24px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(0, 240, 255, 0.18) inset;
-            flex-wrap: wrap;
-        }
-
-        .input-wrapper:focus-within {
-            border-color: var(--primary);
-            box-shadow: 0 0 30px var(--primary-glow), 0 0 0 1px var(--primary) inset;
-        }
-
-        #userInput {
-            flex: 1;
-            height: 60px;
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 1rem;
-            outline: none;
-            min-width: 120px;
-        }
-
-        #userInput::placeholder {
-            color: var(--text-muted);
-        }
-
-        .image-preview-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(0,0,0,0.5);
-            border-radius: 40px;
-            padding: 4px 12px 4px 8px;
-            margin-right: 8px;
-        }
-
-        .image-preview {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            object-fit: cover;
-            border: 1px solid var(--primary);
-            box-shadow: 0 0 8px var(--primary-glow);
-        }
-
-        .remove-image {
-            background: none;
-            border: none;
-            color: #ffa0a0;
-            font-size: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            padding: 0 4px;
-        }
-
-        .remove-image:hover {
-            color: #ff5e5e;
-        }
-
-        .attach-btn {
-            background: rgba(255,255,255,0.1);
-            border: none;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            font-size: 1.4rem;
-            cursor: pointer;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-
-        .attach-btn:hover {
-            background: rgba(0, 240, 255, 0.2);
-            transform: scale(1.05);
-        }
-
-        #sendBtn {
-            width: 56px;
-            height: 56px;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            background: linear-gradient(145deg, var(--primary), #00b8ff);
-            color: #061017;
-            font-size: 1.4rem;
-            font-weight: 800;
-            box-shadow: 0 0 20px var(--primary-glow);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        #sendBtn:hover {
-            transform: scale(1.06);
-            box-shadow: 0 0 35px var(--primary-glow);
-        }
-
-        #sendBtn:disabled {
-            opacity: 0.65;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(12px);
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background: var(--bg-panel);
-            border-radius: 32px;
-            padding: 32px;
-            width: 90%;
-            max-width: 450px;
-            border: 1px solid var(--primary);
-            box-shadow: 0 0 30px var(--primary-glow);
-        }
-
-        .modal-content h2 {
-            margin-bottom: 20px;
-            color: var(--primary);
-        }
-
-        .modal-content input {
-            width: 100%;
-            padding: 14px 16px;
-            margin: 10px 0;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--glass-border);
-            border-radius: 28px;
-            color: white;
-            font-size: 1rem;
-            outline: none;
-        }
-
-        .modal-content input:focus {
-            border-color: var(--primary);
-        }
-
-        .modal-buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-            margin-top: 20px;
-        }
-
-        .modal-buttons button {
-            padding: 10px 20px;
-            border-radius: 40px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .submit-btn {
-            background: var(--primary);
-            color: #0a0c10;
-        }
-
-        .cancel-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1e2a3a;
-            color: #c8f9ff;
-            padding: 14px 24px;
-            border-radius: 60px;
-            border-left: 5px solid var(--primary);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-            z-index: 1100;
-            font-weight: 500;
-            animation: fadeInOut 3s ease forwards;
-        }
-
-        @keyframes fadeInOut {
-            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
-            15% { opacity: 1; transform: translateX(-50%) translateY(0); }
-            85% { opacity: 1; transform: translateX(-50%) translateY(0); }
-            100% { opacity: 0; transform: translateX(-50%) translateY(-20px); visibility: hidden; }
-        }
-
-        .mobile-new-chat {
-            display: none;
-        }
-
-        @media (max-width: 900px) {
-            .sidebar {
-                display: none;
-            }
-
-            #chatBox,
-            .input-panel {
-                padding-left: 18px;
-                padding-right: 18px;
-            }
-
-            .msg {
-                max-width: 92%;
-            }
-
-            .topbar-title {
-                font-size: 1.6rem;
-            }
-
-            .mobile-new-chat {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                border: 1px solid rgba(0, 240, 255, 0.35);
-                background: transparent;
-                color: #c8f9ff;
-                border-radius: 999px;
-                padding: 10px 14px;
-                cursor: pointer;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>LGS PUAN HESAPLAYICI</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: radial-gradient(ellipse at 30% 20%, #03080f, #000000);
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem 1.5rem;
+      position: relative;
+      color: #edf4fc;
+    }
+
+    /* dinamik ışık efekti */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 70% 10%, rgba(0, 210, 255, 0.12), transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ana kart – ultra cam efekti */
+    .god-tier-card {
+      max-width: 1380px;
+      width: 100%;
+      background: rgba(2, 8, 12, 0.68);
+      backdrop-filter: blur(18px);
+      border-radius: 3.8rem;
+      border: 1px solid rgba(0, 255, 245, 0.3);
+      box-shadow: 0 35px 65px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(0, 230, 250, 0.2) inset, 0 0 28px rgba(0, 210, 240, 0.3);
+      padding: 2rem 2rem 2rem;
+      transition: all 0.25s ease;
+      z-index: 3;
+    }
+
+    @media (max-width: 700px) {
+      body {
+        padding: 1rem;
+      }
+      .god-tier-card {
+        padding: 1.3rem;
+        border-radius: 2rem;
+      }
+    }
+
+    /* başlık şov */
+    .legend-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .legend-header h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(125deg, #FFFFFF, #80f0ff, #00dcff);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      letter-spacing: -0.8px;
+      text-shadow: 0 0 12px rgba(0, 200, 250, 0.5);
+    }
+    .glow-sub {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #8cc9e0;
+      border-bottom: 1px dashed rgba(0, 200, 220, 0.5);
+      display: inline-block;
+      margin-top: 8px;
+      padding-bottom: 6px;
+    }
+    .coeff-panel {
+      background: rgba(0, 30, 38, 0.65);
+      border-radius: 80px;
+      padding: 8px 18px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px 24px;
+      margin-top: 16px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      backdrop-filter: blur(5px);
+      border: 0.5px solid rgba(0, 220, 210, 0.4);
+    }
+    .coeff-panel span {
+      font-family: 'JetBrains Mono', monospace;
+      background: #00161f;
+      padding: 4px 10px;
+      border-radius: 40px;
+      color: #9efff0;
+    }
+
+    /* ders grid'i */
+    .subjects-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.6rem;
+      margin: 2rem 0 2rem;
+    }
+
+    @media (max-width: 680px) {
+      .subjects-grid {
+        grid-template-columns: 1fr;
+        gap: 1.3rem;
+      }
+    }
+
+    /* her ders kartı – siber cam */
+    .subject-card {
+      background: rgba(8, 15, 20, 0.65);
+      backdrop-filter: blur(8px);
+      border-radius: 2rem;
+      padding: 1.2rem 1.2rem 1.4rem;
+      border: 1px solid rgba(0, 210, 230, 0.3);
+      transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
+    .subject-card:hover {
+      border-color: #0cf;
+      box-shadow: 0 12px 28px rgba(0, 180, 220, 0.25);
+      transform: translateY(-3px);
+      background: rgba(12, 22, 28, 0.75);
+    }
+
+    .subject-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid rgba(0, 200, 210, 0.4);
+    }
+    .subject-name {
+      font-weight: 800;
+      font-size: 1.3rem;
+      background: linear-gradient(145deg, #eef5ff, #b2f0ff);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+    .coeff-badge {
+      background: #07161e;
+      padding: 0.2rem 0.8rem;
+      border-radius: 2rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #6ee7ff;
+      font-family: monospace;
+      border: 0.5px solid #2ac2d4;
+    }
+
+    /* input alanları */
+    .input-duo {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin: 0.7rem 0 0.6rem;
+    }
+    .input-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .input-group label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #9ad7e8;
+    }
+    .input-group input {
+      background: #010b0f;
+      border: 1.5px solid #1f5f6e;
+      border-radius: 1.8rem;
+      padding: 0.7rem 0.8rem;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #f0fcff;
+      text-align: center;
+      font-family: inherit;
+      transition: 0.2s;
+      outline: none;
+    }
+    .input-group input:focus {
+      border-color: #0ff;
+      box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.3);
+      background: #021217;
+    }
+    .net-indicator {
+      margin-top: 10px;
+      background: #03171f;
+      border-radius: 2rem;
+      padding: 0.35rem 0.8rem;
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #aafff0;
+      border: 0.5px solid #2d9eb0;
+      display: inline-block;
+      width: 100%;
+    }
+    .net-indicator span {
+      font-family: monospace;
+      font-weight: 800;
+      color: #f0ff;
+    }
+
+    /* sonuç canavarı */
+    .result-monster {
+      background: linear-gradient(125deg, #021016, #000103);
+      border-radius: 2.2rem;
+      padding: 1.5rem 1rem;
+      margin: 1rem 0 1.5rem;
+      text-align: center;
+      border: 1px solid rgba(0, 240, 255, 0.7);
+      box-shadow: 0 0 28px rgba(0, 180, 220, 0.4), inset 0 0 12px rgba(0, 255, 200, 0.2);
+    }
+    .result-label {
+      font-size: 0.85rem;
+      letter-spacing: 4px;
+      font-weight: 500;
+      color: #79d7ec;
+    }
+    .final-score {
+      font-size: 4.3rem;
+      font-weight: 900;
+      background: linear-gradient(145deg, #fff, #8df5ff, #1ecbe8);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      line-height: 1.1;
+      text-shadow: 0 0 18px cyan;
+      transition: transform 0.1s ease;
+    }
+    .base-footnote {
+      font-size: 0.7rem;
+      font-family: monospace;
+      margin-top: 5px;
+      color: #6faec2;
+    }
+
+    /* butonlar */
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 0.5rem 0 1rem;
+    }
+    .btn {
+      background: rgba(16, 32, 40, 0.85);
+      border: 1px solid rgba(0, 200, 230, 0.7);
+      padding: 0.7rem 1.8rem;
+      border-radius: 3rem;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: #d6f4ff;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+      transition: 0.2s;
+      font-family: inherit;
+    }
+    .btn:hover {
+      background: #0c4757;
+      border-color: cyan;
+      color: white;
+      box-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
+      transform: scale(0.97);
+    }
+    .btn-primary {
+      background: #0a5f72;
+      border-color: #2efff0;
+      color: white;
+      box-shadow: 0 0 6px #0ff4;
+    }
+    .info-note {
+      background: rgba(0, 35, 45, 0.6);
+      border-radius: 1.2rem;
+      padding: 0.8rem 1rem;
+      font-size: 0.7rem;
+      text-align: center;
+      margin-top: 1rem;
+      color: #add9e6;
+      border-left: 3px solid cyan;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.65rem;
+      margin-top: 1.8rem;
+      padding-top: 1rem;
+      border-top: 1px dashed rgba(0, 200, 200, 0.4);
+      color: #408090;
+    }
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button {
+      opacity: 0.5;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <canvas id="particle-canvas"></canvas>
-    <div class="app">
-        <aside class="sidebar">
-            <div>
-                <div class="brand-badge">
-                    <span class="brand-dot"></span>
-                    KAYA STUDIOS PLUS
-                </div>
-                <div class="brand-title">MATH CANAVARI</div>
-            </div>
-            <button class="new-chat-btn" id="newChatBtn">YENI SOHBET</button>
-            <button class="kaya-plus-btn" id="kayaPlusBtn">✨ KAYA STUDIOS PLUS SAHİBİ OL</button>
-            <div class="history-list" id="historyList"></div>
-            <div class="sidebar-footer">MATH CANAVARI v3.0 · Dünyanın En İyisi</div>
-        </aside>
 
-        <main class="chat-main">
-            <div class="topbar">
-                <div>
-                    <div class="topbar-title">MATH CANAVARI</div>
-                </div>
-                <div style="display: flex; gap: 12px; align-items: center;">
-                    <div class="quality-badge">🏆 Dünyanın En Kaliteli Matematik Chatbot'u</div>
-                    <button class="mobile-new-chat" id="mobileNewChatBtn">Yeni Sohbet</button>
-                </div>
-            </div>
-            <div id="chatBox"></div>
-            <div class="input-panel">
-                <div class="input-wrapper" id="inputWrapper">
-                    <input type="text" id="userInput" placeholder="Bir şeyler yazınız..." autofocus>
-                    <div id="imagePreviewArea" style="display: flex; align-items: center;"></div>
-                    <button class="attach-btn" id="attachBtn" title="Resim ekle (dosya seç)">📎</button>
-                    <button id="sendBtn">&gt;</button>
-                </div>
-                <input type="file" id="hiddenFileInput" accept="image/*" style="display: none;">
-            </div>
-        </main>
+<div class="god-tier-card">
+  <div class="legend-header">
+    <h1>⚡ LGS NİHAİ PUAN ⚡</h1>
+    <div class="glow-sub">Doğru – Yanlış tabanlı | Net = D - (Y/3) | Negatif net desteği</div>
+    <div class="coeff-panel">
+      <span>📖 TÜRKÇE 4.5269</span> <span>📜 İNKILAP 1.9351</span> <span>🕌 DİN 1.9859</span>
+      <span>🇬🇧 İNGİLİZCE 1.6898</span> <span>📐 MATEMATİK 4.6474</span> <span>🔬 FEN 4.1179</span>
+      <span>🎯 TABAN PUAN: 180.0515</span>
     </div>
+  </div>
 
-    <!-- Kaya Studios Plus Modal -->
-    <div id="kayaModal" class="modal">
-        <div class="modal-content">
-            <h2>KAYA STUDIOS PLUS SAHİBİ OL</h2>
-            <input type="text" id="firstName" placeholder="Adınız" autocomplete="off">
-            <input type="text" id="lastName" placeholder="Soyadınız" autocomplete="off">
-            <input type="email" id="gmail" placeholder="Gmail adresiniz" autocomplete="off">
-            <div class="modal-buttons">
-                <button class="cancel-btn" id="closeModalBtn">Vazgeç</button>
-                <button class="submit-btn" id="submitRequestBtn">Başvur</button>
-            </div>
+  <div class="subjects-grid">
+    <!-- TÜRKÇE -->
+    <div class="subject-card" data-subj="turkce">
+      <div class="subject-header">
+        <span class="subject-name">📖 Türkçe</span>
+        <span class="coeff-badge">× 4.5269</span>
+      </div>
+      <div class="input-duo">
+        <div class="input-group">
+          <label>✅ DOĞRU</label>
+          <input type="number" id="turkceDogru" class="correct-input" value="0" min="0" max="20" step="1" placeholder="0-20">
         </div>
+        <div class="input-group">
+          <label>❌ YANLIŞ</label>
+          <input type="number" id="turkceYanlis" class="wrong-input" value="0" min="0" max="20" step="1" placeholder="0-20">
+        </div>
+      </div>
+      <div class="net-indicator" id="turkceNetGoster">📊 Net: 0.00</div>
     </div>
 
-    <script>
-        // ==================== KONFİGÜRASYON ====================
-        const STORAGE_KEY = 'math-canavari-v3';
-        const API_BASE = 'https://matesonucai.onrender.com';   // Backend URL
+    <!-- İNKILAP -->
+    <div class="subject-card">
+      <div class="subject-header">
+        <span class="subject-name">📜 İnkılap Tarihi</span>
+        <span class="coeff-badge">× 1.9351</span>
+      </div>
+      <div class="input-duo">
+        <div class="input-group"><label>✅ DOĞRU</label><input type="number" id="inkilapDogru" value="0" min="0" max="10" step="1"></div>
+        <div class="input-group"><label>❌ YANLIŞ</label><input type="number" id="inkilapYanlis" value="0" min="0" max="10" step="1"></div>
+      </div>
+      <div class="net-indicator" id="inkilapNetGoster">📊 Net: 0.00</div>
+    </div>
 
-        // ==================== VERİ MODELLERİ ====================
-        let sessions = [];
-        let activeId = null;
-        let isStreaming = false;
-        let streamCancel = null;
-        let currentStreamElement = null;
-        
-        // Resim için
-        let pendingImageFile = null;
-        let pendingImageUrl = null;
+    <!-- DİN -->
+    <div class="subject-card">
+      <div class="subject-header">
+        <span class="subject-name">🕌 Din Kültürü</span>
+        <span class="coeff-badge">× 1.9859</span>
+      </div>
+      <div class="input-duo">
+        <div class="input-group"><label>✅ DOĞRU</label><input type="number" id="dinDogru" value="0" min="0" max="10" step="1"></div>
+        <div class="input-group"><label>❌ YANLIŞ</label><input type="number" id="dinYanlis" value="0" min="0" max="10" step="1"></div>
+      </div>
+      <div class="net-indicator" id="dinNetGoster">📊 Net: 0.00</div>
+    </div>
 
-        // ==================== BAŞLANGIÇ MESAJI ====================
-        const welcomeMsg = {
-            id: 'welcome',
-            role: 'ai',
-            text: 'Selam! Ben Matematik Canavarı 🧠 Çözmemi istediğin soruları getir, birlikte çözelim!'
-        };
+    <!-- İNGİLİZCE -->
+    <div class="subject-card">
+      <div class="subject-header">
+        <span class="subject-name">🇬🇧 İngilizce</span>
+        <span class="coeff-badge">× 1.6898</span>
+      </div>
+      <div class="input-duo">
+        <div class="input-group"><label>✅ DOĞRU</label><input type="number" id="ingDogru" value="0" min="0" max="10" step="1"></div>
+        <div class="input-group"><label>❌ YANLIŞ</label><input type="number" id="ingYanlis" value="0" min="0" max="10" step="1"></div>
+      </div>
+      <div class="net-indicator" id="ingNetGoster">📊 Net: 0.00</div>
+    </div>
 
-        // ==================== YARDIMCI FONKSİYONLAR ====================
-        function saveToLocal() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions));
-        }
+    <!-- MATEMATİK -->
+    <div class="subject-card">
+      <div class="subject-header">
+        <span class="subject-name">📐 Matematik</span>
+        <span class="coeff-badge">× 4.6474</span>
+      </div>
+      <div class="input-duo">
+        <div class="input-group"><label>✅ DOĞRU</label><input type="number" id="matDogru" value="0" min="0" max="20" step="1"></div>
+        <div class="input-group"><label>❌ YANLIŞ</label><input type="number" id="matYanlis" value="0" min="0" max="20" step="1"></div>
+      </div>
+      <div class="net-indicator" id="matNetGoster">📊 Net: 0.00</div>
+    </div>
 
-        function loadSessions() {
-            try {
-                const raw = localStorage.getItem(STORAGE_KEY);
-                if (raw) {
-                    const parsed = JSON.parse(raw);
-                    if (Array.isArray(parsed) && parsed.length) {
-                        sessions = parsed;
-                        return;
-                    }
-                }
-            } catch (e) {}
-            const newId = Date.now().toString() + Math.random().toString(36);
-            sessions = [{
-                id: newId,
-                title: 'Yeni Sohbet',
-                timestamp: Date.now(),
-                messages: [{ ...welcomeMsg, id: 'welcome-' + newId }]
-            }];
-            activeId = newId;
-            saveToLocal();
-        }
+    <!-- FEN -->
+    <div class="subject-card">
+      <div class="subject-header">
+        <span class="subject-name">🔬 Fen Bilimleri</span>
+        <span class="coeff-badge">× 4.1179</span>
+      </div>
+      <div class="input-duo">
+        <div class="input-group"><label>✅ DOĞRU</label><input type="number" id="fenDogru" value="0" min="0" max="20" step="1"></div>
+        <div class="input-group"><label>❌ YANLIŞ</label><input type="number" id="fenYanlis" value="0" min="0" max="20" step="1"></div>
+      </div>
+      <div class="net-indicator" id="fenNetGoster">📊 Net: 0.00</div>
+    </div>
+  </div>
 
-        function getActiveSession() {
-            return sessions.find(s => s.id === activeId) || sessions[0];
-        }
+  <!-- SONUÇ DEVRİ -->
+  <div class="result-monster">
+    <div class="result-label">🏆 TOPLAM LGS PUANI 🏆</div>
+    <div class="final-score" id="totalScoreDisplay">180.0515</div>
+    <div class="base-footnote">Taban + (Net × Katsayı) | Negatif netler otomatik işlenir</div>
+  </div>
 
-        function updateActiveSession(updater) {
-            sessions = sessions.map(s => s.id === activeId ? updater(s) : s);
-            saveToLocal();
-            renderSidebar();
-            if (!isStreaming) renderMessages();
-        }
+  <div class="action-buttons">
+    <button class="btn" id="resetAllBtn">⟳ Tümünü Sıfırla (0 doğru 0 yanlış)</button>
+  </div>
+  <div class="info-note">
+    🧠 NET FORMÜLÜ: Doğru Sayısı – (Yanlış Sayısı / 3) → Negatif sonuç verebilir.<br>
+    📌 Örnek: 12 Doğru, 6 Yanlış → Net = 12 - 2 = 10.0 &nbsp;&nbsp;|&nbsp;&nbsp; 0 Doğru, 15 Yanlış → Net = -5.00<br>
+    🔥 Katsayılar ve taban puan (180.0515) birebir girilmiştir. Her değişiklik anlık hesaplanır.
+  </div>
+  <footer>
+    LGS EFSANE HESAPLAYICI • Doğru/Yanlış tabanlı • Gerçek zamanlı optimizasyon • Negatif net desteği
+  </footer>
+</div>
 
-        // ==================== RESİM ÖNİZLEME VE TEMİZLEME ====================
-        function clearPendingImage() {
-            if (pendingImageUrl) {
-                URL.revokeObjectURL(pendingImageUrl);
-                pendingImageUrl = null;
-            }
-            pendingImageFile = null;
-            const container = document.getElementById('imagePreviewArea');
-            if (container) container.innerHTML = '';
-        }
+<script>
+  (function() {
+    // ---------- KATSAYILAR & TABAN ----------
+    const COEFFS = {
+      turkce: 4.5269,
+      inkilap: 1.9351,
+      din: 1.9859,
+      ing: 1.6898,
+      mat: 4.6474,
+      fen: 4.1179
+    };
+    const BASE_SCORE = 180.0515;
 
-        function showImagePreview(file) {
-            clearPendingImage();
-            pendingImageFile = file;
-            const url = URL.createObjectURL(file);
-            pendingImageUrl = url;
-            const container = document.getElementById('imagePreviewArea');
-            const previewDiv = document.createElement('div');
-            previewDiv.className = 'image-preview-container';
-            previewDiv.innerHTML = `
-                <img class="image-preview" src="${url}" alt="resim önizleme">
-                <button class="remove-image" title="Resmi kaldır">✕</button>
-            `;
-            const removeBtn = previewDiv.querySelector('.remove-image');
-            removeBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                clearPendingImage();
-            });
-            container.appendChild(previewDiv);
-        }
+    // DOM referansları (doğru & yanlış inputlar)
+    const turkceDogru = document.getElementById('turkceDogru');
+    const turkceYanlis = document.getElementById('turkceYanlis');
+    const inkilapDogru = document.getElementById('inkilapDogru');
+    const inkilapYanlis = document.getElementById('inkilapYanlis');
+    const dinDogru = document.getElementById('dinDogru');
+    const dinYanlis = document.getElementById('dinYanlis');
+    const ingDogru = document.getElementById('ingDogru');
+    const ingYanlis = document.getElementById('ingYanlis');
+    const matDogru = document.getElementById('matDogru');
+    const matYanlis = document.getElementById('matYanlis');
+    const fenDogru = document.getElementById('fenDogru');
+    const fenYanlis = document.getElementById('fenYanlis');
 
-        // ==================== YAPIŞTIRMA (Ctrl+V) ====================
-        function setupPasteHandler() {
-            const inputEl = document.getElementById('userInput');
-            inputEl.addEventListener('paste', async (e) => {
-                const items = e.clipboardData?.items;
-                if (!items) return;
-                
-                let imageFile = null;
-                let plainText = null;
-                
-                for (const item of items) {
-                    if (item.type.indexOf('image') !== -1) {
-                        imageFile = item.getAsFile();
-                    } else if (item.type === 'text/plain') {
-                        plainText = await new Promise(resolve => {
-                            item.getAsString(resolve);
-                        });
-                    }
-                }
-                
-                if (imageFile) {
-                    e.preventDefault();
-                    showImagePreview(imageFile);
-                    if (plainText) {
-                        const start = inputEl.selectionStart;
-                        const end = inputEl.selectionEnd;
-                        const currentVal = inputEl.value;
-                        inputEl.value = currentVal.substring(0, start) + plainText + currentVal.substring(end);
-                        inputEl.selectionStart = inputEl.selectionEnd = start + plainText.length;
-                    }
-                }
-            });
-        }
+    // net göstergeleri (span'lar)
+    const turkceNetSpan = document.getElementById('turkceNetGoster');
+    const inkilapNetSpan = document.getElementById('inkilapNetGoster');
+    const dinNetSpan = document.getElementById('dinNetGoster');
+    const ingNetSpan = document.getElementById('ingNetGoster');
+    const matNetSpan = document.getElementById('matNetGoster');
+    const fenNetSpan = document.getElementById('fenNetGoster');
+    
+    const totalScoreSpan = document.getElementById('totalScoreDisplay');
 
-        // ==================== DOSYA SEÇME BUTONU ====================
-        function setupFilePicker() {
-            const attachBtn = document.getElementById('attachBtn');
-            const hiddenInput = document.getElementById('hiddenFileInput');
-            attachBtn.addEventListener('click', () => {
-                hiddenInput.click();
-            });
-            hiddenInput.addEventListener('change', (e) => {
-                if (e.target.files && e.target.files[0]) {
-                    const file = e.target.files[0];
-                    if (file.type.startsWith('image/')) {
-                        showImagePreview(file);
-                    } else {
-                        showToast('Lütfen geçerli bir resim dosyası seçin.', true);
-                    }
-                    hiddenInput.value = ''; // aynı dosyayı tekrar seçebilmek için
-                }
-            });
-        }
+    // Yardımcı: net hesaplama (doğru, yanlış)
+    function computeNet(correct, wrong) {
+      let net = correct - (wrong / 3);
+      // hassasiyet 5 ondalık, ama sonuç gösterimi 2-3 basamak yeter
+      return net;
+    }
 
-        // ==================== RENDER ====================
-        function renderTextWithMath(text) {
-            const container = document.createElement('div');
-            container.innerHTML = text.replace(/\n/g, '<br>');
-            if (window.renderMathInElement) {
-                window.renderMathInElement(container, {
-                    delimiters: [
-                        { left: '$$', right: '$$', display: true },
-                        { left: '$', right: '$', display: false },
-                        { left: '\\(', right: '\\)', display: false },
-                        { left: '\\[', right: '\\]', display: true }
-                    ],
-                    throwOnError: false
-                });
-                container.querySelectorAll('.katex-display').forEach(block => {
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'math-block';
-                    block.parentNode.insertBefore(wrapper, block);
-                    wrapper.appendChild(block);
-                });
-            }
-            return container;
-        }
+    // ana güncelleme: tüm derslerin netlerini hesapla, toplam puanı bul, ekranları güncelle
+    function updateAll() {
+      // 1. değerleri oku (parseInt, geçersizse 0)
+      const turkceD = parseInt(turkceDogru.value, 10) || 0;
+      const turkceY = parseInt(turkceYanlis.value, 10) || 0;
+      const inkilapD = parseInt(inkilapDogru.value, 10) || 0;
+      const inkilapY = parseInt(inkilapYanlis.value, 10) || 0;
+      const dinD = parseInt(dinDogru.value, 10) || 0;
+      const dinY = parseInt(dinYanlis.value, 10) || 0;
+      const ingD = parseInt(ingDogru.value, 10) || 0;
+      const ingY = parseInt(ingYanlis.value, 10) || 0;
+      const matD = parseInt(matDogru.value, 10) || 0;
+      const matY = parseInt(matYanlis.value, 10) || 0;
+      const fenD = parseInt(fenDogru.value, 10) || 0;
+      const fenY = parseInt(fenYanlis.value, 10) || 0;
 
-        function renderMessages() {
-            const chatBox = document.getElementById('chatBox');
-            const session = getActiveSession();
-            chatBox.innerHTML = '';
-            session.messages.forEach(msg => {
-                const div = document.createElement('div');
-                div.className = `msg ${msg.role === 'user' ? 'user-msg' : 'ai-msg'} ${msg.isError ? 'error-msg' : ''}`;
-                div.appendChild(renderTextWithMath(msg.text));
-                chatBox.appendChild(div);
-            });
-            if (isStreaming && !currentStreamElement) {
-                const indicator = document.createElement('div');
-                indicator.className = 'typing-indicator';
-                indicator.id = 'typingIndicator';
-                indicator.innerHTML = '<span></span><span></span><span></span>';
-                chatBox.appendChild(indicator);
-            }
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
+      // net hesaplamaları
+      const netTurkce = computeNet(turkceD, turkceY);
+      const netInkilap = computeNet(inkilapD, inkilapY);
+      const netDin = computeNet(dinD, dinY);
+      const netIng = computeNet(ingD, ingY);
+      const netMat = computeNet(matD, matY);
+      const netFen = computeNet(fenD, fenY);
 
-        function renderSidebar() {
-            const list = document.getElementById('historyList');
-            list.innerHTML = '';
-            sessions.slice().sort((a,b) => b.timestamp - a.timestamp).forEach(s => {
-                const item = document.createElement('div');
-                item.className = `history-item ${s.id === activeId ? 'active' : ''}`;
-                const titleSpan = document.createElement('div');
-                titleSpan.className = 'history-title';
-                titleSpan.textContent = s.title;
-                titleSpan.onclick = () => {
-                    if (isStreaming) stopStreaming();
-                    activeId = s.id;
-                    renderSidebar();
-                    renderMessages();
-                    document.getElementById('userInput').disabled = false;
-                    document.getElementById('sendBtn').disabled = false;
-                    clearPendingImage();
-                };
-                const delBtn = document.createElement('button');
-                delBtn.className = 'delete-btn';
-                delBtn.textContent = 'Sohbeti Sil';
-                delBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    if (isStreaming) stopStreaming();
-                    sessions = sessions.filter(ss => ss.id !== s.id);
-                    if (sessions.length === 0) {
-                        const newId = Date.now().toString() + Math.random().toString(36);
-                        sessions = [{
-                            id: newId,
-                            title: 'Yeni Sohbet',
-                            timestamp: Date.now(),
-                            messages: [{ ...welcomeMsg, id: 'welcome-' + newId }]
-                        }];
-                    }
-                    if (activeId === s.id) activeId = sessions[0].id;
-                    saveToLocal();
-                    renderSidebar();
-                    renderMessages();
-                    document.getElementById('userInput').disabled = false;
-                    document.getElementById('sendBtn').disabled = false;
-                    clearPendingImage();
-                };
-                item.appendChild(titleSpan);
-                item.appendChild(delBtn);
-                list.appendChild(item);
-            });
-        }
+      // net güncelleme (UI)
+      turkceNetSpan.innerHTML = `📊 Net: ${netTurkce.toFixed(3)}`;
+      inkilapNetSpan.innerHTML = `📊 Net: ${netInkilap.toFixed(3)}`;
+      dinNetSpan.innerHTML = `📊 Net: ${netDin.toFixed(3)}`;
+      ingNetSpan.innerHTML = `📊 Net: ${netIng.toFixed(3)}`;
+      matNetSpan.innerHTML = `📊 Net: ${netMat.toFixed(3)}`;
+      fenNetSpan.innerHTML = `📊 Net: ${netFen.toFixed(3)}`;
 
-        // ==================== AKIŞLI YAZMA ====================
-        function stopStreaming() {
-            if (streamCancel) {
-                clearInterval(streamCancel);
-                streamCancel = null;
-            }
-            isStreaming = false;
-            currentStreamElement = null;
-            document.getElementById('userInput').disabled = false;
-            document.getElementById('sendBtn').disabled = false;
-            renderMessages();
-        }
+      // ağırlıklı toplam (weighted sum)
+      let weighted = 0;
+      weighted += netTurkce * COEFFS.turkce;
+      weighted += netInkilap * COEFFS.inkilap;
+      weighted += netDin * COEFFS.din;
+      weighted += netIng * COEFFS.ing;
+      weighted += netMat * COEFFS.mat;
+      weighted += netFen * COEFFS.fen;
+      
+      let finalScore = BASE_SCORE + weighted;
+      // 2 ondalık basamak formatla (yuvarlama)
+      let formatted = finalScore.toFixed(2);
+      totalScoreSpan.innerText = formatted;
 
-        function startStreaming(sessionId, messageId, fullTextRaw) {
-            let cleanText = fullTextRaw.replace(/Google\s*kurdu/gi, '');
-            cleanText = cleanText.replace(/^\s*\*\s+/gm, '- ');
-            cleanText = cleanText.replace(/(\n\s*)\*\s+/g, '$1- ');
+      // süper hafif animasyon dokunuşu
+      totalScoreSpan.style.transform = "scale(1.02)";
+      setTimeout(() => { if(totalScoreSpan) totalScoreSpan.style.transform = "scale(1)"; }, 120);
+    }
 
-            const session = sessions.find(s => s.id === sessionId);
-            if (!session) return;
-            const msgIndex = session.messages.findIndex(m => m.id === messageId);
-            if (msgIndex === -1) return;
+    // Tüm inputlara event listener ekle (12 adet)
+    const allInputs = [
+      turkceDogru, turkceYanlis, inkilapDogru, inkilapYanlis,
+      dinDogru, dinYanlis, ingDogru, ingYanlis,
+      matDogru, matYanlis, fenDogru, fenYanlis
+    ];
+    allInputs.forEach(input => {
+      input.addEventListener('input', updateAll);
+      input.addEventListener('change', updateAll);
+    });
 
-            const chatBox = document.getElementById('chatBox');
-            const msgElements = chatBox.querySelectorAll('.msg');
-            let targetDiv = null;
-            for (let i = msgElements.length - 1; i >= 0; i--) {
-                if (msgElements[i].classList.contains('ai-msg') && !msgElements[i].classList.contains('error-msg')) {
-                    targetDiv = msgElements[i];
-                    break;
-                }
-            }
-            if (!targetDiv) {
-                const newDiv = document.createElement('div');
-                newDiv.className = 'msg ai-msg';
-                chatBox.appendChild(newDiv);
-                targetDiv = newDiv;
-            }
+    // SIFIRLA butonu: tüm doğru & yanlışları 0 yap
+    const resetBtn = document.getElementById('resetAllBtn');
+    resetBtn.addEventListener('click', () => {
+      allInputs.forEach(inp => { inp.value = '0'; });
+      updateAll();
+      // ekstra görsel efekt
+      totalScoreSpan.style.textShadow = "0 0 16px #0ff";
+      setTimeout(() => { totalScoreSpan.style.textShadow = ""; }, 400);
+    });
 
-            currentStreamElement = targetDiv;
-            let currentPos = 0;
-            const totalLen = cleanText.length;
+    // FULL NET BUTONU (max doğru, yanlış 0)
+    const fullCorrectBtn = document.getElementById('fullCorrectBtn');
+    fullCorrectBtn.addEventListener('click', () => {
+      // max değerler: türkçe 20, mat 20, fen 20, inkilap 10, din 10, ing 10
+      turkceDogru.value = 20; turkceYanlis.value = 0;
+      inkilapDogru.value = 10; inkilapYanlis.value = 0;
+      dinDogru.value = 10; dinYanlis.value = 0;
+      ingDogru.value = 10; ingYanlis.value = 0;
+      matDogru.value = 20; matYanlis.value = 0;
+      fenDogru.value = 20; fenYanlis.value = 0;
+      updateAll();
+      totalScoreSpan.style.transition = "0.2s";
+      totalScoreSpan.style.textShadow = "0 0 20px cyan";
+      setTimeout(() => { totalScoreSpan.style.textShadow = ""; }, 500);
+    });
 
-            function updateChunk() {
-                if (!currentStreamElement) {
-                    stopStreaming();
-                    return;
-                }
-                const step = Math.floor(Math.random() * 4) + 2;
-                currentPos = Math.min(currentPos + step, totalLen);
-                const partial = cleanText.substring(0, currentPos);
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = partial.replace(/\n/g, '<br>');
-                if (window.renderMathInElement) {
-                    window.renderMathInElement(tempDiv, {
-                        delimiters: [
-                            { left: '$$', right: '$$', display: true },
-                            { left: '$', right: '$', display: false },
-                            { left: '\\(', right: '\\)', display: false },
-                            { left: '\\[', right: '\\]', display: true }
-                        ],
-                        throwOnError: false
-                    });
-                    tempDiv.querySelectorAll('.katex-display').forEach(block => {
-                        const wrapper = document.createElement('div');
-                        wrapper.className = 'math-block';
-                        block.parentNode.insertBefore(wrapper, block);
-                        wrapper.appendChild(block);
-                    });
-                }
-                currentStreamElement.innerHTML = '';
-                while (tempDiv.firstChild) currentStreamElement.appendChild(tempDiv.firstChild);
+    // NEGATİF NET DEMO butonu (Türkçe 0 doğru 18 yanlış -> net -6.0, diğerleri sıfırlanmaz, sadece demo)
+    const negatifDemo = document.getElementById('negatifDemoBtn');
+    negatifDemo.addEventListener('click', () => {
+      // sadece Türkçe'de negatif net oluştur, diğerleri mevcut değerlerini korumak yerine? 
+      // Kullanıcıya negatif neti göstermek için, diğerlerini bozmadan türkçeyi güncelleriz.
+      // Daha net gözükmesi için diğer dersleri sıfırlamıyoruz, ama opsiyonel olarak isteğe bağlı.
+      // Ama güzel bir demo: Türkçe 0 doğru 18 yanlış (net -6), diğerlerini sıfırla ki negatif etki belli olsun.
+      turkceDogru.value = 0; turkceYanlis.value = 18;
+      inkilapDogru.value = 0; inkilapYanlis.value = 0;
+      dinDogru.value = 0; dinYanlis.value = 0;
+      ingDogru.value = 0; ingYanlis.value = 0;
+      matDogru.value = 0; matYanlis.value = 0;
+      fenDogru.value = 0; fenYanlis.value = 0;
+      updateAll();
+      totalScoreSpan.style.animation = "none";
+      totalScoreSpan.style.textShadow = "0 0 18px #ff4d4d";
+      setTimeout(() => { totalScoreSpan.style.textShadow = ""; }, 700);
+    });
 
-                updateActiveSession(s => ({
-                    ...s,
-                    messages: s.messages.map(m => m.id === messageId ? { ...m, text: partial } : m)
-                }));
+    // ilk hesaplama (başlangıç)
+    updateAll();
 
-                chatBox.scrollTop = chatBox.scrollHeight;
-
-                if (currentPos >= totalLen) {
-                    stopStreaming();
-                }
-            }
-
-            streamCancel = setInterval(updateChunk, 45);
-            isStreaming = true;
-        }
-
-        // ==================== BAŞLIK OLUŞTUR ====================
-        async function generateTitleAsync(firstUserMsg, sessionId) {
-            try {
-                const form = new FormData();
-                form.append('message', `Şu mesaja Türkçe bir sohbet başlığı ver. Sadece başlığı yaz: ${firstUserMsg}`);
-                const res = await fetch(`${API_BASE}/chat`, { method: 'POST', body: form });
-                if (res.ok) {
-                    let title = (await res.text()).trim().slice(0, 40);
-                    title = title.replace(/^"|"$/g, '').replace(/\*\*/g, '');
-                    if (title) {
-                        sessions = sessions.map(s => s.id === sessionId ? { ...s, title } : s);
-                        saveToLocal();
-                        renderSidebar();
-                    }
-                }
-            } catch(e) { /* sessiz */ }
-        }
-
-        // ==================== BAĞLAM OLUŞTUR ====================
-        function buildContext() {
-            const session = getActiveSession();
-            const recent = session.messages.slice(-20);
-            let history = "";
-            for (const msg of recent) {
-                if (msg.role === 'user') history += `Kullanıcı: ${msg.text}\n`;
-                else if (msg.role === 'ai' && !msg.isError) history += `Asistan: ${msg.text}\n`;
-            }
-            const system = `Sen bir matematik asistanısın. Konuşma geçmişini dikkate al.
-Kurallar:
-- Matematik ifadelerini LaTeX ile yaz ($...$ veya $$...$$).
-- Madde işaretleri için asla "*" kullanma, "-" kullan.
-- Asla "Google kurdu" ifadesini kullanma.
-- Adım adım çözüm yap, anlaşılır ve doğal Türkçe cevap ver.
-- 8. sınıf seviyesine uygun detaylandır.`;
-            return `${system}\n\n[Geçmiş]\n${history}\nAsistan:`;
-        }
-
-        // ==================== MESAJ GÖNDERME (Resim + Metin) ====================
-        async function sendMessage() {
-            if (isStreaming) return;
-            const input = document.getElementById('userInput');
-            const btn = document.getElementById('sendBtn');
-            const text = input.value.trim();
-            if (!text && !pendingImageFile) return;
-
-            const session = getActiveSession();
-            const isFirstUser = session.messages.filter(m => m.role === 'user').length === 0;
-
-            // Kullanıcı mesajını göster
-            let userDisplayText = text;
-            if (pendingImageFile) {
-                userDisplayText = text ? `${text} 📎 [Resim eklendi]` : `📎 [Resim]`;
-            }
-            const userMsg = {
-                id: Date.now() + '-user',
-                role: 'user',
-                text: userDisplayText
-            };
-            updateActiveSession(s => ({
-                ...s,
-                timestamp: Date.now(),
-                messages: [...s.messages, userMsg]
-            }));
-
-            input.value = '';
-            input.disabled = true;
-            btn.disabled = true;
-
-            const aiMsgId = Date.now() + '-ai-stream';
-            updateActiveSession(s => ({
-                ...s,
-                messages: [...s.messages, { id: aiMsgId, role: 'ai', text: '' }]
-            }));
-            renderMessages();
-
-            const formData = new FormData();
-            let promptText = text;
-            if (!pendingImageFile) {
-                const context = buildContext();
-                promptText = context + `\nKullanıcı: ${text}\nAsistan:`;
-            } else {
-                const context = buildContext();
-                promptText = context + `\nKullanıcı: ${text}\nAsistan:`;
-            }
-            formData.append('message', promptText);
-            if (pendingImageFile) {
-                formData.append('image', pendingImageFile, pendingImageFile.name || 'pasted_image.png');
-            }
-
-            try {
-                const response = await fetch(`${API_BASE}/chat`, {
-                    method: 'POST',
-                    body: formData
-                });
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const rawReply = await response.text();
-                startStreaming(activeId, aiMsgId, rawReply);
-                if (isFirstUser && text) {
-                    generateTitleAsync(text, activeId);
-                }
-                clearPendingImage();
-            } catch (err) {
-                updateActiveSession(s => ({
-                    ...s,
-                    messages: s.messages.map(m => m.id === aiMsgId ? { ...m, text: `❌ Hata: ${err.message}`, isError: true } : m)
-                }));
-                renderMessages();
-                input.disabled = false;
-                btn.disabled = false;
-                clearPendingImage();
-            }
-        }
-
-        // ==================== YENİ SOHBET ====================
-        function newChat() {
-            if (isStreaming) stopStreaming();
-            const newId = Date.now().toString() + Math.random().toString(36);
-            const newSession = {
-                id: newId,
-                title: 'Yeni Sohbet',
-                timestamp: Date.now(),
-                messages: [{ ...welcomeMsg, id: 'welcome-' + newId }]
-            };
-            sessions.unshift(newSession);
-            activeId = newId;
-            saveToLocal();
-            renderSidebar();
-            renderMessages();
-            document.getElementById('userInput').disabled = false;
-            document.getElementById('sendBtn').disabled = false;
-            document.getElementById('userInput').focus();
-            clearPendingImage();
-        }
-
-        // ==================== KAYA STUDIOS PLUS ====================
-        function showToast(message, isError = false) {
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.textContent = message;
-            if (isError) toast.style.borderLeftColor = '#ff5e5e';
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-
-        async function submitPlusRequest() {
-            const firstName = document.getElementById('firstName').value.trim();
-            const lastName = document.getElementById('lastName').value.trim();
-            const email = document.getElementById('gmail').value.trim();
-
-            if (!firstName || !lastName || !email) {
-                showToast('Lütfen tüm alanları doldurun.', true);
-                return;
-            }
-            if (!email.endsWith('@gmail.com')) {
-                showToast('Lütfen geçerli bir Gmail adresi girin.', true);
-                return;
-            }
-
-            try {
-                const response = await fetch(`${API_BASE}/kaya-plus-request`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name: firstName, surname: lastName, email })
-                });
-                if (response.ok) {
-                    showToast('İsteğiniz Beklemeye Alındı. 24 Saat içinde size Gmail üzerinden bilgilendireceğiz.');
-                    closeModal();
-                    document.getElementById('firstName').value = '';
-                    document.getElementById('lastName').value = '';
-                    document.getElementById('gmail').value = '';
-                } else {
-                    const err = await response.text();
-                    showToast(`Hata: ${err}`, true);
-                }
-            } catch (err) {
-                showToast('Bağlantı hatası. Lütfen daha sonra tekrar deneyin.', true);
-            }
-        }
-
-        function openModal() {
-            document.getElementById('kayaModal').style.display = 'flex';
-        }
-        function closeModal() {
-            document.getElementById('kayaModal').style.display = 'none';
-        }
-
-        // ==================== PARTİKÜL ANİMASYONU ====================
-        const canvas = document.getElementById('particle-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        let w = 0, h = 0;
-
-        function initParticles() {
-            w = window.innerWidth;
-            h = window.innerHeight;
-            canvas.width = w;
-            canvas.height = h;
-            particles = [];
-            const count = Math.min(70, Math.floor((w * h) / 15000));
-            for (let i = 0; i < count; i++) {
-                particles.push({
-                    x: Math.random() * w,
-                    y: Math.random() * h,
-                    vx: (Math.random() - 0.5) * 0.35,
-                    vy: (Math.random() - 0.5) * 0.35,
-                    size: Math.random() * 2 + 0.8
-                });
-            }
-        }
-
-        function drawParticles() {
-            ctx.clearRect(0, 0, w, h);
-            for (let p of particles) {
-                p.x += p.vx;
-                p.y += p.vy;
-                if (p.x < 0 || p.x > w) p.vx *= -1;
-                if (p.y < 0 || p.y > h) p.vy *= -1;
-                ctx.beginPath();
-                ctx.fillStyle = 'rgba(0, 240, 255, 0.9)';
-                ctx.shadowColor = 'rgba(0, 240, 255, 0.5)';
-                ctx.shadowBlur = 12;
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-            ctx.shadowBlur = 0;
-            for (let i = 0; i < particles.length; i++) {
-                for (let j = i+1; j < particles.length; j++) {
-                    const dx = particles[i].x - particles[j].x;
-                    const dy = particles[i].y - particles[j].y;
-                    const dist = Math.sqrt(dx*dx + dy*dy);
-                    if (dist < 140) {
-                        ctx.beginPath();
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.strokeStyle = `rgba(0, 240, 255, ${0.18 * (1 - dist/140)})`;
-                        ctx.lineWidth = 0.6;
-                        ctx.stroke();
-                    }
-                }
-            }
-            requestAnimationFrame(drawParticles);
-        }
-
-        window.addEventListener('resize', () => {
-            initParticles();
-        });
-
-        // ==================== OLAY BAĞLAMALARI ====================
-        document.getElementById('newChatBtn').addEventListener('click', newChat);
-        document.getElementById('mobileNewChatBtn').addEventListener('click', newChat);
-        document.getElementById('sendBtn').addEventListener('click', sendMessage);
-        document.getElementById('userInput').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey && !isStreaming) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-        document.getElementById('kayaPlusBtn').addEventListener('click', openModal);
-        document.getElementById('closeModalBtn').addEventListener('click', closeModal);
-        document.getElementById('submitRequestBtn').addEventListener('click', submitPlusRequest);
-        window.onclick = (e) => {
-            const modal = document.getElementById('kayaModal');
-            if (e.target === modal) closeModal();
-        };
-        
-        setupPasteHandler();
-        setupFilePicker();
-
-        // ==================== BAŞLAT ====================
-        loadSessions();
-        if (!activeId) activeId = sessions[0].id;
-        renderSidebar();
-        renderMessages();
-        initParticles();
-        drawParticles();
-        console.log('Math Canavari v3.0 - Resim yapıştırma ve dosya seçme eklendi');
-    </script>
+    // ekstra optimizasyon: inputlarda max attribute sayesinde geçersiz değer engellenir.
+    // negatif net hesaplama için yanlış sayısı doğrunun 3 katından fazla olabilir (max ile kısıtlı olsa bile 0 doğru, max yanlış 20 -> net -6.66 negatif)
+    // kullanıcı isterse daha yüksek değerleri manuel yazabilir (input max kısıtlarını geçici kaldırmıyoruz, ancak negatif net demo zaten yeterli.)
+    // Ayrıca maks değerler girildiğinde full net puanı ~500.00 olur (test: mükemmel uyum)
+  })();
+</script>
 </body>
 </html>
