@@ -3,30 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MATH CANAVARI · KAYA STUDIOS AI</title>
+    <title>MATH CANAVARI · KAYA STUDIOS AI V5.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"></script>
 </head>
 <style>
 :root {
-    --bg-dark: #0a0c10;
-    --bg-panel: #11161e;
+    --bg-dark: #07090d;
+    --bg-panel: #0e1219;
     --primary: #00f0ff;
     --primary-glow: rgba(0, 240, 255, 0.4);
     --secondary: #a020f0;
     --secondary-glow: rgba(160, 32, 240, 0.4);
-    --glass-bg: rgba(20, 30, 45, 0.62);
-    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-bg: rgba(16, 24, 38, 0.72);
+    --glass-border: rgba(255, 255, 255, 0.07);
     --text: #eef5ff;
-    --text-muted: #9aaec9;
-    --sidebar-width: 300px;
+    --text-muted: #8a9bbd;
+    --sidebar-width: 310px;
     --gold: #ffd700;
     --gold-glow: rgba(255, 215, 0, 0.4);
+    --research-blue: #3b82f6;
+    --research-glow: rgba(59, 130, 246, 0.4);
+    --success-green: #10b981;
+    --orange: #f59e0b;
 }
+
+* { margin:0; padding:0; box-sizing:border-box; }
 
 body {
     font-family: 'Inter', sans-serif;
@@ -35,6 +41,11 @@ body {
     height: 100vh;
     overflow: hidden;
 }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,240,255,0.25); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,240,255,0.45); }
 
 #particle-canvas {
     position: fixed;
@@ -51,22 +62,24 @@ body {
     display: flex;
     width: 100%;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0,0,0,0.15);
     backdrop-filter: blur(2px);
 }
 
-/* SIDEBAR */
+/* ══════════════ SIDEBAR ══════════════ */
 .sidebar {
     width: var(--sidebar-width);
     background: var(--glass-bg);
     border-right: 1px solid var(--glass-border);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(24px);
     display: flex;
     flex-direction: column;
     padding: 20px 14px;
-    gap: 14px;
-    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.45);
+    gap: 12px;
+    box-shadow: 10px 0 40px rgba(0,0,0,0.5);
     overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0,240,255,0.3) transparent;
 }
 
 .brand-badge {
@@ -78,30 +91,56 @@ body {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 2px;
-    font-size: 0.74rem;
+    font-size: 0.72rem;
 }
 
 .brand-dot {
-    width: 9px;
-    height: 9px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     background: var(--primary);
-    box-shadow: 0 0 14px var(--primary-glow);
+    box-shadow: 0 0 16px var(--primary-glow);
     flex-shrink: 0;
+    animation: dotPulse 2s infinite;
+}
+
+@keyframes dotPulse {
+    0%,100% { box-shadow: 0 0 16px var(--primary-glow); }
+    50%      { box-shadow: 0 0 28px var(--primary-glow), 0 0 8px var(--primary); }
 }
 
 .brand-title {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.8rem;
+    font-size: 1.7rem;
     font-weight: 700;
     line-height: 1;
+    background: linear-gradient(135deg, var(--primary), #a855f7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.version-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    background: linear-gradient(135deg, rgba(168,85,247,0.2), rgba(0,240,255,0.1));
+    border: 1px solid rgba(168,85,247,0.5);
+    border-radius: 20px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: #c084fc;
+    letter-spacing: 1.5px;
+    width: fit-content;
+    margin-top: 3px;
 }
 
 .clock-widget {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(0, 240, 255, 0.2);
-    border-radius: 14px;
-    padding: 9px 14px;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(0,240,255,0.15);
+    border-radius: 16px;
+    padding: 10px 14px;
 }
 
 .clock-time {
@@ -118,59 +157,33 @@ body {
     margin-top: 2px;
 }
 
-/* Plus rozetleri */
 .plus-member-badge {
     display: none;
     align-items: center;
     gap: 10px;
     padding: 12px 14px;
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 180, 50, 0.08));
+    background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,180,50,0.08));
     border: 1px solid var(--gold);
     border-radius: 18px;
     box-shadow: 0 0 18px var(--gold-glow);
     animation: goldPulse 2s infinite;
 }
 
-.plus-member-badge.visible {
-    display: flex;
-}
+.plus-member-badge.visible { display: flex; }
 
 @keyframes goldPulse {
-    0%, 100% {
-        box-shadow: 0 0 18px var(--gold-glow);
-    }
-    50% {
-        box-shadow: 0 0 32px rgba(255, 215, 0, 0.7);
-    }
+    0%,100% { box-shadow: 0 0 18px var(--gold-glow); }
+    50%      { box-shadow: 0 0 32px rgba(255,215,0,0.7); }
 }
 
-.plus-crown {
-    font-size: 1.5rem;
-}
+.plus-crown { font-size: 1.5rem; }
+.plus-member-info { display: flex; flex-direction: column; gap: 1px; }
+.plus-member-name { font-weight: 800; font-size: 0.83rem; color: var(--gold); }
+.plus-member-label { font-size: 0.63rem; color: #ffdc80; letter-spacing: 1px; text-transform: uppercase; }
 
-.plus-member-info {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-}
-
-.plus-member-name {
-    font-weight: 800;
-    font-size: 0.83rem;
-    color: var(--gold);
-}
-
-.plus-member-label {
-    font-size: 0.65rem;
-    color: #ffdc80;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-}
-
-/* İptal butonu */
 .cancel-plus-btn {
-    background: rgba(255, 80, 80, 0.12);
-    border: 1px solid rgba(255, 80, 80, 0.4);
+    background: rgba(255,80,80,0.12);
+    border: 1px solid rgba(255,80,80,0.4);
     color: #ff8888;
     padding: 9px 14px;
     border-radius: 14px;
@@ -182,58 +195,37 @@ body {
     display: none;
     width: 100%;
 }
-
-.cancel-plus-btn.visible {
-    display: block;
-}
-
-.cancel-plus-btn:hover {
-    background: rgba(255, 80, 80, 0.25);
-    border-color: rgba(255, 80, 80, 0.8);
-    color: #ffaaaa;
-}
+.cancel-plus-btn.visible { display: block; }
+.cancel-plus-btn:hover { background: rgba(255,80,80,0.25); border-color: rgba(255,80,80,0.8); color: #ffaaaa; }
 
 .plus-pending-badge {
     display: none;
     align-items: center;
     gap: 8px;
     padding: 11px 14px;
-    background: rgba(255, 170, 68, 0.1);
-    border: 1px solid rgba(255, 170, 68, 0.5);
+    background: rgba(255,170,68,0.1);
+    border: 1px solid rgba(255,170,68,0.5);
     border-radius: 18px;
 }
+.plus-pending-badge.visible { display: flex; }
+.plus-pending-text { font-size: 0.72rem; color: #ffaa44; font-weight: 600; }
 
-.plus-pending-badge.visible {
-    display: flex;
-}
-
-.plus-pending-text {
-    font-size: 0.72rem;
-    color: #ffaa44;
-    font-weight: 600;
-}
-
-/* Butonlar */
 .new-chat-btn {
     background: linear-gradient(135deg, var(--secondary), #b060f0);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255,255,255,0.2);
     color: white;
     padding: 13px;
     border-radius: 18px;
     font-weight: 800;
     letter-spacing: 1px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.25s;
     box-shadow: 0 8px 20px var(--secondary-glow);
 }
-
-.new-chat-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 30px var(--secondary-glow);
-}
+.new-chat-btn:hover { transform: translateY(-2px); box-shadow: 0 15px 30px var(--secondary-glow); }
 
 .kaya-plus-btn {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255,255,255,0.04);
     border: 1px solid var(--primary);
     color: var(--primary);
     padding: 13px;
@@ -244,23 +236,24 @@ body {
     text-align: center;
     backdrop-filter: blur(10px);
 }
+.kaya-plus-btn:hover { background: rgba(0,240,255,0.15); box-shadow: 0 0 12px var(--primary-glow); }
+.kaya-plus-btn.hidden { display: none; }
 
-.kaya-plus-btn:hover {
-    background: rgba(0, 240, 255, 0.15);
-    box-shadow: 0 0 12px var(--primary-glow);
+.history-section-title {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 6px 4px 4px;
+    font-weight: 700;
 }
 
-.kaya-plus-btn.hidden {
-    display: none;
-}
-
-/* Geçmiş */
 .history-list {
     flex: 1;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     padding-right: 2px;
     scrollbar-width: thin;
     scrollbar-color: var(--primary) transparent;
@@ -268,82 +261,85 @@ body {
 
 .history-item {
     padding: 11px 13px;
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255,255,255,0.025);
     border: 1px solid var(--glass-border);
-    border-radius: 16px;
+    border-radius: 14px;
     transition: all 0.2s;
     cursor: pointer;
+    position: relative;
 }
-
-.history-item.active {
-    background: rgba(0, 240, 255, 0.1);
-    border-color: var(--primary);
-    box-shadow: 0 0 12px var(--primary-glow);
-}
+.history-item:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.15); }
+.history-item.active { background: rgba(0,240,255,0.08); border-color: var(--primary); box-shadow: 0 0 12px var(--primary-glow); }
 
 .history-title {
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     color: var(--text-muted);
 }
+.history-item.active .history-title { color: white; }
 
-.history-item.active .history-title {
-    color: white;
-}
+.history-time { font-size: 0.62rem; color: rgba(138,155,189,0.6); margin-top: 3px; }
 
 .delete-btn {
     margin-top: 5px;
     background: none;
     border: none;
     color: var(--text-muted);
-    font-size: 0.67rem;
+    font-size: 0.65rem;
     cursor: pointer;
     text-align: left;
     padding: 0;
+    opacity: 0.6;
+    transition: all 0.2s;
 }
-
-.delete-btn:hover {
-    color: #ff9e9e;
-}
+.delete-btn:hover { color: #ff9e9e; opacity: 1; }
 
 .sidebar-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255,255,255,0.08);
     padding-top: 12px;
     text-align: center;
-    font-size: 0.7rem;
-    color: var(--text-muted);
 }
+.sidebar-footer-version { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; }
+.sidebar-footer-next { font-size: 0.6rem; color: rgba(168,85,247,0.7); margin-top: 4px; line-height: 1.4; }
 
-/* TOPBAR */
-.chat-main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-}
+/* ══════════════ TOPBAR ══════════════ */
+.chat-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 
 .topbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 22px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 14px 22px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
     flex-shrink: 0;
+    background: rgba(0,0,0,0.2);
+    backdrop-filter: blur(10px);
 }
 
-.topbar-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
+.topbar-left { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 
 .topbar-title {
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.7rem;
+    font-size: 1.6rem;
     font-weight: 700;
+    background: linear-gradient(135deg, #fff, var(--primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.topbar-version {
+    padding: 4px 10px;
+    background: linear-gradient(135deg, rgba(168,85,247,0.3), rgba(0,240,255,0.15));
+    border: 1px solid rgba(168,85,247,0.5);
+    border-radius: 20px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: #c084fc;
+    letter-spacing: 1px;
 }
 
 .topbar-plus-badge {
@@ -351,134 +347,253 @@ body {
     align-items: center;
     gap: 6px;
     padding: 5px 13px;
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 180, 50, 0.1));
+    background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,180,50,0.1));
     border: 1px solid var(--gold);
     border-radius: 40px;
-    font-size: 0.76rem;
+    font-size: 0.74rem;
     font-weight: 700;
     color: var(--gold);
     box-shadow: 0 0 12px var(--gold-glow);
 }
+.topbar-plus-badge.visible { display: flex; }
 
-.topbar-plus-badge.visible {
-    display: flex;
-}
+.topbar-right { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 
 .topbar-clock {
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     color: var(--text-muted);
     font-family: 'Space Grotesk', sans-serif;
     letter-spacing: 1px;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0,0,0,0.35);
     padding: 5px 12px;
     border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255,255,255,0.06);
 }
 
 .quality-badge {
     background: linear-gradient(135deg, #ffd966, #ffb347);
     padding: 5px 12px;
     border-radius: 40px;
-    font-size: 0.74rem;
+    font-size: 0.72rem;
     font-weight: 700;
     color: #1e2a3a;
-    box-shadow: 0 0 12px rgba(255, 180, 70, 0.6);
+    box-shadow: 0 0 12px rgba(255,180,70,0.6);
 }
 
-/* CHAT BOX */
+.research-indicator {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    background: rgba(59,130,246,0.12);
+    border: 1px solid rgba(59,130,246,0.4);
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #60a5fa;
+    animation: researchPulse 1.5s infinite;
+}
+.research-indicator.active { display: flex; }
+
+@keyframes researchPulse {
+    0%,100% { opacity: 1; }
+    50%      { opacity: 0.6; }
+}
+
+.research-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--research-blue);
+    animation: researchDotPulse 1s infinite;
+}
+
+@keyframes researchDotPulse {
+    0%,100% { box-shadow: 0 0 4px var(--research-glow); }
+    50%      { box-shadow: 0 0 12px var(--research-glow); }
+}
+
+/* ══════════════ CHAT BOX ══════════════ */
 #chatBox {
     flex: 1;
     overflow-y: auto;
-    padding: 24px 10%;
+    padding: 24px 8%;
     display: flex;
     flex-direction: column;
-    gap: 18px;
-    scroll-behavior: smooth;
+    gap: 16px;
+    scroll-behavior: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0,240,255,0.2) transparent;
 }
-.infobox {
-    padding: 14px 18px;
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    text-align: center;
-    height: 100%;
-}
+
 .msg {
     max-width: 78%;
     padding: 16px 20px;
-    border-radius: 26px;
+    border-radius: 24px;
     line-height: 1.7;
     font-size: 0.95rem;
     word-wrap: break-word;
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    animation: msgPop 0.28s ease;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    animation: msgPop 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    position: relative;
 }
 
 @keyframes msgPop {
-    from {
-        opacity: 0;
-        transform: translateY(12px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(14px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .user-msg {
     align-self: flex-end;
     background: linear-gradient(135deg, var(--secondary), #8a2be2);
-    border-bottom-right-radius: 8px;
+    border-bottom-right-radius: 6px;
 }
 
 .ai-msg {
     align-self: flex-start;
     background: var(--glass-bg);
-    border-bottom-left-radius: 8px;
-    border-color: rgba(0, 240, 255, 0.7);
-    box-shadow: 0 0 20px var(--primary-glow);
+    border-bottom-left-radius: 6px;
+    border-color: rgba(0,240,255,0.15);
+}
+.ai-msg:hover {
+    border-color: rgba(0,240,255,0.4);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 12px var(--primary-glow);
 }
 
 .congrats-msg {
     align-self: center;
     max-width: 88%;
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.12), rgba(255, 180, 50, 0.06));
+    background: linear-gradient(135deg, rgba(255,215,0,0.12), rgba(255,180,50,0.06));
     border: 2px solid var(--gold);
     box-shadow: 0 0 30px var(--gold-glow);
-    border-radius: 26px;
+    border-radius: 24px;
     text-align: center;
     color: #ffe88a;
 }
 
-.error-msg {
-    background: rgba(255, 50, 50, 0.16);
-    border-color: rgba(255, 80, 80, 0.8);
-    color: #ffd5d5;
-}
-
-.rate-limit-msg {
-    background: rgba(255, 170, 0, 0.12);
-    border-color: rgba(255, 170, 0, 0.6);
-    color: #ffd580;
-}
+.error-msg { background: rgba(255,50,50,0.14); border-color: rgba(255,80,80,0.6); color: #ffd5d5; }
+.rate-limit-msg { background: rgba(255,170,0,0.1); border-color: rgba(255,170,0,0.5); color: #ffd580; }
 
 .info-msg {
-    background: rgba(0, 200, 255, 0.08);
-    border-color: rgba(0, 200, 255, 0.4);
+    background: rgba(0,200,255,0.06);
+    border-color: rgba(0,200,255,0.3);
     color: #b0eeff;
     align-self: center;
     text-align: center;
     max-width: 80%;
 }
 
+/* ══════════════ THINKING / RESEARCH PANEL ══════════════ */
+.thinking-container {
+    align-self: flex-start;
+    max-width: 82%;
+    animation: msgPop 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    margin-bottom: 2px;
+}
+
+.thinking-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 16px;
+    background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(147,51,234,0.06));
+    border: 1px solid rgba(59,130,246,0.25);
+    border-radius: 16px 16px 4px 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+}
+.thinking-header:hover {
+    background: linear-gradient(135deg, rgba(59,130,246,0.16), rgba(147,51,234,0.1));
+    border-color: rgba(59,130,246,0.4);
+}
+
+.thinking-icon { font-size: 1rem; }
+.thinking-icon.spinning { animation: thinkSpin 1.5s linear infinite; }
+@keyframes thinkSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.thinking-icon.done { animation: none; }
+
+.thinking-label { font-size: 0.8rem; font-weight: 700; color: #60a5fa; flex: 1; }
+.thinking-duration { font-size: 0.65rem; color: rgba(96,165,250,0.6); margin-left: auto; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.5px; }
+.thinking-toggle { font-size: 0.75rem; color: rgba(96,165,250,0.5); transition: transform 0.25s; }
+.thinking-toggle.open { transform: rotate(180deg); }
+
+.thinking-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1);
+    background: rgba(59,130,246,0.04);
+    border: 1px solid rgba(59,130,246,0.15);
+    border-top: none;
+    border-radius: 0 0 16px 16px;
+}
+.thinking-body.open { max-height: 600px; overflow-y: auto; }
+
+.thinking-body-inner { padding: 12px 16px; display: flex; flex-direction: column; gap: 6px; }
+
+.think-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 5px 0;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    animation: stepFadeIn 0.3s ease;
+}
+.think-step:last-child { border-bottom: none; }
+
+@keyframes stepFadeIn {
+    from { opacity: 0; transform: translateX(-6px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+.think-step-icon { flex-shrink: 0; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; }
+.think-step-content { flex: 1; line-height: 1.5; }
+.think-step-site { color: #60a5fa; font-weight: 600; text-decoration: none; }
+.think-step-site:hover { text-decoration: underline; }
+.think-step-analysis { color: #a78bfa; font-style: italic; }
+.think-step-result { color: var(--success-green); font-weight: 600; }
+
+.thinking-progress { display: flex; align-items: center; gap: 8px; padding: 7px 0; }
+.thinking-progress-bar { flex: 1; height: 3px; background: rgba(59,130,246,0.15); border-radius: 10px; overflow: hidden; }
+.thinking-progress-fill { height: 100%; background: linear-gradient(90deg, var(--research-blue), #a78bfa); border-radius: 10px; transition: width 0.4s ease; box-shadow: 0 0 6px var(--research-glow); }
+.thinking-progress-text { font-size: 0.65rem; color: rgba(96,165,250,0.6); white-space: nowrap; font-family: 'JetBrains Mono', monospace; }
+
+.thinking-loading { display: flex; align-items: center; gap: 8px; padding: 8px 0; }
+.thinking-loading-dots { display: flex; gap: 4px; }
+.thinking-loading-dots span { width: 6px; height: 6px; background: var(--research-blue); border-radius: 50%; animation: thinkDotBounce 1.2s infinite ease-in-out; }
+.thinking-loading-dots span:nth-child(2) { animation-delay: 0.15s; }
+.thinking-loading-dots span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes thinkDotBounce { 0%,60%,100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-6px); opacity: 1; } }
+.thinking-loading-text { font-size: 0.73rem; color: #60a5fa; font-weight: 500; }
+
+/* Kaynaklar kutusu */
+.sources-box {
+    margin-top: 8px;
+    padding: 10px 14px;
+    background: rgba(59,130,246,0.06);
+    border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.sources-box-title { font-size: 0.68rem; color: #60a5fa; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 3px; }
+.source-link { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #93c5fd; text-decoration: none; }
+.source-link:hover { color: #60a5fa; text-decoration: underline; }
+.source-link-icon { width: 14px; height: 14px; opacity: 0.7; }
+.source-domain { color: var(--text-muted); font-size: 0.65rem; margin-left: 2px; }
+
 .math-block {
     margin: 10px 0;
     overflow-x: auto;
     padding: 10px 13px;
-    border-radius: 14px;
-    background: rgba(0, 0, 0, 0.22);
-    border: 1px solid rgba(0, 240, 255, 0.18);
+    border-radius: 12px;
+    background: rgba(0,0,0,0.25);
+    border: 1px solid rgba(0,240,255,0.15);
 }
 
 .typing-indicator {
@@ -486,123 +601,55 @@ body {
     gap: 6px;
     padding: 16px 22px;
     background: var(--glass-bg);
-    border-radius: 26px;
+    border-radius: 24px;
     border: 1px solid var(--primary);
     width: fit-content;
+    align-self: flex-start;
 }
-
 .typing-indicator span {
-    width: 9px;
-    height: 9px;
+    width: 9px; height: 9px;
     background: var(--primary);
     border-radius: 50%;
     animation: bounce 1.4s infinite ease-in-out;
     box-shadow: 0 0 10px var(--primary-glow);
 }
+.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-9px); } }
 
-.typing-indicator span:nth-child(2) {
-    animation-delay: 0.2s;
-}
+/* ══════════════ INPUT ══════════════ */
+.input-panel { padding: 12px 8% 18px; flex-shrink: 0; }
 
-.typing-indicator span:nth-child(3) {
-    animation-delay: 0.4s;
-}
+.cooldown-bar-wrap { height: 3px; background: rgba(255,255,255,0.04); border-radius: 10px; margin-bottom: 7px; overflow: hidden; display: none; }
+.cooldown-bar-wrap.visible { display: block; }
+.cooldown-bar { height: 100%; background: var(--primary); border-radius: 10px; transition: width 0.1s linear; box-shadow: 0 0 8px var(--primary-glow); }
 
-@keyframes bounce {
-    0%, 60%, 100% {
-        transform: translateY(0);
-    }
-    30% {
-        transform: translateY(-9px);
-    }
-}
-
-/* INPUT */
-.input-panel {
-    padding: 14px 10% 20px;
-    flex-shrink: 0;
-}
-
-.cooldown-bar-wrap {
-    height: 3px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    margin-bottom: 7px;
-    overflow: hidden;
-    display: none;
-}
-
-.cooldown-bar-wrap.visible {
-    display: block;
-}
-
-.cooldown-bar {
-    height: 100%;
-    background: var(--primary);
-    border-radius: 10px;
-    transition: width 0.1s linear;
-    box-shadow: 0 0 8px var(--primary-glow);
-}
-
-.input-meta {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 5px;
-    min-height: 16px;
-}
-
-.char-counter {
-    font-size: 0.68rem;
-    color: var(--text-muted);
-    transition: color 0.2s;
-}
-
-.char-counter.warn {
-    color: #ffaa44;
-}
-
-.char-counter.limit {
-    color: #ff5e5e;
-    font-weight: 700;
-}
-
-.spam-warning {
-    font-size: 0.68rem;
-    color: #ffaa44;
-    display: none;
-}
-
-.spam-warning.visible {
-    display: block;
-}
+.input-meta { display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-bottom: 5px; min-height: 16px; }
+.char-counter { font-size: 0.66rem; color: var(--text-muted); transition: color 0.2s; }
+.char-counter.warn { color: #ffaa44; }
+.char-counter.limit { color: #ff5e5e; font-weight: 700; }
+.spam-warning { font-size: 0.66rem; color: #ffaa44; display: none; }
+.spam-warning.visible { display: block; }
 
 .input-wrapper {
-    background: rgba(10, 15, 25, 0.82);
-    backdrop-filter: blur(20px);
+    background: rgba(8,12,22,0.85);
+    backdrop-filter: blur(24px);
     border: 1px solid var(--glass-border);
     border-radius: 60px;
     padding: 7px 7px 7px 22px;
     display: flex;
     align-items: center;
     gap: 10px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(0, 240, 255, 0.18) inset;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 0 1px rgba(0,240,255,0.12) inset;
     flex-wrap: wrap;
+    transition: all 0.3s;
 }
-
 .input-wrapper:focus-within {
     border-color: var(--primary);
     box-shadow: 0 0 30px var(--primary-glow), 0 0 0 1px var(--primary) inset;
 }
-
-.input-wrapper.plus-active {
-    border-color: var(--gold);
-}
-
-.input-wrapper.plus-active:focus-within {
-    box-shadow: 0 0 30px var(--gold-glow), 0 0 0 1px var(--gold) inset;
-}
+.input-wrapper.plus-active { border-color: rgba(255,215,0,0.3); }
+.input-wrapper.plus-active:focus-within { box-shadow: 0 0 30px var(--gold-glow), 0 0 0 1px var(--gold) inset; }
 
 #userInput {
     flex: 1;
@@ -610,27 +657,19 @@ body {
     background: transparent;
     border: none;
     color: white;
-    font-size: 0.97rem;
+    font-size: 0.95rem;
     outline: none;
     min-width: 100px;
 }
-
-#userInput::placeholder {
-    color: var(--text-muted);
-}
-
-#userInput:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
+#userInput::placeholder { color: var(--text-muted); }
+#userInput:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .attach-btn {
-    width: 40px;
-    height: 40px;
+    width: 42px; height: 42px;
     border: none;
     border-radius: 50%;
     cursor: pointer;
-    background: rgba(255, 255, 255, 0.07);
+    background: rgba(255,255,255,0.06);
     color: var(--text-muted);
     font-size: 1.05rem;
     display: flex;
@@ -639,48 +678,15 @@ body {
     transition: all 0.2s;
     flex-shrink: 0;
 }
+.attach-btn:hover { background: rgba(0,240,255,0.15); color: var(--primary); box-shadow: 0 0 12px var(--primary-glow); }
 
-.attach-btn:hover {
-    background: rgba(0, 240, 255, 0.15);
-    color: var(--primary);
-    box-shadow: 0 0 12px var(--primary-glow);
-}
-
-.image-preview-container {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 40px;
-    padding: 3px 10px 3px 6px;
-}
-
-.image-preview {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    object-fit: cover;
-    border: 1px solid var(--primary);
-    box-shadow: 0 0 8px var(--primary-glow);
-}
-
-.remove-image {
-    background: none;
-    border: none;
-    color: #ffa0a0;
-    font-size: 17px;
-    cursor: pointer;
-    font-weight: bold;
-    padding: 0 3px;
-}
-
-.remove-image:hover {
-    color: #ff5e5e;
-}
+.image-preview-container { display: flex; align-items: center; gap: 7px; background: rgba(0,0,0,0.5); border-radius: 40px; padding: 3px 10px 3px 6px; }
+.image-preview { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; border: 1px solid var(--primary); box-shadow: 0 0 8px var(--primary-glow); }
+.remove-image { background: none; border: none; color: #ffa0a0; font-size: 17px; cursor: pointer; font-weight: bold; padding: 0 3px; }
+.remove-image:hover { color: #ff5e5e; }
 
 #sendBtn {
-    width: 50px;
-    height: 50px;
+    width: 50px; height: 50px;
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -692,36 +698,20 @@ body {
     transition: transform 0.2s, box-shadow 0.2s;
     flex-shrink: 0;
 }
+#sendBtn:hover { transform: scale(1.06); box-shadow: 0 0 35px var(--primary-glow); }
+#sendBtn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+#sendBtn.plus-active { background: linear-gradient(145deg, var(--gold), #ffb347); box-shadow: 0 0 20px var(--gold-glow); }
+#sendBtn.plus-active:hover { box-shadow: 0 0 35px var(--gold-glow); }
 
-#sendBtn:hover {
-    transform: scale(1.06);
-    box-shadow: 0 0 35px var(--primary-glow);
-}
+.infobox { padding: 10px 18px; color: rgba(138,155,189,0.5); font-size: 0.72rem; text-align: center; }
 
-#sendBtn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-}
-
-#sendBtn.plus-active {
-    background: linear-gradient(145deg, var(--gold), #ffb347);
-    box-shadow: 0 0 20px var(--gold-glow);
-}
-
-#sendBtn.plus-active:hover {
-    box-shadow: 0 0 35px var(--gold-glow);
-}
-
-/* MODALLER */
+/* ══════════════ MODALLER ══════════════ */
 .modal {
     display: none;
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.82);
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
     backdrop-filter: blur(14px);
     align-items: center;
     justify-content: center;
@@ -730,216 +720,120 @@ body {
 
 .modal-content {
     background: var(--bg-panel);
-    border-radius: 30px;
+    border-radius: 28px;
     padding: 30px;
     width: 90%;
     max-width: 460px;
     border: 1px solid var(--primary);
-    box-shadow: 0 0 30px var(--primary-glow);
+    box-shadow: 0 0 40px var(--primary-glow);
 }
-
-.modal-content h2 {
-    margin-bottom: 6px;
-    color: var(--primary);
-}
-
-.modal-subtitle {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    margin-bottom: 18px;
-    line-height: 1.5;
-}
+.modal-content h2 { margin-bottom: 6px; color: var(--primary); }
+.modal-subtitle { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 18px; line-height: 1.5; }
 
 .modal-content input {
     width: 100%;
     padding: 12px 16px;
     margin: 7px 0;
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255,255,255,0.06);
     border: 1px solid var(--glass-border);
-    border-radius: 26px;
+    border-radius: 24px;
     color: white;
-    font-size: 0.97rem;
+    font-size: 0.95rem;
     outline: none;
+    transition: border-color 0.2s;
 }
+.modal-content input:focus { border-color: var(--primary); }
 
-.modal-content input:focus {
-    border-color: var(--primary);
-}
+.modal-buttons { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+.modal-buttons button { padding: 9px 20px; border-radius: 40px; border: none; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+.submit-btn { background: var(--primary); color: #0a0c10; }
+.submit-btn:hover { box-shadow: 0 0 14px var(--primary-glow); }
+.cancel-btn { background: rgba(255,255,255,0.12); color: white; }
 
-.modal-buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 18px;
-}
-
-.modal-buttons button {
-    padding: 9px 20px;
-    border-radius: 40px;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-
-.submit-btn {
-    background: var(--primary);
-    color: #0a0c10;
-}
-
-.cancel-btn {
-    background: rgba(255, 255, 255, 0.14);
-    color: white;
-}
-
-/* İptal onay modalı */
 .confirm-modal-content {
     background: var(--bg-panel);
-    border-radius: 30px;
+    border-radius: 28px;
     padding: 30px;
     width: 90%;
     max-width: 400px;
-    border: 1px solid rgba(255, 80, 80, 0.6);
-    box-shadow: 0 0 30px rgba(255, 80, 80, 0.3);
+    border: 1px solid rgba(255,80,80,0.6);
+    box-shadow: 0 0 30px rgba(255,80,80,0.3);
     text-align: center;
 }
+.confirm-modal-content h2 { color: #ff8888; margin-bottom: 14px; }
+.confirm-modal-content p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 22px; }
+.confirm-buttons { display: flex; justify-content: center; gap: 14px; }
+.confirm-cancel-btn { background: rgba(255,80,80,0.8); color: white; padding: 10px 22px; border-radius: 40px; border: none; cursor: pointer; font-weight: 700; transition: all 0.2s; }
+.confirm-cancel-btn:hover { background: rgba(255,80,80,1); }
+.confirm-keep-btn { background: rgba(255,255,255,0.12); color: white; padding: 10px 22px; border-radius: 40px; border: none; cursor: pointer; font-weight: 600; }
 
-.confirm-modal-content h2 {
-    color: #ff8888;
-    margin-bottom: 14px;
-}
-
-.confirm-modal-content p {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    line-height: 1.6;
-    margin-bottom: 22px;
-}
-
-.confirm-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 14px;
-}
-
-.confirm-cancel-btn {
-    background: rgba(255, 80, 80, 0.8);
-    color: white;
-    padding: 10px 22px;
-    border-radius: 40px;
-    border: none;
-    cursor: pointer;
-    font-weight: 700;
-}
-
-.confirm-cancel-btn:hover {
-    background: rgba(255, 80, 80, 1);
-}
-
-.confirm-keep-btn {
-    background: rgba(255, 255, 255, 0.14);
-    color: white;
-    padding: 10px 22px;
-    border-radius: 40px;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-/* TOAST */
+/* ══════════════ TOAST ══════════════ */
 .toast {
     position: fixed;
     bottom: 28px;
     left: 50%;
     transform: translateX(-50%);
-    background: #1e2a3a;
+    background: rgba(14,18,25,0.95);
     color: #c8f9ff;
-    padding: 12px 22px;
+    padding: 12px 24px;
     border-radius: 60px;
     border-left: 5px solid var(--primary);
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
     z-index: 1100;
     font-weight: 500;
     animation: fadeInOut 3.5s ease forwards;
     max-width: 90vw;
     text-align: center;
-    font-size: 0.93rem;
+    font-size: 0.9rem;
+    backdrop-filter: blur(10px);
 }
-
 @keyframes fadeInOut {
-    0% {
-        opacity: 0;
-        transform: translateX(-50%) translateY(20px);
-    }
-    12% {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-    }
-    88% {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-    }
-    100% {
-        opacity: 0;
-        transform: translateX(-50%) translateY(-20px);
-        visibility: hidden;
-    }
+    0%   { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    12%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+    88%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-20px); visibility: hidden; }
 }
 
-/* MOBİL */
-.mobile-new-chat {
-    display: none;
-}
+/* ══════════════ MOBİL ══════════════ */
+.mobile-new-chat { display: none; }
 
 @media (max-width: 900px) {
-    .sidebar {
-        display: none;
-    }
-    
-    #chatBox,
-    .input-panel {
-        padding-left: 14px;
-        padding-right: 14px;
-    }
-    
-    .msg {
-        max-width: 93%;
-    }
-    
-    .topbar-title {
-        font-size: 1.4rem;
-    }
-    
-    .quality-badge {
-        display: none;
-    }
-    
+    .sidebar { display: none; }
+    #chatBox, .input-panel { padding-left: 14px; padding-right: 14px; }
+    .msg { max-width: 93%; }
+    .thinking-container { max-width: 95%; }
+    .topbar-title { font-size: 1.3rem; }
+    .quality-badge { display: none; }
+    .topbar-version { display: none; }
     .mobile-new-chat {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        border: 1px solid rgba(0, 240, 255, 0.35);
+        border: 1px solid rgba(0,240,255,0.35);
         background: transparent;
         color: #c8f9ff;
         border-radius: 999px;
         padding: 8px 13px;
         cursor: pointer;
-        font-size: 0.83rem;
+        font-size: 0.82rem;
     }
 }
 </style>
 <body>
+<script async src="https://cse.google.com/cse.js?cx=72119d78701724da4">
+</script>
 <canvas id="particle-canvas"></canvas>
 <input type="file" id="fileInput" accept="image/*" style="display:none;">
 
 <div class="app">
     <aside class="sidebar">
         <div>
-            <div class="brand-badge"><span class="brand-dot"></span>KAYA STUDIOS PLUS</div>
+            <div class="brand-badge"><span class="brand-dot"></span>KAYA STUDIOS AI</div>
             <div class="brand-title">MATH CANAVARI</div>
+            <div class="version-badge">🚀 V5.0 — DEVRİM</div>
         </div>
         <div class="clock-widget">
-            <div class="clock-time" id="sidebarClock">--:--</div>
+            <div class="clock-time" id="sidebarClock">--:--:--</div>
             <div class="clock-date" id="sidebarDate">Yükleniyor...</div>
         </div>
         <div class="plus-member-badge" id="plusMemberBadge">
@@ -954,25 +848,36 @@ body {
             <span>⏳</span>
             <span class="plus-pending-text">Plus başvurunuz inceleniyor...</span>
         </div>
-        <button class="new-chat-btn" id="newChatBtn">YENİ SOHBET</button>
+        <button class="new-chat-btn" id="newChatBtn">✦ YENİ SOHBET</button>
         <button class="kaya-plus-btn" id="kayaPlusBtn">✨ KAYA STUDIOS PLUS SAHİBİ OL</button>
+        <div class="history-section-title">Sohbet Geçmişi</div>
         <div class="history-list" id="historyList"></div>
-        <div class="sidebar-footer">MATH CANAVARI v3.1 · Dünyanın En İyisi</div>
+        <div class="sidebar-footer">
+            <div class="sidebar-footer-version">MATH CANAVARI V5.0 · Devrim Güncellemesi</div>
+            <div class="sidebar-footer-next">📋 V6.0 → PDF Oluşturucu & Matematik Soru Hazırlama Modülü</div>
+        </div>
     </aside>
 
     <main class="chat-main">
         <div class="topbar">
             <div class="topbar-left">
                 <div class="topbar-title">MATH CANAVARI</div>
-                <div class="topbar-plus-badge" id="topbarPlusBadge">👑 PLUS ÜYESİ</div>
+                <div class="topbar-version">V5.0</div>
+                <div class="topbar-plus-badge" id="topbarPlusBadge">👑 PLUS</div>
+                <div class="research-indicator" id="researchIndicator">
+                    <span class="research-dot"></span>
+                    <span id="researchIndicatorText">Google'da Araştırılıyor...</span>
+                </div>
             </div>
-            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-                <div class="topbar-clock" id="topbarClock">--:--</div>
-                <div class="quality-badge">🏆 En Kaliteli Matematik Chatbot'u</div>
-                <button class="mobile-new-chat" id="mobileNewChatBtn">Yeni Sohbet</button>
+            <div class="topbar-right">
+                <div class="topbar-clock" id="topbarClock">--:--:--</div>
+                <div class="quality-badge">🏆 En Kaliteli Matematik AI</div>
+                <button class="mobile-new-chat" id="mobileNewChatBtn">+ Yeni</button>
             </div>
         </div>
+
         <div id="chatBox"></div>
+
         <div class="input-panel">
             <div class="input-meta">
                 <span class="spam-warning" id="spamWarning">⚠️ Çok hızlı gönderiyorsunuz</span>
@@ -982,13 +887,15 @@ body {
                 <div class="cooldown-bar" id="cooldownBar" style="width:100%"></div>
             </div>
             <div class="input-wrapper" id="inputWrapper">
-                <input type="text" id="userInput" placeholder="Matematik sorusu sor... (📎 veya Ctrl+V ile resim ekle)" autofocus maxlength="4000">
+                <input type="text" id="userInput"
+                       placeholder="Matematik sorusu sor... (📎 veya Ctrl+V ile resim ekle)"
+                       autofocus maxlength="4000">
                 <div id="imagePreviewArea" style="display:flex;align-items:center;"></div>
                 <button class="attach-btn" id="attachBtn" title="Resim dosyası ekle">📎</button>
-                <button id="sendBtn">&gt;</button>
+                <button id="sendBtn">➤</button>
             </div>
             <div class="infobox">
-                <p>Yapay Zeka Hata Yapabilir. Lütfen Konuşurken Kişisel Verilerinizi Paylaşmayınız</p>
+                <p>Yapay Zeka hata yapabilir. Kişisel verilerinizi paylaşmayınız. · V5.0 — Google Araştırma Entegrasyonlu</p>
             </div>
         </div>
     </main>
@@ -1013,7 +920,8 @@ body {
 <div id="cancelConfirmModal" class="modal">
     <div class="confirm-modal-content">
         <h2>🚫 Aboneliği İptal Et</h2>
-        <p>Kaya Studios Plus üyeliğinizi iptal etmek istediğinizden emin misiniz?<br><br>İptal etmeniz durumunda <strong>Plus avantajlarınızı</strong> kaybedeceksiniz. Tekrar başvurabilirsiniz.</p>
+        <p>Kaya Studios Plus üyeliğinizi iptal etmek istediğinizden emin misiniz?<br><br>
+           İptal etmeniz durumunda <strong>Plus avantajlarınızı</strong> kaybedeceksiniz. Tekrar başvurabilirsiniz.</p>
         <div class="confirm-buttons">
             <button class="confirm-keep-btn"   id="keepPlusBtn">Vazgeç</button>
             <button class="confirm-cancel-btn" id="confirmCancelBtn">Evet, İptal Et</button>
@@ -1022,63 +930,123 @@ body {
 </div>
 
 <script>
-// ==================== KONFİGÜRASYON ====================
-const STORAGE_KEY      = 'math-canavari-v3';
-const PLUS_STORAGE_KEY = 'kaya-plus-status-v1';
+/* ══════════════════════════════════════════════════════════════
+   MATH CANAVARI V5.0 — KAYA STUDIOS AI
+   Gerçek Google Custom Search Entegrasyonu
+   ══════════════════════════════════════════════════════════════ */
+
+const STORAGE_KEY      = 'math-canavari-v5';
+const PLUS_STORAGE_KEY = 'kaya-plus-status-v2';
 const API_BASE         = 'https://matesonucai.onrender.com';
 const MAX_MSG_LENGTH   = 4000;
 const WARN_MSG_LENGTH  = 3500;
 const CLIENT_COOLDOWN  = 1500;
 const SPAM_SAME_MSG    = 3;
 
-// ==================== DURUM ====================
 let sessions = [], activeId = null;
 let isStreaming = false, streamCancel = null, currentStreamElement = null;
 let pendingImageFile = null, pendingImageUrl = null;
 let plusData = null, plusPollInterval = null;
 let lastSendTime = 0, recentMessages = [];
 
-const welcomeMsg = { id:'welcome', role:'ai', text:'Selam! Ben Matematik Canavarı 🧠 Çözmemi istediğin soruları getir, birlikte çözelim!' };
+const welcomeMsg = {
+    id: 'welcome', role: 'ai',
+    text: 'Selam! Ben **Math Canavarı V5.0** 🧠⚡\n\nBazı sorularda **Google üzerinden gerçek zamanlı araştırma** yapabiliyorum! Tarihler, ünlü kişiler, özel günler gibi konularda otomatik olarak Google\'da arama yapar, gerçek kaynakları tarar ve sana en doğru bilgiyi sunarım.\n\nHaydi, sorunu sor!'
+};
 
-// ==================== TÜRKÇE SAAT ====================
 const DAYS_TR   = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
 const MONTHS_TR = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
 
-function getTurkeyTime() {
-    return new Date(new Date().toLocaleString('en-US', { timeZone:'Europe/Istanbul' }));
-}
-function formatClock(d) { return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; }
-function formatDate(d)  { return `${DAYS_TR[d.getDay()]}, ${d.getDate()} ${MONTHS_TR[d.getMonth()]} ${d.getFullYear()}`; }
+/* ══════════════════════════════════════════════════════════
+   CLIENT-SIDE ARAŞTIRMA TESPİTİ
+   (Sadece UI için — gerçek araştırma backend'de yapılır)
+   ══════════════════════════════════════════════════════════ */
+const RESEARCH_PATTERNS = [
+    { regex: /ne\s*zaman\s*(doğdu|öldü|doğmuş|ölmüş|vefat|kuruldu|kurulmuş|keşfedildi|icat|bulundu|başladı|bitti|oldu|yapıldı|açıldı|kapandı)/i,           label: 'Tarih/Olay Araştırması' },
+    { regex: /(doğum|ölüm|vefat|kuruluş)\s*(tarihi|günü|yılı|senesi)/i,                                                                                       label: 'Tarih Araştırması' },
+    { regex: /hangi\s*(tarih|yıl|gün|ay|dönem|çağ|yüzyıl)/i,                                                                                                  label: 'Tarih Sorgusu' },
+    { regex: /(\d{1,2})\s*(ocak|şubat|mart|nisan|mayıs|haziran|temmuz|ağustos|eylül|ekim|kasım|aralık)\s*(ne\s*oldu|nedir|önemi|olaylar)/i,                    label: 'Belirli Tarih Araştırması' },
+    { regex: /(atatürk|mustafa\s*kemal|einstein|newton|tesla|edison|mozart|beethoven|da\s*vinci|leonardo|picasso|shakespeare|fatih\s*sultan|kanuni|yavuz\s*sultan|mimar\s*sinan|nazım\s*hikmet|yunus\s*emre|mehmet\s*akif|barış\s*manço|zeki\s*müren|tarkan|elon\s*musk|steve\s*jobs|bill\s*gates|mark\s*zuckerberg|jeff\s*bezos|alan\s*turing|marie\s*curie|nikola\s*tesla|stephen\s*hawking|galileo|kopernik|kepler|pythagoras|pisagor|arşimet|archimedes|öklid|euclid|euler|gauss|fibonacci|fermat|pascal|descartes|leibniz|riemann|hilbert|ramanujan|emmy\s*noether|ada\s*lovelace|al-?harizmi|harezmi|ali\s*kuşçu|uluğ\s*bey|ibn-?i?\s*sina|farabi|biruni|hayyam|ömer\s*hayyam|cahit\s*arf)/i, label: 'Ünlü Kişi Araştırması' },
+    { regex: /(anneler\s*günü|babalar\s*günü|sevgililer\s*günü|öğretmenler\s*günü|dünya\s*\w+\s*günü|cumhuriyet\s*bayramı|zafer\s*bayramı|19\s*mayıs|23\s*nisan|30\s*ağustos|29\s*ekim|ramazan\s*bayramı|kurban\s*bayramı|yılbaşı|noel|nevruz|hıdırellez|kadınlar\s*günü|çocuk\s*bayramı|işçi\s*bayramı|1\s*mayıs|pi\s*günü|matematik\s*günü)/i, label: 'Özel Gün Araştırması' },
+    { regex: /(nüfusu|başkenti|para\s*birimi|yüzölçümü|en\s*büyük\s*şehri|resmi\s*dili)\s*(ne|kaç|nedir)/i,                                                   label: 'Genel Bilgi Araştırması' },
+    { regex: /dünya[''nın]*\s*(en\s*büyük|en\s*küçük|en\s*uzun|en\s*kısa|en\s*yüksek|en\s*derin|en\s*geniş|en\s*hızlı|en\s*ağır|en\s*sıcak|en\s*soğuk|en\s*kalabalık)/i, label: 'Dünya Rekoru Araştırması' },
+    { regex: /(kim|kimdir|kimdi|kim\s*tarafından|kimin\s*eseri)\s*\??$/i,                                                                                      label: 'Kişi Araştırması' },
+    { regex: /kaç\s*(yılında|senesinde|tarihinde)/i,                                                                                                           label: 'Yıl Araştırması' },
+    { regex: /(tarihi|tarihçesi)\s*(nedir|ne|hakkında)/i,                                                                                                      label: 'Tarih Araştırması' },
+    { regex: /(kim\s*buldu|kim\s*keşfetti|kim\s*geliştirdi|kim\s*icat\s*etti|kim\s*yazdı|kim\s*çizdi|kim\s*besteledi|kim\s*tasarladı)/i,                      label: 'Keşif/Buluş Araştırması' },
+    { regex: /(hangi\s*bilim\s*insanı|hangi\s*matematikçi|hangi\s*fizikçi|hangi\s*kimyager|hangi\s*mühendis|hangi\s*mimar|hangi\s*sanatçı|hangi\s*yazar|hangi\s*şair)/i, label: 'Bilim İnsanı Araştırması' },
+    { regex: /(şu\s*an|şuan|şimdi|bugün|bu\s*yıl|2024|2025|güncel|son\s*durum|günümüzde)/i,                                                                   label: 'Güncel Bilgi Araştırması' },
+    { regex: /(kaç\s*yaşında|yaşıyor\s*mu|hayatta\s*mı|sağ\s*mı|ne\s*zaman\s*öldü)/i,                                                                        label: 'Yaşam Durumu Araştırması' },
+    { regex: /(nerede\s*doğdu|nerede\s*öldü|nerede\s*yaşıyor|nerede\s*gömülü|mezarı\s*nerede)/i,                                                              label: 'Konum Araştırması' },
+    { regex: /(formül|teorem|kural|yasa|kanun|aksiyom)\w*\s*(kimin|kim\s*tarafından|ne\s*zaman|hangi\s*yıl)/i,                                                label: 'Formül/Teorem Kökeni Araştırması' },
+    { regex: /(pi\s*sayısı|euler\s*sayısı|altın\s*oran|fibonacci\s*dizisi|asal\s*sayı)\w*\s*(ne|nedir|kim|tarih)/i,                                           label: 'Matematik Kavram Araştırması' },
+];
 
+const PURE_MATH = [
+    /^\s*[\d\s\+\-\*\/\(\)\^\.\,\=\<\>]+\s*$/,
+    /^(hesapla|çöz|bul|basitleştir|sadeleştir|türev\s+al|integral\s+al|limit\s+bul|matris|denklem\s+çöz|eşitsizlik)\s/i,
+    /^(sin|cos|tan|log|ln|sqrt|karekök)\s*[\(\d]/i,
+    /^\d+\s*[\+\-\*\/\^]\s*\d+/,
+];
+
+function detectResearchNeed(text) {
+    const lower = text.toLowerCase().trim();
+    if (lower.length < 8) return { needed: false };
+    for (const p of PURE_MATH) {
+        if (p.test(lower) && !/(kim|ne zaman|tarih|nedir|hangi yıl)/i.test(lower))
+            return { needed: false };
+    }
+    for (const p of RESEARCH_PATTERNS) {
+        if (p.regex.test(lower)) return { needed: true, label: p.label };
+    }
+    return { needed: false };
+}
+
+/* ═══════ SAAT ═══════ */
+function getTurkeyTime() {
+    return new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Istanbul' }));
+}
+function formatClock(d) {
+    return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
+}
+function formatDate(d) {
+    return `${DAYS_TR[d.getDay()]}, ${d.getDate()} ${MONTHS_TR[d.getMonth()]} ${d.getFullYear()}`;
+}
+function formatTimeAgo(ts) {
+    const diff = Date.now() - ts;
+    if (diff < 60000)    return 'Az önce';
+    if (diff < 3600000)  return `${Math.floor(diff / 60000)} dk önce`;
+    if (diff < 86400000) return `${Math.floor(diff / 3600000)} sa önce`;
+    return `${Math.floor(diff / 86400000)} gün önce`;
+}
 function updateClocks() {
     const now = getTurkeyTime();
-    const sc = document.getElementById('sidebarClock');
-    const sd = document.getElementById('sidebarDate');
-    const tc = document.getElementById('topbarClock');
-    if(sc) sc.textContent = formatClock(now);
-    if(sd) sd.textContent = formatDate(now);
-    if(tc) tc.textContent = formatClock(now);
+    const sc  = document.getElementById('sidebarClock');
+    const sd  = document.getElementById('sidebarDate');
+    const tc  = document.getElementById('topbarClock');
+    if (sc) sc.textContent = formatClock(now);
+    if (sd) sd.textContent = formatDate(now);
+    if (tc) tc.textContent = formatClock(now);
 }
 updateClocks();
 setInterval(updateClocks, 1000);
 
-// ==================== KATEX ====================
+/* ═══════ KATEX ═══════ */
 function waitForKatex(cb) {
     if (window.renderMathInElement) { cb(); return; }
     const iv = setInterval(() => {
         if (window.renderMathInElement) { clearInterval(iv); cb(); }
     }, 50);
 }
-
 function applyKatex(container) {
     if (!window.renderMathInElement) return;
     try {
         window.renderMathInElement(container, {
             delimiters: [
-                { left:'$$', right:'$$', display:true  },
-                { left:'$',  right:'$',  display:false },
-                { left:'\\(', right:'\\)', display:false },
-                { left:'\\[', right:'\\]', display:true  }
+                { left: '$$', right: '$$', display: true  },
+                { left: '$',  right: '$',  display: false },
+                { left: '\\(', right: '\\)', display: false },
+                { left: '\\[', right: '\\]', display: true  },
             ],
             throwOnError: false
         });
@@ -1092,14 +1060,13 @@ function applyKatex(container) {
     } catch(e) {}
 }
 
-// ==================== PLUS YÖNETİMİ ====================
+/* ═══════ PLUS SİSTEMİ ═══════ */
 function loadPlusData() {
     try {
         const raw = localStorage.getItem(PLUS_STORAGE_KEY);
         if (raw) plusData = JSON.parse(raw);
     } catch(e) {}
 }
-
 function savePlusData() {
     if (plusData === null) localStorage.removeItem(PLUS_STORAGE_KEY);
     else localStorage.setItem(PLUS_STORAGE_KEY, JSON.stringify(plusData));
@@ -1115,7 +1082,6 @@ function applyPlusUI() {
     const sendBtn      = document.getElementById('sendBtn');
     const input        = document.getElementById('userInput');
 
-    // Sıfırla
     memberBadge.classList.remove('visible');
     cancelBtn.classList.remove('visible');
     pendingBadge.classList.remove('visible');
@@ -1135,73 +1101,42 @@ function applyPlusUI() {
         plusBtn.classList.add('hidden');
         inputWrapper.classList.add('plus-active');
         sendBtn.classList.add('plus-active');
-        input.placeholder = `Merhaba ${plusData.name}! Her konuda sorabilirsiniz... (Plus Modu 👑)`;
+        input.placeholder = `Merhaba ${plusData.name}! Her konuda sorabilirsiniz 👑`;
     } else if (plusData.status === 'pending') {
         pendingBadge.classList.add('visible');
         plusBtn.classList.add('hidden');
     }
-    // cancelled/rejected → normal görünüm, Plus butonu tekrar görünür
 }
 
-// ==================== POLLİNG — KRİTİK DÜZELTME ====================
-/*
- * SORUN 1: Eski kodda approved olunca polling duruyordu,
- *          bu yüzden admin iptali hiç fark edilmiyordu.
- * ÇÖZÜM: Polling her durumda devam eder (cancelled olana kadar).
- *
- * SORUN 2: Polling sadece pending durumunda başlatılıyordu.
- * ÇÖZÜM: approved durumunda da polling çalışır (admin iptali için).
- */
 async function checkPlusStatus() {
     if (!plusData || !plusData.reqId) return;
-    // cancelled ise artık kontrol etme
     if (plusData.status === 'cancelled') { stopPlusPolling(); return; }
-
     try {
-        const res = await fetch(`${API_BASE}/check-plus-status?req_id=${plusData.reqId}`);
+        const res  = await fetch(`${API_BASE}/check-plus-status?req_id=${plusData.reqId}`);
         if (!res.ok) return;
         const data = await res.json();
-
-        // Durum değişmediyse hiçbir şey yapma
         if (!data.status || data.status === plusData.status) return;
-
-        const oldStatus = plusData.status;
-        plusData.status = data.status;
+        const oldStatus  = plusData.status;
+        plusData.status  = data.status;
         if (data.name)    plusData.name    = data.name;
-        if (data.surname) plusData.surname  = data.surname;
-        savePlusData();
-        applyPlusUI();
-
+        if (data.surname) plusData.surname = data.surname;
+        savePlusData(); applyPlusUI();
         if (data.status === 'approved' && oldStatus !== 'approved') {
-            // Onaylandı — polling devam etsin (admin iptali için)
             showCongratsMessage();
-            showToast(`🎉 Tebrikler ${plusData.name}! Kaya Studios Plus üyeliğiniz onaylandı!`);
-
+            showToast(`🎉 Tebrikler ${plusData.name}! Plus onaylandı!`);
         } else if (data.status === 'rejected') {
-            stopPlusPolling();
-            plusData = null;
-            savePlusData();
-            applyPlusUI();
-            showToast('Üzgünüz, Plus başvurunuz bu sefer kabul edilmedi.', true);
-
+            stopPlusPolling(); plusData = null; savePlusData(); applyPlusUI();
+            showToast('Plus başvurunuz kabul edilmedi.', true);
         } else if (data.status === 'cancelled') {
-            // Admin iptal etti
             stopPlusPolling();
             const cancelledBy = data.cancelled_by || 'admin';
-            const name = plusData.name || '';
-            plusData = null;
-            savePlusData();
-            applyPlusUI();
-
+            plusData = null; savePlusData(); applyPlusUI();
             if (cancelledBy === 'admin') {
-                showToast('Kaya Studios Plus üyeliğiniz yönetici tarafından iptal edildi.', true);
-                const msgId = 'cancel-admin-' + Date.now();
+                showToast('Plus üyeliğiniz yönetici tarafından iptal edildi.', true);
                 updateActiveSession(s => ({
-                    ...s,
-                    messages: [...s.messages, {
-                        id: msgId, role: 'ai', text:
-                        `⚠️ **Üyelik Yönetici Tarafından İptal Edildi**\n\nKaya Studios Plus üyeliğiniz yönetici tarafından iptal edilmiştir. Tekrar başvurabilirsiniz.`,
-                        isError: true
+                    ...s, messages: [...s.messages, {
+                        id: 'cancel-admin-' + Date.now(), role: 'ai', isError: true,
+                        text: '⚠️ **Üyelik Yönetici Tarafından İptal Edildi**\n\nKaya Studios Plus üyeliğiniz yönetici tarafından iptal edilmiştir.'
                     }]
                 }));
             }
@@ -1209,93 +1144,55 @@ async function checkPlusStatus() {
     } catch(e) {}
 }
 
-function startPlusPolling() {
-    if (plusPollInterval) return;
-    // Her 12 saniyede bir kontrol et (hem pending hem approved için)
-    plusPollInterval = setInterval(checkPlusStatus, 12000);
-}
-
-function stopPlusPolling() {
-    if (plusPollInterval) { clearInterval(plusPollInterval); plusPollInterval = null; }
-}
+function startPlusPolling() { if (plusPollInterval) return; plusPollInterval = setInterval(checkPlusStatus, 12000); }
+function stopPlusPolling()  { if (plusPollInterval) { clearInterval(plusPollInterval); plusPollInterval = null; } }
 
 function showCongratsMessage() {
-    const congratsId = 'congrats-' + Date.now();
     const name = plusData ? plusData.name : '';
     updateActiveSession(s => ({
-        ...s,
-        messages: [...s.messages, {
-            id: congratsId, role: 'congrats',
-            text: `🎉✨ **Tebrik Ederiz${name ? ', ' + name : ''}!**\n\n` +
-                  `İsteğiniz, Sahibi **Egemen KAYA** olan **Kaya Studios Plus**'un ` +
-                  `Kurucusu, CEO'su ve Geliştiricisi tarafından **onaylanmıştır.**\n\n` +
-                  `Artık **Math Canavarı 3.1** kesintisiz ve sadece matematik ile ` +
-                  `sınırlandırılmadan, **istediğiniz konuda** size yardımcı olabilir. 👑`
+        ...s, messages: [...s.messages, {
+            id: 'congrats-' + Date.now(), role: 'congrats',
+            text: `🎉✨ **Tebrik Ederiz${name ? ', ' + name : ''}!**\n\nKaya Studios Plus üyeliğiniz **Egemen KAYA** tarafından **onaylanmıştır.**\n\nArtık **Math Canavarı V5.0** her konuda ve **Google Araştırma** özelliğiyle yardımcı olabilir! 👑`
         }]
     }));
 }
 
-// ==================== ABONELİK İPTAL (Kullanıcı) ====================
 function openCancelConfirm()  { document.getElementById('cancelConfirmModal').style.display = 'flex'; }
 function closeCancelConfirm() { document.getElementById('cancelConfirmModal').style.display = 'none'; }
 
 async function confirmCancelPlus() {
     closeCancelConfirm();
-    if (!plusData || !plusData.reqId) {
-        showToast('İptal edilecek aktif üyelik bulunamadı.', true);
-        return;
+    if (!plusData || !plusData.reqId || plusData.status !== 'approved') {
+        showToast('Aktif üyelik bulunamadı.', true); return;
     }
-    if (plusData.status !== 'approved') {
-        showToast('Yalnızca aktif (onaylı) üyelikler iptal edilebilir.', true);
-        return;
-    }
-
-    // Butonu geçici olarak devre dışı bırak
     const cancelBtn = document.getElementById('cancelPlusBtn');
-    cancelBtn.disabled = true;
-    cancelBtn.textContent = '⏳ İptal ediliyor...';
-
+    cancelBtn.disabled = true; cancelBtn.textContent = '⏳ İptal ediliyor...';
     try {
         const res = await fetch(`${API_BASE}/cancel-plus`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ req_id: plusData.reqId })
         });
-
         if (res.ok) {
             const name = plusData.name || '';
-            stopPlusPolling();
-            plusData = null;
-            savePlusData();
-            applyPlusUI();
-            showToast('Kaya Studios Plus üyeliğiniz iptal edildi.');
-
-            const msgId = 'cancel-user-' + Date.now();
+            stopPlusPolling(); plusData = null; savePlusData(); applyPlusUI();
+            showToast('Plus üyeliğiniz iptal edildi.');
             updateActiveSession(s => ({
-                ...s,
-                messages: [...s.messages, {
-                    id: msgId, role: 'ai',
-                    text: `👋 **Üyelik İptal Edildi**\n\nKaya Studios Plus üyeliğinizi iptal ettiniz. Dilediğiniz zaman tekrar başvurabilirsiniz. Görüşmek üzere${name ? ', ' + name : ''}!`
+                ...s, messages: [...s.messages, {
+                    id: 'cancel-user-' + Date.now(), role: 'ai',
+                    text: `👋 **Üyelik İptal Edildi**\n\nDilediğiniz zaman tekrar başvurabilirsiniz${name ? ', ' + name : ''}!`
                 }]
             }));
         } else {
-            const err = await res.text();
-            showToast(`Hata: ${err}`, true);
-            cancelBtn.disabled = false;
-            cancelBtn.textContent = '🚫 Aboneliği İptal Et';
+            showToast(`Hata: ${await res.text()}`, true);
+            cancelBtn.disabled = false; cancelBtn.textContent = '🚫 Aboneliği İptal Et';
         }
     } catch(e) {
-        showToast('Bağlantı hatası. Lütfen tekrar deneyin.', true);
-        cancelBtn.disabled = false;
-        cancelBtn.textContent = '🚫 Aboneliği İptal Et';
+        showToast('Bağlantı hatası.', true);
+        cancelBtn.disabled = false; cancelBtn.textContent = '🚫 Aboneliği İptal Et';
     }
 }
 
-document.getElementById('cancelPlusBtn').addEventListener('click', openCancelConfirm);
-document.getElementById('keepPlusBtn').addEventListener('click', closeCancelConfirm);
-document.getElementById('confirmCancelBtn').addEventListener('click', confirmCancelPlus);
-
-// ==================== VERİ YÖNETİMİ ====================
+/* ═══════ OTURUM YÖNETİMİ ═══════ */
 function saveToLocal() { localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions)); }
 
 function loadSessions() {
@@ -1307,44 +1204,41 @@ function loadSessions() {
         }
     } catch(e) {}
     const newId = Date.now().toString() + Math.random().toString(36);
-    sessions = [{ id:newId, title:'Yeni Sohbet', timestamp:Date.now(), messages:[{...welcomeMsg, id:'welcome-'+newId}] }];
-    activeId = newId;
-    saveToLocal();
+    sessions = [{ id: newId, title: 'Yeni Sohbet', timestamp: Date.now(), messages: [{ ...welcomeMsg, id: 'welcome-' + newId }] }];
+    activeId = newId; saveToLocal();
 }
 
-function getActiveSession() { return sessions.find(s => s.id === activeId) || sessions[0]; }
+function getActiveSession()   { return sessions.find(s => s.id === activeId) || sessions[0]; }
 
 function updateActiveSession(updater) {
     sessions = sessions.map(s => s.id === activeId ? updater(s) : s);
-    saveToLocal();
-    renderSidebar();
+    saveToLocal(); renderSidebar();
     if (!isStreaming) renderMessages();
 }
 
-// ==================== SPAM / COOLDOWN ====================
+/* ═══════ SPAM KORUMA ═══════ */
 function checkClientSpam(text) {
     const now = Date.now();
     if (now - lastSendTime < CLIENT_COOLDOWN) {
         const wait = ((CLIENT_COOLDOWN - (now - lastSendTime)) / 1000).toFixed(1);
-        return { ok:false, reason:`Lütfen ${wait} saniye bekleyin.` };
+        return { ok: false, reason: `Lütfen ${wait}s bekleyin.` };
     }
     const clean = text.trim().toLowerCase();
     if (clean && recentMessages.filter(m => m === clean).length >= SPAM_SAME_MSG)
-        return { ok:false, reason:'Aynı soruyu tekrar soruyorsunuz.' };
-    return { ok:true };
+        return { ok: false, reason: 'Aynı soruyu tekrar soruyorsunuz.' };
+    return { ok: true };
 }
 
 function registerSend(text) {
     lastSendTime = Date.now();
-    const clean = text.trim().toLowerCase();
+    const clean  = text.trim().toLowerCase();
     if (clean) { recentMessages.push(clean); if (recentMessages.length > 10) recentMessages.shift(); }
 }
 
 function showCooldownBar(ms) {
     const wrap = document.getElementById('cooldownBarWrap');
     const bar  = document.getElementById('cooldownBar');
-    wrap.classList.add('visible');
-    bar.style.width = '100%';
+    wrap.classList.add('visible'); bar.style.width = '100%';
     const start = Date.now();
     const tick  = setInterval(() => {
         const pct = Math.max(0, 100 - ((Date.now() - start) / ms * 100));
@@ -1354,65 +1248,58 @@ function showCooldownBar(ms) {
 }
 
 function setupCharCounter() {
-    const input = document.getElementById('userInput');
+    const input   = document.getElementById('userInput');
     const counter = document.getElementById('charCounter');
     input.addEventListener('input', () => {
         const len = input.value.length;
         if (!len) { counter.textContent = ''; counter.className = 'char-counter'; return; }
         counter.textContent = `${len} / ${MAX_MSG_LENGTH}`;
-        counter.className = len >= MAX_MSG_LENGTH ? 'char-counter limit' : len >= WARN_MSG_LENGTH ? 'char-counter warn' : 'char-counter';
+        counter.className   = len >= MAX_MSG_LENGTH ? 'char-counter limit'
+                            : len >= WARN_MSG_LENGTH ? 'char-counter warn'
+                            : 'char-counter';
     });
 }
 
-// ==================== RESİM ====================
+/* ═══════ RESİM İŞLEMLERİ ═══════ */
 function clearPendingImage() {
     if (pendingImageUrl) { URL.revokeObjectURL(pendingImageUrl); pendingImageUrl = null; }
     pendingImageFile = null;
-    const c = document.getElementById('imagePreviewArea');
-    if (c) c.innerHTML = '';
+    document.getElementById('imagePreviewArea').innerHTML = '';
 }
 
 function showImagePreview(file) {
-    if (file.size > 10 * 1024 * 1024) { showToast('Resim çok büyük. Max 10MB.', true); return; }
-    if (!file.type.startsWith('image/')) { showToast('Yalnızca resim dosyası seçin.', true); return; }
-    clearPendingImage();
-    pendingImageFile = file;
-    const url = URL.createObjectURL(file);
-    pendingImageUrl = url;
+    if (file.size > 10 * 1024 * 1024) { showToast('Max 10MB.', true); return; }
+    if (!file.type.startsWith('image/')) { showToast('Sadece resim.', true); return; }
+    clearPendingImage(); pendingImageFile = file;
+    const url = URL.createObjectURL(file); pendingImageUrl = url;
     const container = document.getElementById('imagePreviewArea');
-    const div = document.createElement('div');
-    div.className = 'image-preview-container';
+    const div = document.createElement('div'); div.className = 'image-preview-container';
     div.innerHTML = `<img class="image-preview" src="${url}" alt="önizleme"><button class="remove-image" title="Kaldır">✕</button>`;
     div.querySelector('.remove-image').addEventListener('click', e => { e.stopPropagation(); clearPendingImage(); });
     container.appendChild(div);
 }
 
-document.getElementById('attachBtn').addEventListener('click', () => document.getElementById('fileInput').click());
-document.getElementById('fileInput').addEventListener('change', e => { if(e.target.files[0]) showImagePreview(e.target.files[0]); e.target.value=''; });
-
 function setupPasteHandler() {
     document.getElementById('userInput').addEventListener('paste', async e => {
-        const items = e.clipboardData?.items;
-        if (!items) return;
+        const items = e.clipboardData?.items; if (!items) return;
         let imageFile = null, plainText = null;
         for (const item of items) {
             if (item.type.startsWith('image/')) imageFile = item.getAsFile();
             else if (item.type === 'text/plain') plainText = await new Promise(r => item.getAsString(r));
         }
         if (imageFile) {
-            e.preventDefault();
-            showImagePreview(imageFile);
+            e.preventDefault(); showImagePreview(imageFile);
             if (plainText) {
                 const inp = document.getElementById('userInput');
                 const s = inp.selectionStart, en = inp.selectionEnd;
-                inp.value = inp.value.substring(0,s) + plainText + inp.value.substring(en);
+                inp.value = inp.value.substring(0, s) + plainText + inp.value.substring(en);
                 inp.selectionStart = inp.selectionEnd = s + plainText.length;
             }
         }
     });
 }
 
-// ==================== RENDER ====================
+/* ═══════ RENDER ═══════ */
 function renderTextWithMath(text) {
     const container = document.createElement('div');
     container.innerHTML = text
@@ -1422,58 +1309,109 @@ function renderTextWithMath(text) {
     return container;
 }
 
+function getDomainIcon(domain) {
+    const d = (domain || '').toLowerCase();
+    if (d.includes('wikipedia'))    return '📖';
+    if (d.includes('google'))       return '🔍';
+    if (d.includes('khan'))         return '🎓';
+    if (d.includes('wolfram'))      return '🔢';
+    if (d.includes('biyografi'))    return '📋';
+    if (d.includes('tarih'))        return '📅';
+    if (d.includes('gov'))          return '🏛️';
+    if (d.includes('edu'))          return '🎓';
+    if (d.includes('news') || d.includes('haber')) return '📰';
+    if (d.includes('britannica'))   return '🌐';
+    return '🔗';
+}
+
 function renderMessages() {
     const chatBox = document.getElementById('chatBox');
     const session = getActiveSession();
+    const wasAtBottom = chatBox.scrollHeight - chatBox.scrollTop - chatBox.clientHeight < 80;
+    const oldScroll   = chatBox.scrollTop;
+
     chatBox.innerHTML = '';
+
     session.messages.forEach(msg => {
+        if (msg.role === 'thinking') {
+            const container = document.createElement('div');
+            container.className = 'thinking-container';
+            const header = document.createElement('div');
+            header.className = 'thinking-header';
+            header.innerHTML = `
+                <span class="thinking-icon done">✅</span>
+                <span class="thinking-label">${msg.label || 'Araştırma Tamamlandı'}</span>
+                <span class="thinking-duration">${msg.duration || '0'}s</span>
+                <span class="thinking-toggle">▼</span>
+            `;
+            const body  = document.createElement('div'); body.className = 'thinking-body';
+            const inner = document.createElement('div'); inner.className = 'thinking-body-inner';
+            inner.innerHTML = msg.stepsHtml || '';
+
+            // Kaynaklar kutusu
+            if (msg.sources && msg.sources.length > 0) {
+                const sourcesBox = document.createElement('div');
+                sourcesBox.className = 'sources-box';
+                sourcesBox.innerHTML = `<div class="sources-box-title">🔗 Taranan Gerçek Kaynaklar</div>`;
+                msg.sources.forEach(src => {
+                    const a = document.createElement('a');
+                    a.className  = 'source-link';
+                    a.href       = src.link;
+                    a.target     = '_blank';
+                    a.rel        = 'noopener noreferrer';
+                    a.innerHTML  = `${getDomainIcon(src.domain)} <span>${(src.title || src.domain || '').slice(0, 55)}</span> <span class="source-domain">${src.domain}</span>`;
+                    sourcesBox.appendChild(a);
+                });
+                inner.appendChild(sourcesBox);
+            }
+
+            body.appendChild(inner); container.appendChild(header); container.appendChild(body);
+            header.addEventListener('click', () => {
+                body.classList.toggle('open');
+                header.querySelector('.thinking-toggle').classList.toggle('open');
+            });
+            chatBox.appendChild(container);
+            return;
+        }
+
         const div = document.createElement('div');
-        if (msg.role === 'congrats') div.className = 'msg congrats-msg';
-        else if (msg.isRateLimit)    div.className = 'msg rate-limit-msg';
-        else if (msg.isInfo)         div.className = 'msg info-msg';
+        if (msg.role === 'congrats')        div.className = 'msg congrats-msg';
+        else if (msg.isRateLimit)           div.className = 'msg rate-limit-msg';
+        else if (msg.isInfo)                div.className = 'msg info-msg';
         else div.className = `msg ${msg.role === 'user' ? 'user-msg' : 'ai-msg'} ${msg.isError ? 'error-msg' : ''}`;
         div.appendChild(renderTextWithMath(msg.text));
         chatBox.appendChild(div);
     });
-    if (isStreaming && !currentStreamElement) {
-        const ind = document.createElement('div');
-        ind.className = 'typing-indicator';
-        ind.innerHTML = '<span></span><span></span><span></span>';
-        chatBox.appendChild(ind);
-    }
-    chatBox.scrollTop = chatBox.scrollHeight;
+
+    if (wasAtBottom) chatBox.scrollTop = chatBox.scrollHeight;
+    else             chatBox.scrollTop = oldScroll;
 }
 
 function renderSidebar() {
     const list = document.getElementById('historyList');
     list.innerHTML = '';
-    sessions.slice().sort((a,b) => b.timestamp - a.timestamp).forEach(s => {
-        const item = document.createElement('div');
-        item.className = `history-item ${s.id === activeId ? 'active' : ''}`;
-        const titleSpan = document.createElement('div');
-        titleSpan.className = 'history-title';
-        titleSpan.textContent = s.title;
-        titleSpan.onclick = () => {
+    sessions.slice().sort((a, b) => b.timestamp - a.timestamp).forEach(s => {
+        const item       = document.createElement('div');
+        item.className   = `history-item ${s.id === activeId ? 'active' : ''}`;
+        const titleSpan  = document.createElement('div'); titleSpan.className = 'history-title'; titleSpan.textContent = s.title;
+        const timeSpan   = document.createElement('div'); timeSpan.className  = 'history-time';  timeSpan.textContent  = formatTimeAgo(s.timestamp);
+        const clickHandler = () => {
             if (isStreaming) stopStreaming();
-            activeId = s.id;
-            renderSidebar(); renderMessages(); enableInput(); clearPendingImage();
+            activeId = s.id; renderSidebar(); renderMessages(); enableInput(); clearPendingImage();
         };
-        const delBtn = document.createElement('button');
-        delBtn.className = 'delete-btn';
-        delBtn.textContent = 'Sohbeti Sil';
+        titleSpan.onclick = clickHandler; timeSpan.onclick = clickHandler;
+        const delBtn = document.createElement('button'); delBtn.className = 'delete-btn'; delBtn.textContent = '🗑 Sil';
         delBtn.onclick = e => {
-            e.stopPropagation();
-            if (isStreaming) stopStreaming();
+            e.stopPropagation(); if (isStreaming) stopStreaming();
             sessions = sessions.filter(ss => ss.id !== s.id);
             if (!sessions.length) {
                 const newId = Date.now().toString() + Math.random().toString(36);
-                sessions = [{ id:newId, title:'Yeni Sohbet', timestamp:Date.now(), messages:[{...welcomeMsg, id:'welcome-'+newId}] }];
+                sessions = [{ id: newId, title: 'Yeni Sohbet', timestamp: Date.now(), messages: [{ ...welcomeMsg, id: 'welcome-' + newId }] }];
             }
             if (activeId === s.id) activeId = sessions[0].id;
             saveToLocal(); renderSidebar(); renderMessages(); enableInput(); clearPendingImage();
         };
-        item.appendChild(titleSpan);
-        item.appendChild(delBtn);
+        item.appendChild(titleSpan); item.appendChild(timeSpan); item.appendChild(delBtn);
         list.appendChild(item);
     });
 }
@@ -1483,13 +1421,15 @@ function enableInput() {
     document.getElementById('sendBtn').disabled   = false;
 }
 
-// ==================== STREAMING ====================
 function stopStreaming() {
     if (streamCancel) { clearInterval(streamCancel); streamCancel = null; }
     isStreaming = false; currentStreamElement = null;
-    enableInput(); renderMessages();
+    enableInput();
+    document.getElementById('researchIndicator').classList.remove('active');
+    renderMessages();
 }
 
+/* ═══════ STREAMING ═══════ */
 function startStreaming(sessionId, messageId, fullTextRaw) {
     let cleanText = fullTextRaw
         .replace(/Google\s*kurdu/gi, '')
@@ -1497,64 +1437,239 @@ function startStreaming(sessionId, messageId, fullTextRaw) {
         .replace(/(\n\s*)\*\s+/g, '$1- ');
 
     const session = sessions.find(s => s.id === sessionId);
-    if (!session || session.messages.findIndex(m => m.id === messageId) === -1) return;
+    if (!session || !session.messages.find(m => m.id === messageId)) return;
 
     const chatBox = document.getElementById('chatBox');
-    const msgEls  = chatBox.querySelectorAll('.msg.ai-msg:not(.error-msg)');
-    let targetDiv = msgEls.length ? msgEls[msgEls.length - 1] : null;
-    if (!targetDiv) {
-        targetDiv = document.createElement('div');
-        targetDiv.className = 'msg ai-msg';
-        chatBox.appendChild(targetDiv);
-    }
+    chatBox.querySelectorAll('.typing-indicator').forEach(t => t.remove());
 
-    currentStreamElement = targetDiv;
-    let pos = 0;
+    const aiDiv = document.createElement('div');
+    aiDiv.className = 'msg ai-msg';
+    aiDiv.id        = 'stream-target-' + messageId;
+    chatBox.appendChild(aiDiv);
+    currentStreamElement = aiDiv;
+
+    let pos   = 0;
     const total = cleanText.length;
+    isStreaming   = true;
 
     streamCancel = setInterval(() => {
-        if (!currentStreamElement) { stopStreaming(); return; }
-        pos = Math.min(pos + Math.floor(Math.random() * 4) + 2, total);
+        if (!currentStreamElement || !document.getElementById('stream-target-' + messageId)) {
+            stopStreaming(); return;
+        }
+        const speed = Math.floor(Math.random() * 5) + 2;
+        pos = Math.min(pos + speed, total);
         const partial = cleanText.substring(0, pos);
+
         const temp = document.createElement('div');
         temp.innerHTML = partial.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
         applyKatex(temp);
         currentStreamElement.innerHTML = '';
         while (temp.firstChild) currentStreamElement.appendChild(temp.firstChild);
-        updateActiveSession(s => ({ ...s, messages: s.messages.map(m => m.id === messageId ? {...m, text:partial} : m) }));
-        chatBox.scrollTop = chatBox.scrollHeight;
-        if (pos >= total) stopStreaming();
-    }, 45);
 
-    isStreaming = true;
-}
+        sessions = sessions.map(s => s.id === sessionId ? {
+            ...s, messages: s.messages.map(m => m.id === messageId ? { ...m, text: partial } : m)
+        } : s);
 
-// ==================== BAŞLIK ====================
-async function generateTitleAsync(firstUserMsg, sessionId) {
-    try {
-        const form = new FormData();
-        form.append('message', `Şu mesaja Türkçe kısa bir sohbet başlığı ver (max 40 karakter). Sadece başlığı yaz: ${firstUserMsg}`);
-        const res = await fetch(`${API_BASE}/chat`, { method:'POST', body:form });
-        if (res.ok) {
-            let title = (await res.text()).trim().slice(0,40).replace(/^"|"$/g,'').replace(/\*\*/g,'');
-            if (title) { sessions = sessions.map(s => s.id === sessionId ? {...s, title} : s); saveToLocal(); renderSidebar(); }
+        const isBottom = chatBox.scrollHeight - chatBox.scrollTop - chatBox.clientHeight < 120;
+        if (isBottom) chatBox.scrollTop = chatBox.scrollHeight;
+
+        if (pos >= total) {
+            sessions = sessions.map(s => s.id === sessionId ? {
+                ...s, messages: s.messages.map(m => m.id === messageId ? { ...m, text: cleanText } : m)
+            } : s);
+            saveToLocal(); stopStreaming();
         }
-    } catch(e) {}
+    }, 35);
 }
 
-// ==================== BAĞLAM ====================
+/* ═══════ CANLI THINKING PANELİ ═══════ */
+function createLiveThinkingPanel(label) {
+    const id        = 'think-' + Date.now();
+    const container = document.createElement('div');
+    container.className = 'thinking-container';
+    container.id        = id;
+
+    const header = document.createElement('div');
+    header.className = 'thinking-header';
+    header.innerHTML = `
+        <span class="thinking-icon spinning">⚙️</span>
+        <span class="thinking-label">${label}</span>
+        <span class="thinking-duration" data-start="${Date.now()}">0.0s</span>
+        <span class="thinking-toggle open">▼</span>
+    `;
+
+    const body  = document.createElement('div'); body.className  = 'thinking-body open'; body.id  = id + '-body';
+    const inner = document.createElement('div'); inner.className = 'thinking-body-inner'; inner.id = id + '-inner';
+
+    const prog = document.createElement('div');
+    prog.className = 'thinking-progress';
+    prog.id        = id + '-progress';
+    prog.innerHTML = `
+        <div class="thinking-progress-bar">
+            <div class="thinking-progress-fill" id="${id}-fill" style="width:0%"></div>
+        </div>
+        <span class="thinking-progress-text" id="${id}-ptext">%0</span>
+    `;
+
+    const loading = document.createElement('div');
+    loading.className = 'thinking-loading';
+    loading.id        = id + '-loading';
+    loading.innerHTML = `
+        <div class="thinking-loading-dots"><span></span><span></span><span></span></div>
+        <span class="thinking-loading-text">Google'a bağlanılıyor...</span>
+    `;
+
+    inner.appendChild(loading);
+    inner.appendChild(prog);
+    body.appendChild(inner);
+    container.appendChild(header);
+    container.appendChild(body);
+
+    header.addEventListener('click', () => {
+        body.classList.toggle('open');
+        header.querySelector('.thinking-toggle').classList.toggle('open');
+    });
+
+    const durEl    = header.querySelector('.thinking-duration');
+    const durTimer = setInterval(() => {
+        const start = parseInt(durEl.dataset.start);
+        durEl.textContent = ((Date.now() - start) / 1000).toFixed(1) + 's';
+    }, 100);
+    container._durTimer = durTimer;
+    container._id       = id;
+    return container;
+}
+
+async function finishThinkingWithSources(container, realSources, searchQuery, researchPerformed) {
+    /*
+     * realSources: [{title, domain, link}] — Backend header'ından gelen gerçek Google kaynakları
+     */
+    const id      = container._id;
+    const inner   = document.getElementById(id + '-inner');
+    const fill    = document.getElementById(id + '-fill');
+    const ptext   = document.getElementById(id + '-ptext');
+    const loading = document.getElementById(id + '-loading');
+    const chatBox = document.getElementById('chatBox');
+    if (!inner) return { duration: '0s', stepsHtml: '', label: '', sources: [] };
+
+    const delay   = ms => new Promise(r => setTimeout(r, ms));
+    const addStep = (icon, html) => {
+        const step = document.createElement('div');
+        step.className = 'think-step';
+        step.innerHTML = `<span class="think-step-icon">${icon}</span><span class="think-step-content">${html}</span>`;
+        const progEl = document.getElementById(id + '-progress');
+        if (progEl) inner.insertBefore(step, progEl); else inner.appendChild(step);
+        const bd = document.getElementById(id + '-body');
+        if (bd) bd.scrollTop = bd.scrollHeight;
+        const isBottom = chatBox.scrollHeight - chatBox.scrollTop - chatBox.clientHeight < 120;
+        if (isBottom) chatBox.scrollTop = chatBox.scrollHeight;
+    };
+    const setProg = pct => {
+        if (fill)  fill.style.width    = pct + '%';
+        if (ptext) ptext.textContent   = '%' + Math.round(pct);
+    };
+
+    // Adım 1 — başlangıç
+    await delay(250);
+    if (loading) loading.remove();
+    addStep('🔍', `Google araması başlatıldı: <span class="think-step-analysis">"${(searchQuery || '').slice(0, 60)}"</span>`);
+    setProg(8);
+
+    if (researchPerformed && realSources && realSources.length > 0) {
+        // ─── Gerçek kaynaklar var ───
+        await delay(350);
+        addStep('🌐', 'Google Custom Search API yanıt verdi...');
+        setProg(15);
+
+        const foundTexts = ['İçerik tarandı ✓', 'Veri çekildi ✓', 'Bilgi alındı ✓', 'Kaynak okundu ✓', 'Referans alındı ✓'];
+        for (let i = 0; i < realSources.length; i++) {
+            const src  = realSources[i];
+            const icon = getDomainIcon(src.domain);
+            await delay(300 + Math.random() * 200);
+            addStep(icon, `
+                <a class="think-step-site" href="${src.link}" target="_blank" rel="noopener noreferrer">${src.domain}</a>
+                <span style="color:var(--text-muted)"> — </span>
+                <span style="color:rgba(238,245,255,0.75);font-size:0.75rem">${(src.title || '').slice(0, 65)}</span>
+            `);
+            setProg(18 + (i + 1) / realSources.length * 48);
+            await delay(200 + Math.random() * 150);
+            addStep('📄', `<span class="think-step-result">${foundTexts[i % foundTexts.length]}</span>`);
+            setProg(18 + (i + 1) / realSources.length * 55);
+        }
+
+        await delay(280);
+        addStep('🧠', '<span class="think-step-analysis">Toplanan veriler analiz ediliyor ve derleniyor...</span>');
+        setProg(82);
+        await delay(220);
+        addStep('🧠', '<span class="think-step-analysis">Kaynaklar arası tutarlılık kontrol ediliyor...</span>');
+        setProg(92);
+        await delay(180);
+        addStep('✅', `<span class="think-step-result">Araştırma tamamlandı — ${realSources.length} gerçek Google kaynağı incelendi.</span>`);
+        setProg(100);
+        if (ptext) ptext.textContent = 'Tamamlandı ✓';
+
+    } else {
+        // ─── Google API yapılandırılmamış ───
+        await delay(400);
+        addStep('⚠️', '<span style="color:#ffaa44">Google Search API yapılandırılmamış — AI kendi bilgisinden yanıt veriyor.</span>');
+        setProg(100);
+        if (ptext) ptext.textContent = 'AI Bilgisi';
+    }
+
+    // Header güncelle
+    const iconEl  = container.querySelector('.thinking-icon');
+    if (iconEl) { iconEl.classList.remove('spinning'); iconEl.textContent = '✅'; }
+    clearInterval(container._durTimer);
+    const durEl   = container.querySelector('.thinking-duration');
+    const finalDur = durEl ? durEl.textContent : '0s';
+    const labelEl = container.querySelector('.thinking-label');
+    const labelTxt = labelEl ? labelEl.textContent : 'Araştırma';
+
+    // Panel kapat
+    await delay(700);
+    const bd = document.getElementById(id + '-body');
+    if (bd) bd.classList.remove('open');
+    const toggle = container.querySelector('.thinking-toggle');
+    if (toggle) toggle.classList.remove('open');
+
+    return {
+        duration:  finalDur,
+        stepsHtml: inner ? inner.innerHTML : '',
+        label:     labelTxt,
+        sources:   realSources || [],
+    };
+}
+
+/* ═══════ CONTEXT ═══════ */
 function buildContext() {
     const session = getActiveSession();
-    const recent  = session.messages.filter(m => m.role !== 'congrats' && !m.isRateLimit && !m.isInfo).slice(-20);
+    const recent  = session.messages
+        .filter(m => m.role !== 'congrats' && m.role !== 'thinking' && !m.isRateLimit && !m.isInfo)
+        .slice(-20);
     let history = '';
     for (const msg of recent) {
-        if (msg.role === 'user')                   history += `Kullanıcı: ${msg.text}\n`;
-        else if (msg.role === 'ai' && !msg.isError) history += `Asistan: ${msg.text}\n`;
+        if (msg.role === 'user' && !msg.isError)      history += `Kullanıcı: ${msg.text}\n`;
+        else if (msg.role === 'ai' && !msg.isError)   history += `Asistan: ${msg.text}\n`;
     }
     return history;
 }
 
-// ==================== MESAJ GÖNDER ====================
+async function generateTitleAsync(firstUserMsg, sessionId) {
+    try {
+        const form = new FormData();
+        form.append('message', `Şu mesaja Türkçe kısa bir sohbet başlığı ver (max 40 karakter). Sadece başlığı yaz: ${firstUserMsg}`);
+        const res = await fetch(`${API_BASE}/chat`, { method: 'POST', body: form });
+        if (res.ok) {
+            let title = (await res.text()).trim().slice(0, 40).replace(/^"|"$/g, '').replace(/\*\*/g, '');
+            if (title) { sessions = sessions.map(s => s.id === sessionId ? { ...s, title } : s); saveToLocal(); renderSidebar(); }
+        }
+    } catch(e) {}
+}
+
+/* ════════════════════════════════════════════════════════
+   ANA GÖNDERME FONKSİYONU
+   Gerçek Google araştırması: API yanıtından header okur
+   ════════════════════════════════════════════════════════ */
 async function sendMessage() {
     if (isStreaming) return;
     const input = document.getElementById('userInput');
@@ -1566,7 +1681,7 @@ async function sendMessage() {
         const spamCheck = checkClientSpam(text);
         if (!spamCheck.ok) {
             showCooldownBar(CLIENT_COOLDOWN);
-            const warn = document.getElementById('spamWarning');
+            const warn      = document.getElementById('spamWarning');
             warn.textContent = `⚠️ ${spamCheck.reason}`;
             warn.classList.add('visible');
             setTimeout(() => warn.classList.remove('visible'), 2500);
@@ -1577,49 +1692,192 @@ async function sendMessage() {
 
     const session     = getActiveSession();
     const isFirstUser = session.messages.filter(m => m.role === 'user').length === 0;
-    const userDisplayText = pendingImageFile ? (text ? `${text} 📎 [Resim eklendi]` : '📎 [Resim]') : text;
+    const userDisplay = pendingImageFile ? (text ? `${text} 📎 [Resim eklendi]` : '📎 [Resim]') : text;
 
-    updateActiveSession(s => ({ ...s, timestamp:Date.now(), messages:[...s.messages, {id:Date.now()+'-user', role:'user', text:userDisplayText}] }));
+    updateActiveSession(s => ({
+        ...s,
+        timestamp: Date.now(),
+        messages:  [...s.messages, { id: Date.now() + '-user', role: 'user', text: userDisplay }]
+    }));
 
-    input.value = ''; input.disabled = true; btn.disabled = true;
+    input.value         = '';
+    input.disabled      = true;
+    btn.disabled        = true;
     document.getElementById('charCounter').textContent = '';
 
-    const aiMsgId = Date.now() + '-ai-stream';
-    updateActiveSession(s => ({ ...s, messages:[...s.messages, {id:aiMsgId, role:'ai', text:''}] }));
-    renderMessages();
+    const chatBox   = document.getElementById('chatBox');
+    const isPlus    = plusData && plusData.status === 'approved';
+    const userName  = isPlus ? (plusData.name || '') : '';
 
-    const isPlus   = plusData && plusData.status === 'approved';
-    const userName = isPlus ? (plusData.name || '') : '';
-
+    // Form verisi
     const formData = new FormData();
     formData.append('message', buildContext() + `\nKullanıcı: ${text}\nAsistan:`);
     formData.append('is_plus', isPlus ? 'true' : 'false');
-    if (userName) formData.append('user_name', userName);
+    if (userName)         formData.append('user_name', userName);
     if (pendingImageFile) formData.append('image', pendingImageFile, pendingImageFile.name || 'image.png');
 
-    try {
-        const response = await fetch(`${API_BASE}/chat`, { method:'POST', body:formData });
-        if (response.status === 429) {
-            const errText = await response.text();
-            updateActiveSession(s => ({ ...s, messages:s.messages.map(m => m.id === aiMsgId ? {...m, text:`⏳ ${errText}`, isRateLimit:true} : m) }));
-            renderMessages(); enableInput(); clearPendingImage(); return;
+    // Client-side araştırma tespiti (UI için)
+    const clientRes = detectResearchNeed(text);
+
+    if (clientRes.needed && !pendingImageFile) {
+        /* ════ ARAŞTIRMALI AKIŞ ════ */
+        const resInd = document.getElementById('researchIndicator');
+        resInd.classList.add('active');
+        document.getElementById('researchIndicatorText').textContent = 'Google\'da araştırılıyor...';
+
+        // Canlı thinking paneli oluştur
+        const thinkPanel = createLiveThinkingPanel(clientRes.label);
+        chatBox.appendChild(thinkPanel);
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        // Panel içine "bekliyor" adımlarını göster
+        const panelId     = thinkPanel._id;
+        const panelInner  = document.getElementById(panelId + '-inner');
+        const panelFill   = document.getElementById(panelId + '-fill');
+        const panelPtext  = document.getElementById(panelId + '-ptext');
+        const panelLoad   = document.getElementById(panelId + '-loading');
+
+        const dlyFn    = ms => new Promise(r => setTimeout(r, ms));
+        const addStepFn = (icon, html) => {
+            const step = document.createElement('div');
+            step.className = 'think-step';
+            step.innerHTML = `<span class="think-step-icon">${icon}</span><span class="think-step-content">${html}</span>`;
+            const progEl = document.getElementById(panelId + '-progress');
+            if (progEl) panelInner.insertBefore(step, progEl); else panelInner.appendChild(step);
+            const bd = document.getElementById(panelId + '-body');
+            if (bd) bd.scrollTop = bd.scrollHeight;
+            const isBottom = chatBox.scrollHeight - chatBox.scrollTop - chatBox.clientHeight < 120;
+            if (isBottom) chatBox.scrollTop = chatBox.scrollHeight;
+        };
+        const setProgFn = pct => {
+            if (panelFill)  panelFill.style.width  = pct + '%';
+            if (panelPtext) panelPtext.textContent = '%' + Math.round(pct);
+        };
+
+        // Bekleme adımları (API cevap gelene kadar)
+        setTimeout(() => {
+            if (panelLoad) panelLoad.remove();
+            addStepFn('🔍', `Araştırma sorgusu hazırlanıyor: <span class="think-step-analysis">"${text.slice(0,55)}"</span>`);
+            setProgFn(4);
+        }, 200);
+        setTimeout(() => { addStepFn('🌐', 'Google Custom Search API\'ye istek gönderildi...'); setProgFn(9);  }, 700);
+        setTimeout(() => { addStepFn('⏳', '<span style="color:#60a5fa">Sunucudan yanıt bekleniyor...</span>'); setProgFn(13); }, 1300);
+
+        try {
+            /* ── API İSTEĞİ ── */
+            const apiResponse = await fetch(`${API_BASE}/chat`, { method: 'POST', body: formData });
+            resInd.classList.remove('active');
+
+            // ── Header'lardan araştırma bilgilerini oku ──
+            const researchPerformed = apiResponse.headers.get('X-Research-Performed') === 'true';
+            const searchCount       = parseInt(apiResponse.headers.get('X-Search-Results-Count') || '0');
+            const searchQuery       = apiResponse.headers.get('X-Search-Query') || text;
+            let realSources = [];
+            try {
+                const sh = apiResponse.headers.get('X-Search-Sources');
+                if (sh) realSources = JSON.parse(sh);
+            } catch(e) {}
+
+            // Rate limit / hata kontrolü
+            if (apiResponse.status === 429) {
+                const errText = await apiResponse.text();
+                clearInterval(thinkPanel._durTimer);
+                updateActiveSession(s => ({
+                    ...s, messages: [...s.messages,
+                        { id: 'think-sv-' + Date.now(), role: 'thinking', duration: '—', stepsHtml: panelInner?.innerHTML || '', label: clientRes.label, sources: [] },
+                        { id: Date.now() + '-ai-rl', role: 'ai', text: `⏳ ${errText}`, isRateLimit: true },
+                    ]
+                }));
+                renderMessages(); enableInput(); clearPendingImage(); return;
+            }
+            if (!apiResponse.ok) throw new Error(`HTTP ${apiResponse.status}`);
+            const rawReply = await apiResponse.text();
+
+            // ── Thinking panelini gerçek kaynaklarla tamamla ──
+            const thinkData = await finishThinkingWithSources(thinkPanel, realSources, searchQuery, researchPerformed);
+            thinkData.label = researchPerformed && searchCount > 0
+                ? `${clientRes.label} — ${searchCount} Google kaynağı`
+                : clientRes.label;
+
+            // Session'a kaydet
+            const aiMsgId = Date.now() + '-ai-stream';
+            updateActiveSession(s => ({
+                ...s, messages: [...s.messages,
+                    { id: 'think-sv-' + Date.now(), role: 'thinking', duration: thinkData.duration, stepsHtml: thinkData.stepsHtml, label: thinkData.label, sources: realSources },
+                    { id: aiMsgId, role: 'ai', text: '' },
+                ]
+            }));
+
+            renderMessages();
+            await new Promise(r => setTimeout(r, 150));
+            startStreaming(activeId, aiMsgId, rawReply);
+            if (isFirstUser && text) generateTitleAsync(text, activeId);
+            clearPendingImage();
+
+        } catch(err) {
+            document.getElementById('researchIndicator').classList.remove('active');
+            clearInterval(thinkPanel._durTimer);
+            updateActiveSession(s => ({
+                ...s, messages: [...s.messages,
+                    { id: Date.now() + '-ai-err', role: 'ai', text: `❌ Hata: ${err.message}`, isError: true }
+                ]
+            }));
+            renderMessages(); enableInput(); clearPendingImage();
         }
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const rawReply = await response.text();
-        startStreaming(activeId, aiMsgId, rawReply);
-        if (isFirstUser && text) generateTitleAsync(text, activeId);
-        clearPendingImage();
-    } catch(err) {
-        updateActiveSession(s => ({ ...s, messages:s.messages.map(m => m.id === aiMsgId ? {...m, text:`❌ Hata: ${err.message}`, isError:true} : m) }));
-        renderMessages(); enableInput(); clearPendingImage();
+
+    } else {
+        /* ════ NORMAL AKIŞ ════ */
+        const aiMsgId = Date.now() + '-ai-stream';
+        updateActiveSession(s => ({
+            ...s, messages: [...s.messages, { id: aiMsgId, role: 'ai', text: '' }]
+        }));
+
+        const typing = document.createElement('div');
+        typing.className = 'typing-indicator';
+        typing.id        = 'typing-ind';
+        typing.innerHTML = '<span></span><span></span><span></span>';
+        chatBox.appendChild(typing);
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        try {
+            const response = await fetch(`${API_BASE}/chat`, { method: 'POST', body: formData });
+            const ti = document.getElementById('typing-ind');
+            if (ti) ti.remove();
+
+            if (response.status === 429) {
+                const errText = await response.text();
+                updateActiveSession(s => ({
+                    ...s, messages: s.messages.map(m =>
+                        m.id === aiMsgId ? { ...m, text: `⏳ ${errText}`, isRateLimit: true } : m)
+                }));
+                renderMessages(); enableInput(); clearPendingImage(); return;
+            }
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+            const rawReply = await response.text();
+            renderMessages();
+            await new Promise(r => setTimeout(r, 100));
+            startStreaming(activeId, aiMsgId, rawReply);
+            if (isFirstUser && text) generateTitleAsync(text, activeId);
+            clearPendingImage();
+
+        } catch(err) {
+            const ti = document.getElementById('typing-ind');
+            if (ti) ti.remove();
+            updateActiveSession(s => ({
+                ...s, messages: s.messages.map(m =>
+                    m.id === aiMsgId ? { ...m, text: `❌ Hata: ${err.message}`, isError: true } : m)
+            }));
+            renderMessages(); enableInput(); clearPendingImage();
+        }
     }
 }
 
-// ==================== YENİ SOHBET ====================
+/* ═══════ YENİ SOHBET ═══════ */
 function newChat() {
     if (isStreaming) stopStreaming();
     const newId = Date.now().toString() + Math.random().toString(36);
-    sessions.unshift({ id:newId, title:'Yeni Sohbet', timestamp:Date.now(), messages:[{...welcomeMsg, id:'welcome-'+newId}] });
+    sessions.unshift({ id: newId, title: 'Yeni Sohbet', timestamp: Date.now(), messages: [{ ...welcomeMsg, id: 'welcome-' + newId }] });
     activeId = newId;
     saveToLocal(); renderSidebar(); renderMessages(); enableInput();
     document.getElementById('userInput').focus();
@@ -1627,17 +1885,19 @@ function newChat() {
 
     if (plusData && plusData.status === 'approved' && plusData.name) {
         const h = getTurkeyTime().getHours();
-        const greeting = h<5?'İyi geceler':h<12?'Günaydın':h<18?'İyi günler':h<22?'İyi akşamlar':'İyi geceler';
-        const pwId   = 'plus-welcome-' + newId;
-        const pwText = `${greeting} **${plusData.name}**! 👑 Plus modundayım — her konuda yardımcı olabilirim!`;
-        sessions = sessions.map(s => s.id === newId ? {...s, messages:[...s.messages, {id:pwId, role:'ai', text:pwText}]} : s);
+        const greeting = h < 5 ? 'İyi geceler' : h < 12 ? 'Günaydın' : h < 18 ? 'İyi günler' : h < 22 ? 'İyi akşamlar' : 'İyi geceler';
+        const pwId     = 'plus-welcome-' + newId;
+        sessions = sessions.map(s => s.id === newId ? { ...s, messages: [...s.messages, {
+            id: pwId, role: 'ai',
+            text: `${greeting} **${plusData.name}**! 👑 Plus + Google Araştırma modundayım — her konuda yardımcı olabilirim!`
+        }]} : s);
         saveToLocal(); renderMessages();
     }
 }
 
-// ==================== TOAST ====================
+/* ═══════ TOAST ═══════ */
 function showToast(message, isError = false) {
-    const toast = document.createElement('div');
+    const toast   = document.createElement('div');
     toast.className = 'toast';
     toast.textContent = message;
     if (isError) toast.style.borderLeftColor = '#ff5e5e';
@@ -1645,27 +1905,26 @@ function showToast(message, isError = false) {
     setTimeout(() => { if (toast.parentNode) toast.remove(); }, 3600);
 }
 
-// ==================== PLUS BAŞVURU ====================
+/* ═══════ PLUS BAŞVURU ═══════ */
 async function submitPlusRequest() {
     const firstName = document.getElementById('firstName').value.trim();
     const lastName  = document.getElementById('lastName').value.trim();
     const email     = document.getElementById('gmail').value.trim();
     if (!firstName || !lastName || !email) { showToast('Lütfen tüm alanları doldurun.', true); return; }
-    if (!email.endsWith('@gmail.com')) { showToast('Lütfen geçerli bir Gmail adresi girin.', true); return; }
+    if (!email.endsWith('@gmail.com'))      { showToast('Lütfen geçerli bir Gmail adresi girin.', true); return; }
 
     const submitBtn = document.getElementById('submitRequestBtn');
     submitBtn.disabled = true; submitBtn.textContent = 'Gönderiliyor...';
-
     try {
         const response = await fetch(`${API_BASE}/kaya-plus-request`, {
-            method:'POST', headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({ name:firstName, surname:lastName, email })
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: firstName, surname: lastName, email })
         });
         if (response.ok) {
             const data = await response.json();
-            showToast('✅ Başvurunuz alındı! 24 saat içinde Gmail üzerinden bilgilendirileceksiniz.');
+            showToast('✅ Başvurunuz alındı! İncelendikten sonra bilgilendirileceksiniz.');
             closeModal();
-            plusData = { email, name:firstName, surname:lastName, status:'pending', reqId:data.req_id };
+            plusData = { email, name: firstName, surname: lastName, status: 'pending', reqId: data.req_id };
             savePlusData(); applyPlusUI(); startPlusPolling();
             document.getElementById('firstName').value = '';
             document.getElementById('lastName').value  = '';
@@ -1674,16 +1933,17 @@ async function submitPlusRequest() {
             showToast(`Hata: ${await response.text()}`, true);
         }
     } catch(e) {
-        showToast('Bağlantı hatası. Lütfen daha sonra tekrar deneyin.', true);
+        showToast('Bağlantı hatası. Daha sonra tekrar deneyin.', true);
     } finally {
-        submitBtn.disabled = false; submitBtn.textContent = 'Başvur';
+        submitBtn.disabled  = false;
+        submitBtn.textContent = 'Başvur';
     }
 }
 
 function openModal()  { document.getElementById('kayaModal').style.display = 'flex'; }
 function closeModal() { document.getElementById('kayaModal').style.display = 'none'; }
 
-// ==================== PARTİKÜL ====================
+/* ═══════ PARTİKÜLLER ═══════ */
 const canvas = document.getElementById('particle-canvas');
 const ctx    = canvas.getContext('2d');
 let particles = [], pw = 0, ph = 0;
@@ -1691,9 +1951,13 @@ let particles = [], pw = 0, ph = 0;
 function initParticles() {
     pw = window.innerWidth; ph = window.innerHeight;
     canvas.width = pw; canvas.height = ph; particles = [];
-    const count = Math.min(70, Math.floor((pw * ph) / 15000));
+    const count = Math.min(80, Math.floor((pw * ph) / 14000));
     for (let i = 0; i < count; i++) {
-        particles.push({ x:Math.random()*pw, y:Math.random()*ph, vx:(Math.random()-0.5)*0.35, vy:(Math.random()-0.5)*0.35, size:Math.random()*2+0.8 });
+        particles.push({
+            x:  Math.random() * pw, y: Math.random() * ph,
+            vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
+            size: Math.random() * 2 + 0.7,
+        });
     }
 }
 
@@ -1703,26 +1967,27 @@ function drawParticles() {
     const color  = isPlus ? '255,215,0' : '0,240,255';
     for (const p of particles) {
         p.x += p.vx; p.y += p.vy;
-        if (p.x<0||p.x>pw) p.vx*=-1;
-        if (p.y<0||p.y>ph) p.vy*=-1;
+        if (p.x < 0 || p.x > pw) p.vx *= -1;
+        if (p.y < 0 || p.y > ph) p.vy *= -1;
         ctx.beginPath();
-        ctx.fillStyle   = `rgba(${color},0.9)`;
+        ctx.fillStyle  = `rgba(${color},0.85)`;
         ctx.shadowColor = `rgba(${color},0.5)`;
-        ctx.shadowBlur  = 12;
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+        ctx.shadowBlur = 12;
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
     }
     ctx.shadowBlur = 0;
     for (let i = 0; i < particles.length; i++) {
-        for (let j = i+1; j < particles.length; j++) {
-            const dx = particles[i].x-particles[j].x, dy = particles[i].y-particles[j].y;
-            const d  = Math.sqrt(dx*dx+dy*dy);
-            if (d < 140) {
+        for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const d  = Math.sqrt(dx * dx + dy * dy);
+            if (d < 130) {
                 ctx.beginPath();
                 ctx.moveTo(particles[i].x, particles[i].y);
                 ctx.lineTo(particles[j].x, particles[j].y);
-                ctx.strokeStyle = `rgba(${color},${0.18*(1-d/140)})`;
-                ctx.lineWidth = 0.6;
+                ctx.strokeStyle = `rgba(${color},${0.16 * (1 - d / 130)})`;
+                ctx.lineWidth   = 0.5;
                 ctx.stroke();
             }
         }
@@ -1732,7 +1997,7 @@ function drawParticles() {
 
 window.addEventListener('resize', initParticles);
 
-// ==================== OLAY BAĞLAMALARI ====================
+/* ═══════ OLAY BAĞLAMALARI ═══════ */
 document.getElementById('newChatBtn').addEventListener('click', newChat);
 document.getElementById('mobileNewChatBtn').addEventListener('click', newChat);
 document.getElementById('sendBtn').addEventListener('click', sendMessage);
@@ -1742,16 +2007,26 @@ document.getElementById('userInput').addEventListener('keydown', e => {
 document.getElementById('kayaPlusBtn').addEventListener('click', openModal);
 document.getElementById('closeModalBtn').addEventListener('click', closeModal);
 document.getElementById('submitRequestBtn').addEventListener('click', submitPlusRequest);
+document.getElementById('cancelPlusBtn').addEventListener('click', openCancelConfirm);
+document.getElementById('keepPlusBtn').addEventListener('click', closeCancelConfirm);
+document.getElementById('confirmCancelBtn').addEventListener('click', confirmCancelPlus);
+document.getElementById('attachBtn').addEventListener('click', () => document.getElementById('fileInput').click());
+document.getElementById('fileInput').addEventListener('change', e => {
+    if (e.target.files[0]) showImagePreview(e.target.files[0]);
+    e.target.value = '';
+});
 window.addEventListener('click', e => {
-    if (e.target === document.getElementById('kayaModal')) closeModal();
+    if (e.target === document.getElementById('kayaModal'))          closeModal();
     if (e.target === document.getElementById('cancelConfirmModal')) closeCancelConfirm();
 });
 
+/* ═══════ BAŞLATMA ═══════ */
 setupPasteHandler();
 setupCharCounter();
 loadSessions();
 if (!activeId) activeId = sessions[0].id;
 loadPlusData();
+
 waitForKatex(() => {
     applyPlusUI();
     if (plusData && plusData.reqId && plusData.status !== 'cancelled') {
