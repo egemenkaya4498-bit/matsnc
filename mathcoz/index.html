@@ -1431,10 +1431,14 @@ function stopStreaming() {
 
 /* ═══════ STREAMING ═══════ */
 function startStreaming(sessionId, messageId, fullTextRaw) {
+    // SOURCES ve benzeri ekleri temizle
     let cleanText = fullTextRaw
+        .replace(/\|\|\|SOURCES\|\|\|[\s\S]*$/, '')
+        .replace(/\|\|\|.*?\|\|\|[\s\S]*$/, '')
         .replace(/Google\s*kurdu/gi, '')
         .replace(/^\s*\*\s+/gm, '- ')
-        .replace(/(\n\s*)\*\s+/g, '$1- ');
+        .replace(/(\n\s*)\*\s+/g, '$1- ')
+        .trim();
 
     const session = sessions.find(s => s.id === sessionId);
     if (!session || !session.messages.find(m => m.id === messageId)) return;
@@ -1709,35 +1713,30 @@ async function sendMessage() {
     const isPlus    = plusData && plusData.status === 'approved';
     const userName  = isPlus ? (plusData.name || '') : '';
 
-    // Form verisi
     const formData = new FormData();
     formData.append('message', buildContext() + `\nKullanıcı: ${text}\nAsistan:`);
+    formData.append('search_query', text);  // ✨ Sadece kullanıcının mesajı
     formData.append('is_plus', isPlus ? 'true' : 'false');
     if (userName)         formData.append('user_name', userName);
     if (pendingImageFile) formData.append('image', pendingImageFile, pendingImageFile.name || 'image.png');
 
-    // Client-side araştırma tespiti (UI için)
     const clientRes = detectResearchNeed(text);
 
     if (clientRes.needed && !pendingImageFile) {
-        /* ════ ARAŞTIRMALI AKIŞ ════ */
         const resInd = document.getElementById('researchIndicator');
         resInd.classList.add('active');
         document.getElementById('researchIndicatorText').textContent = 'Google\'da araştırılıyor...';
 
-        // Canlı thinking paneli oluştur
         const thinkPanel = createLiveThinkingPanel(clientRes.label);
         chatBox.appendChild(thinkPanel);
         chatBox.scrollTop = chatBox.scrollHeight;
 
-        // Panel içine "bekliyor" adımlarını göster
         const panelId     = thinkPanel._id;
         const panelInner  = document.getElementById(panelId + '-inner');
         const panelFill   = document.getElementById(panelId + '-fill');
         const panelPtext  = document.getElementById(panelId + '-ptext');
         const panelLoad   = document.getElementById(panelId + '-loading');
 
-        const dlyFn    = ms => new Promise(r => setTimeout(r, ms));
         const addStepFn = (icon, html) => {
             const step = document.createElement('div');
             step.className = 'think-step';
@@ -1754,7 +1753,6 @@ async function sendMessage() {
             if (panelPtext) panelPtext.textContent = '%' + Math.round(pct);
         };
 
-        // Bekleme adımları (API cevap gelene kadar)
         setTimeout(() => {
             if (panelLoad) panelLoad.remove();
             addStepFn('🔍', `Araştırma sorgusu hazırlanıyor: <span class="think-step-analysis">"${text.slice(0,55)}"</span>`);
@@ -1764,11 +1762,9 @@ async function sendMessage() {
         setTimeout(() => { addStepFn('⏳', '<span style="color:#60a5fa">Sunucudan yanıt bekleniyor...</span>'); setProgFn(13); }, 1300);
 
         try {
-            /* ── API İSTEĞİ ── */
             const apiResponse = await fetch(`${API_BASE}/chat`, { method: 'POST', body: formData });
             resInd.classList.remove('active');
 
-            // Rate limit / hata kontrolü
             if (apiResponse.status === 429) {
                 const errText = await apiResponse.text();
                 clearInterval(thinkPanel._durTimer);
@@ -1782,38 +1778,43 @@ async function sendMessage() {
             }
             if (!apiResponse.ok) throw new Error(`HTTP ${apiResponse.status}`);
             
-            // ── JSON yanıtı oku (body'den) ──
-            const responseData = await apiResponse.json();
-            const researchPerformed = responseData.research_performed || false;
-            const searchQuery = responseData.search_query || text;
-            let realSources = responseData.sources || [];
-            try {
-                const sh = apiResponse.headers.get('X-Search-Sources');
-                if (sh) realSources = JSON.parse(sh);
-            } catch(e) {}
-
-            // Rate limit / hata kontrolü
-            if (apiResponse.status === 429) {
-                const errText = await apiResponse.text();
-                clearInterval(thinkPanel._durTimer);
-                updateActiveSession(s => ({
-                    ...s, messages: [...s.messages,
-                        { id: 'think-sv-' + Date.now(), role: 'thinking', duration: '—', stepsHtml: panelInner?.innerHTML || '', label: clientRes.label, sources: [] },
-                        { id: Date.now() + '-ai-rl', role: 'ai', text: `⏳ ${errText}`, isRateLimit: true },
-                    ]
-                }));
-                renderMessages(); enableInput(); clearPendingImage(); return;
+            const contentType = apiResponse.headers.get('content-type') || '';
+            let replyText = '';
+            let researchPerformed = false;
+            let searchQuery = text;
+            let realSources = [];
+            
+            if (contentType.includes('application/json')) {
+                try {
+                    const responseData = await apiResponse.json();
+                    replyText = responseData.reply || '';
+                    researchPerformed = responseData.research_performed || false;
+                    searchQuery = responseData.search_query || text;
+                    realSources = responseData.sources || [];
+                } catch (jsonErr) {
+                    replyText = await apiResponse.text();
+                }
+            } else {
+                replyText = await apiResponse.text();
             }
-            if (!apiResponse.ok) throw new Error(`HTTP ${apiResponse.status}`);
-            const rawReply = await apiResponse.text();
+            
+            // ✨ Backend SOURCES ayracı ile gömüyorsa parse et
+            if (replyText.includes('|||SOURCES|||')) {
+                const parts = replyText.split('|||SOURCES|||');
+                replyText = parts[0].trim();
+                try {
+                    const sourceData = JSON.parse(parts[1].trim());
+                    researchPerformed = sourceData.performed || false;
+                    searchQuery = sourceData.query || text;
+                    realSources = sourceData.sources || [];
+                } catch(e) {}
+            }
 
-            // ── Thinking panelini gerçek kaynaklarla tamamla ──
             const thinkData = await finishThinkingWithSources(thinkPanel, realSources, searchQuery, researchPerformed);
-            thinkData.label = researchPerformed && searchCount > 0
-                ? `${clientRes.label} — ${searchCount} Google kaynağı`
+            thinkData.label = researchPerformed && realSources.length > 0
+                ? `${clientRes.label} — ${realSources.length} Google kaynağı`
                 : clientRes.label;
 
-            // Session'a kaydet
             const aiMsgId = Date.now() + '-ai-stream';
             updateActiveSession(s => ({
                 ...s, messages: [...s.messages,
@@ -1824,7 +1825,7 @@ async function sendMessage() {
 
             renderMessages();
             await new Promise(r => setTimeout(r, 150));
-            startStreaming(activeId, aiMsgId, rawReply);
+            startStreaming(activeId, aiMsgId, replyText);
             if (isFirstUser && text) generateTitleAsync(text, activeId);
             clearPendingImage();
 
@@ -1840,7 +1841,6 @@ async function sendMessage() {
         }
 
     } else {
-        /* ════ NORMAL AKIŞ ════ */
         const aiMsgId = Date.now() + '-ai-stream';
         updateActiveSession(s => ({
             ...s, messages: [...s.messages, { id: aiMsgId, role: 'ai', text: '' }]
@@ -1868,10 +1868,22 @@ async function sendMessage() {
             }
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-            const rawReply = await response.text();
+            const contentType = response.headers.get('content-type') || '';
+            let replyText;
+            if (contentType.includes('application/json')) {
+                try {
+                    const responseData = await response.json();
+                    replyText = responseData.reply || '';
+                } catch (jsonErr) {
+                    replyText = await response.text();
+                }
+            } else {
+                replyText = await response.text();
+            }
+
             renderMessages();
             await new Promise(r => setTimeout(r, 100));
-            startStreaming(activeId, aiMsgId, rawReply);
+            startStreaming(activeId, aiMsgId, replyText);
             if (isFirstUser && text) generateTitleAsync(text, activeId);
             clearPendingImage();
 
@@ -1886,7 +1898,6 @@ async function sendMessage() {
         }
     }
 }
-
 /* ═══════ YENİ SOHBET ═══════ */
 function newChat() {
     if (isStreaming) stopStreaming();
