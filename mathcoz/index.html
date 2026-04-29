@@ -1803,10 +1803,13 @@ async function sendMessage() {
                 const parts = replyText.split('|||SOURCES|||');
                 replyText = parts[0].trim();
                 try {
-                    const sourceData = JSON.parse(parts[1].trim());
-                    researchPerformed = sourceData.performed || false;
-                    searchQuery = sourceData.query || text;
-                    realSources = sourceData.sources || [];
+                    const jsonMatch = parts[1].match(/\{[\s\S]*\}/);
+                    if (jsonMatch) {
+                        const sourceData = JSON.parse(jsonMatch[0]);
+                        researchPerformed = sourceData.performed || false;
+                        searchQuery = sourceData.query || text;
+                        realSources = sourceData.sources || [];
+                    }
                 } catch(e) {}
             }
 
@@ -1870,15 +1873,53 @@ async function sendMessage() {
 
             const contentType = response.headers.get('content-type') || '';
             let replyText;
+            let researchPerformed = false;
+            let searchQuery = text;
+            let realSources = [];
+
             if (contentType.includes('application/json')) {
                 try {
                     const responseData = await response.json();
                     replyText = responseData.reply || '';
+                    researchPerformed = responseData.research_performed || false;
+                    searchQuery = responseData.search_query || text;
+                    realSources = responseData.sources || [];
                 } catch (jsonErr) {
                     replyText = await response.text();
                 }
             } else {
                 replyText = await response.text();
+            }
+
+            // ✨ Backend SOURCES ayracı ile gömüyorsa parse et
+            if (replyText.includes('|||SOURCES|||')) {
+                const parts = replyText.split('|||SOURCES|||');
+                replyText = parts[0].trim();
+                try {
+                    const jsonMatch = parts[1].match(/\{[\s\S]*\}/);
+                    if (jsonMatch) {
+                        const sourceData = JSON.parse(jsonMatch[0]);
+                        researchPerformed = sourceData.performed || false;
+                        searchQuery = sourceData.query || text;
+                        realSources = sourceData.sources || [];
+                    }
+                } catch(e) {}
+            }
+
+            if (researchPerformed) {
+                const thinkPanel = createLiveThinkingPanel("Google'da Araştırıldı");
+                chatBox.appendChild(thinkPanel);
+                const thinkData = await finishThinkingWithSources(thinkPanel, realSources, searchQuery, researchPerformed);
+                thinkData.label = realSources.length > 0 
+                    ? `Google Araması — ${realSources.length} kaynak` 
+                    : `Google Araması`;
+                
+                updateActiveSession(s => ({
+                    ...s, messages: [...s.messages.filter(m => m.id !== aiMsgId),
+                        { id: 'think-sv-' + Date.now(), role: 'thinking', duration: thinkData.duration, stepsHtml: thinkData.stepsHtml, label: thinkData.label, sources: realSources },
+                        { id: aiMsgId, role: 'ai', text: '' }
+                    ]
+                }));
             }
 
             renderMessages();
