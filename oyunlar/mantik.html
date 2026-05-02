@@ -1,181 +1,1870 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mantık ve Zeka Geliştirme</title>
+    <title>LGS'ye Hazırlık | Üst Düzey Soru Bankası</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700;800&display=swap');
-        :root { --bg: #050505; --card: #111111; --accent: #f59e0b; --correct: #10b981; --wrong: #ef4444; --text: #ffffff; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; }
-        body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; overflow-x: hidden; }
-        .container { width: 100%; max-width: 950px; background: var(--card); border: 1px solid #222; border-radius: 35px; padding: 40px; box-shadow: 0 0 60px rgba(0,0,0,0.8); position: relative; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #222; padding-bottom: 20px; }
-        .score-box { background: #000; padding: 12px 25px; border-radius: 15px; border: 1px solid var(--accent); color: var(--accent); font-weight: 800; font-size: 1.2rem; }
-        .progress-rail { width: 100%; height: 6px; background: #222; border-radius: 10px; margin-bottom: 30px; }
-        .progress-bar { height: 100%; background: var(--accent); width: 0%; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .q-tag { font-size: 0.85rem; text-transform: uppercase; color: #555; letter-spacing: 3px; font-weight: 700; }
-        .q-text { font-size: 1.65rem; margin: 25px 0 45px; line-height: 1.6; font-weight: 300; min-height: 100px; }
-        .options { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-        .opt { background: #181818; border: 1px solid #333; padding: 22px; border-radius: 18px; cursor: pointer; transition: 0.3s; font-size: 1.15rem; display: flex; align-items: center; gap: 15px; }
-        .opt:hover { border-color: var(--accent); background: #222; transform: translateY(-2px); }
-        .opt.active { border-color: var(--accent); background: rgba(245, 158, 11, 0.15); }
-        .opt.correct { background: var(--correct) !important; border: none; color: white; font-weight: 700; }
-        .opt.wrong { background: var(--wrong) !important; border: none; color: white; }
-        .btn { width: 100%; margin-top: 35px; padding: 22px; border-radius: 20px; border: none; background: var(--accent); color: #000; font-weight: 800; font-size: 1.2rem; cursor: pointer; transition: 0.4s; text-transform: uppercase; letter-spacing: 1px; }
-        .btn:disabled { opacity: 0.1; cursor: not-allowed; }
-        sup { font-size: 0.7em; } b { color: var(--accent); }
-        @media (max-width: 768px) { .options { grid-template-columns: 1fr; } .q-text { font-size: 1.3rem; } }
+
+        :root {
+            --bg: #050505;
+            --card: #111111;
+            --accent: #f59e0b;
+            --correct: #10b981;
+            --wrong: #ef4444;
+            --text: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 950px;
+            background: var(--card);
+            border: 1px solid #222;
+            border-radius: 35px;
+            padding: 40px;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.8);
+            position: relative;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .score-box {
+            background: #000;
+            padding: 12px 25px;
+            border-radius: 15px;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-weight: 800;
+            font-size: 1.2rem;
+        }
+
+        .diff-badge {
+            background: #ff0040;
+            color: white;
+            padding: 4px 14px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .progress-rail {
+            width: 100%;
+            height: 6px;
+            background: #222;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--accent);
+            width: 0%;
+            border-radius: 10px;
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .q-tag {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            color: #555;
+            letter-spacing: 3px;
+            font-weight: 700;
+        }
+
+        .q-cat {
+            display: inline-block;
+            background: #1a1a2e;
+            color: #7c3aed;
+            padding: 3px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+
+        .q-text {
+            font-size: 1.5rem;
+            margin: 25px 0 45px;
+            line-height: 1.7;
+            font-weight: 300;
+            min-height: 100px;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .opt {
+            background: #181818;
+            border: 1px solid #333;
+            padding: 22px;
+            border-radius: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            line-height: 1.5;
+        }
+
+        .opt:hover {
+            border-color: var(--accent);
+            background: #222;
+            transform: translateY(-2px);
+        }
+
+        .opt.active {
+            border-color: var(--accent);
+            background: rgba(245, 158, 11, 0.15);
+        }
+
+        .opt.correct {
+            background: var(--correct) !important;
+            border: none;
+            color: white;
+            font-weight: 700;
+        }
+
+        .opt.wrong {
+            background: var(--wrong) !important;
+            border: none;
+            color: white;
+        }
+
+        .btn {
+            width: 100%;
+            margin-top: 35px;
+            padding: 22px;
+            border-radius: 20px;
+            border: none;
+            background: var(--accent);
+            color: #000;
+            font-weight: 800;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.4s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:disabled {
+            opacity: 0.1;
+            cursor: not-allowed;
+        }
+
+        sup { font-size: 0.7em; }
+        b { color: var(--accent); }
+
+        .hint-box {
+            background: #0a0a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #888;
+            line-height: 1.6;
+            display: none;
+        }
+
+        .hint-box.show { display: block; }
+
+        @media (max-width: 768px) {
+            .options { grid-template-columns: 1fr; }
+            .q-text { font-size: 1.2rem; }
+            .container { padding: 25px; border-radius: 25px; }
+        }
     </style>
 </head>
+
 <body>
-<div class="container">
-    <div class="header">
-        <div>
-            <h2 style="font-weight:800; color: var(--accent)">Mantık ve Zeka Geliştirme</h2>
-            <p style="font-size: 0.8rem; color: #666">LGS DİNAMİK ÇALIŞMA V2.0</p>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h2 style="font-weight:800; color: var(--accent)">LGS Üst Düzey Soru Bankası</h2>
+                <p style="font-size: 0.8rem; color: #666">Gerçek LGS Kazanım Soruları Seviyesinde</p>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <span class="diff-badge">ZOR</span>
+                <div class="score-box"><span id="score">0</span> / 100</div>
+            </div>
         </div>
-        <div class="score-box"><span id="score">0</span> / 100</div>
+        <div class="progress-rail">
+            <div class="progress-bar" id="bar"></div>
+        </div>
+        <div id="game">
+            <div class="q-tag" id="q-idx">SORU 01</div>
+            <div class="q-text" id="q-text">Sistem başlatılıyor...</div>
+            <div class="options" id="opts"></div>
+            <button class="btn" id="btn" disabled onclick="action()">CEVABI KONTROL ET</button>
+        </div>
     </div>
-    <div class="progress-rail"><div class="progress-bar" id="bar"></div></div>
-    <div id="game">
-        <div class="q-tag" id="q-idx">ADIM 01</div>
-        <div class="q-text" id="q-text">Motor başlatılıyor...</div>
-        <div class="options" id="opts"></div>
-        <button class="btn" id="btn" disabled onclick="action()">KONTROL ET</button>
-    </div>
-</div>
 
-<script>
-    const rand = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
+    <script>
+        const rand = (a, b) => Math.floor(Math.random() * (b - a + 1) + a);
+        const shuffle = arr => { let a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+        const randArr = arr => arr[rand(0, arr.length - 1)];
+        const gcd = (a, b) => b === 0 ? Math.abs(a) : gcd(b, a % b);
+        const lcm = (a, b) => Math.abs(a * b) / gcd(a, b);
+        const isPrime = n => { if (n < 2) return false; for (let i = 2; i <= Math.sqrt(n); i++) if (n % i === 0) return false; return true; };
+        const primeFactors = n => { let f = {}; let d = 2; let num = Math.abs(n); while (num > 1) { while (num % d === 0) { f[d] = (f[d] || 0) + 1; num /= d; } d++; } return f; };
+        const divisorCount = n => { let f = primeFactors(n); let c = 1; for (let k in f) c *= (f[k] + 1); return c; };
+        const factorial = n => n <= 1 ? 1 : n * factorial(n - 1);
+        const comb = (n, r) => factorial(n) / (factorial(r) * factorial(n - r));
 
-    const Factory = {
-        templates: [
-            // --- ÜSLÜ SAYILAR (1-10) ---
-            () => { let e = rand(8,16); return { q: `2<sup>${e}</sup> sayısının <b>yarısının çeyreği</b>, 2<sup>x</sup> ise x kaçtır?`, a: [e-3, e-2, e-4, e/2], c: 0 }; },
-            () => { let b = rand(2,5); return { q: `(-${b})<sup>2</sup> ile -${b}<sup>2</sup> arasındaki fark kaçtır?`, a: [2*(b*b), 0, b*b, -2*(b*b)], c: 0 }; },
-            () => { return { q: `4<sup>5</sup> tane elmanın yarısı, her biri 2<sup>3</sup> elma alan kutulara konulacaktır. <b>Kaç kutu gerekir?</b>`, a: [`2<sup>6</sup>`,`2<sup>7</sup>`,`2<sup>5</sup>`,`2<sup>4</sup>`], c: 0 }; },
-            () => { return { q: `8<sup>4</sup> sayısının <b>yarısı</b> kaçtır?`, a: [`2<sup>11</sup>`,`2<sup>12</sup>`,`4<sup>6</sup>`,`2<sup>6</sup>`], c: 0 }; },
-            () => { return { q: `0,00045 sayısının bilimsel gösterimi a.10<sup>n</sup> ise <b>a+n</b> toplamı kaçtır?`, a: [`0,5`,`4,5`,`8,5`,`-4`], c: 0 }; },
-            () => { return { q: `10<sup>12</sup> sayısının <b>%10'u</b> kaç basamaklıdır?`, a: [`12`,`11`,`13`,`10`], c: 0 }; },
-            () => { return { q: `5<sup>-2</sup> sayısı aşağıdakilerden hangisine <b>eşittir?</b>`, a: [`0,04`,`0,4`,`-25`,`0,25`], c: 0 }; },
-            () => { return { q: `(-1)<sup>2026</sup> + (-1)<sup>2025</sup> + 1<sup>0</sup> işleminin sonucu?`, a: [`1`,`0`,`3`,`-1`], c: 0 }; },
-            () => { return { q: `2<sup>10</sup> gramlık bir kütlenin <b>1/4'ü</b> kaç gramdır?`, a: [`2<sup>8</sup>`,`2<sup>5</sup>`,`512`,`2<sup>9</sup>`], c: 0 }; },
-            () => { return { q: `3<sup>x</sup> = 81 ve 2<sup>y</sup> = 32 ise <b>x<sup>y</sup></b> kaçtır?`, a: [`1024`,`256`,`125`,`20`], c: 0 }; },
-
-            // --- KAREKÖKLÜ SAYILAR (11-20) ---
-            () => { let n = rand(50,80); return { q: `√${n} sayısına <b>en yakın</b> tam sayı kaçtır?`, a: [Math.round(Math.sqrt(n)), Math.floor(Math.sqrt(n)), Math.ceil(Math.sqrt(n)), n/2], c: 0 }; },
-            () => { return { q: `√1,44 - √0,49 işleminin <b>10 katı</b> kaçtır?`, a: [`5`,`7`,`12`,`19`], c: 0 }; },
-            () => { return { q: `Alanı 108 cm<sup>2</sup> olan bir karenin çevresi <b>√x</b> cm ise x kaçtır?`, a: [`1728`,`432`,`108`,`216`], c: 0 }; },
-            () => { return { q: `√27 + √x = √75 ise <b>x</b> kaçtır?`, a: [`12`,`48`,`3`,`9`], c: 0 }; },
-            () => { return { q: `a = √2, b = √3 ise <b>√72</b>'nin a ve b türünden değeri nedir?`, a: [`a<sup>3</sup>.b<sup>2</sup>`,`a<sup>2</sup>.b<sup>3</sup>`,`a.b`,`a<sup>4</sup>.b`], c: 0 }; },
-            () => { return { q: `√0,0016 sayısı aşağıdakilerden hangisine <b>eşittir?</b>`, a: [`0,04`,`0,4`,`0,004`,`4`], c: 0 }; },
-            () => { return { q: `√48 sayısı hangi sayı ile çarpılırsa sonuç <b>12</b> olur?`, a: [`√3`,`√2`,`3`,`2`], c: 0 }; },
-            () => { return { q: `Hangi sayı <b>tam kare</b> bir sayı değildir?`, a: [`91`,`121`,`169`,`225`], c: 0 }; },
-            () => { return { q: `√(-4)<sup>2</sup> + √3<sup>2</sup> işleminin sonucu?`, a: [`7`,`1`,`-1`,`12`], c: 0 }; },
-            () => { return { q: `√125 sayısı <b>a√b</b> şeklinde yazıldığında a+b en az kaç olur?`, a: [`10`,`30`,`6`,`25`], c: 0 }; },
-
-            // --- CEBİRSEL İFADELER (21-30) ---
-            () => { let a = rand(2,5); return { q: `(x - ${a})<sup>2</sup> ifadesinin açılımında <b>x'li terimin katsayısı</b> kaçtır?`, a: [-2*a, 2*a, a*a, -a], c: 0 }; },
-            () => { return { q: `x<sup>2</sup> - 16 ifadesi hangisine <b>tam bölünür?</b>`, a: [`x+4`,`x-16`,`x+16`,`x+8`], c: 0 }; },
-            () => { return { q: `Alanı 4x<sup>2</sup> + 20x + 25 olan bir karenin <b>çevresi</b> nedir?`, a: [`8x+20`,`2x+5`,`4x+10`,`4x+25`], c: 0 }; },
-            () => { return { q: `(3a - 2b) . (3a + 2b) çarpımının sonucu nedir?`, a: [`9a<sup>2</sup> - 4b<sup>2</sup>`,`9a<sup>2</sup> + 4b<sup>2</sup>`,`6a<sup>2</sup> - 4b<sup>2</sup>`,`3a<sup>2</sup> - 2b<sup>2</sup>`], c: 0 }; },
-            () => { return { q: `x = √5 + 2 ve y = √5 - 2 ise <b>x.y</b> kaçtır?`, a: [`1`,`9`,`5`,`4`], c: 0 }; },
-            () => { return { q: `25x<sup>2</sup> - 60x + 36 ifadesi hangisinin <b>karesidir?</b>`, a: [`5x-6`,`5x+6`,`6x-5`,`5x-12`], c: 0 }; },
-            () => { return { q: `Kenarları (x+3) ve (x-3) olan bir dikdörtgenin <b>alanı</b> nedir?`, a: [`x<sup>2</sup>-9`,`x<sup>2</sup>-6x+9`,`2x`,`4x`], c: 0 }; },
-            () => { return { q: `a+b=10 ve a.b=20 ise <b>a<sup>2</sup>+b<sup>2</sup></b> kaçtır?`, a: [`60`,`80`,`100`,`140`], c: 0 }; },
-            () => { return { q: `3x<sup>2</sup>y - 6xy<sup>2</sup> ifadesinin <b>ortak çarpanı</b> hangisidir?`, a: [`3xy`,`3x`,`3y`,`xy`], c: 0 }; },
-            () => { return { q: `(x+y)<sup>2</sup> - (x-y)<sup>2</sup> işleminin sonucu nedir?`, a: [`4xy`,`2x<sup>2</sup>+2y<sup>2</sup>`,`0`,`2xy`], c: 0 }; },
-
-            // --- OLASILIK (31-40) ---
-            () => { return { q: `Bir torbadaki 12 kırmızı bilyeden rastgele seçilen birinin <b>mavi olmama</b> olasılığı?`, a: [`1`,`0`,`1/2`,`1/12`], c: 0 }; },
-            () => { return { q: `Havaya atılan bir zarın üst yüzüne gelen sayının <b>asal olmama</b> olasılığı?`, a: [`1/2`,`1/3`,`2/3`,`1/6`], c: 0 }; },
-            () => { return { q: `LGS kelimesinin harfleri arasından rastgele seçilen birinin <b>sesli harf</b> olma olasılığı?`, a: [`0`,`1/3`,`1`,`2/3`], c: 0 }; },
-            () => { return { q: `İki madeni para atıldığında <b>en az birinin tura</b> gelme olasılığı?`, a: [`3/4`,`1/4`,`1/2`,`1`], c: 0 }; },
-            () => { return { q: `30 sayısının pozitif çarpanları içinden seçilen birinin <b>asal</b> olma olasılığı?`, a: [`3/8`,`1/2`,`1/4`,`5/8`], c: 0 }; },
-            () => { return { q: `Bir sınıfta 12 kız, 18 erkek vardır. Seçilen birinin <b>kız</b> olma olasılığı?`, a: [`2/5`,`3/5`,`12/18`,`1/2`], c: 0 }; },
-            () => { return { q: `Hangi olasılık değeri <b>imkansız olayı</b> temsil eder?`, a: [`0`,`1`,`0,5`,`%1`], c: 0 }; },
-            () => { return { q: `Bir desteden çekilen bir kartın <b>Siyah veya Kırmızı</b> olma olasılığı?`, a: [`1`,`1/2`,`0`,`1/4`], c: 0 }; },
-            () => { return { q: `Rakamlar (0-9) içinden seçilen birinin <b>çift</b> olma olasılığı?`, a: [`5/10`,`4/10`,`6/10`,`1/2`], c: 0 }; },
-            () => { return { q: `Zar atıldığında <b>7'den küçük</b> gelme olasılığı?`, a: [`1`,`0`,`5/6`,`1/6`], c: 0 }; },
-
-            // --- ÇARPANLAR VE KATLAR (41-50) ---
-            () => { return { q: `Aralarında asal iki sayının EKOK'u 60 ise bu sayıların <b>toplamı en az</b> kaçtır?`, a: [`17`,`19`,`16`,`23`], c: 0 }; },
-            () => { return { q: `45 ve 60 sayılarının <b>EBOB</b>'u kaçtır?`, a: [`15`,`5`,`30`,`45`], c: 0 }; },
-            () => { return { q: `En küçük asal sayı ile iki basamaklı en küçük asal sayının <b>çarpımı</b>?`, a: [`22`,`26`,`33`,`11`], c: 0 }; },
-            () => { return { q: `24 sayısının <b>asal olmayan</b> kaç tane pozitif çarpanı vardır?`, a: [`6`,`8`,`2`,`4`], c: 0 }; },
-            () => { return { q: `Aralarında asal iki sayının EBOB'u ile EKOK'unun çarpımı 72 ise bu sayılar hangisidir?`, a: [`8 ve 9`,`6 ve 12`,`2 ve 36`,`4 ve 18`], c: 0 }; },
-            () => { return { q: `120 sayısının asal çarpanlarına ayrılmış hali hangisidir?`, a: [`2<sup>3</sup>.3.5`,`2<sup>2</sup>.3<sup>2</sup>.5`,`2.3.5`,`2<sup>4</sup>.3.5`], c: 0 }; },
-            () => { return { q: `İki zilden biri 12 dk, diğeri 15 dk arayla çalıyor. Birlikte çaldıktan <b>en az</b> kaç dk sonra yine birlikte çalarlar?`, a: [`60`,`30`,`120`,`90`], c: 0 }; },
-            () => { return { q: `Hangi sayı çift olmasına rağmen <b>asaldır?</b>`, a: [`2`,`4`,`0`,`Hiçbiri`], c: 0 }; },
-            () => { return { q: `EBOB(x, y) = 1 ise x ve y için hangisi <b>daima doğrudur?</b>`, a: [`Aralarında asaldırlar`,`Asal sayılardır`,`Ardışık sayılardır`,`Biri diğerinin katıdır`], c: 0 }; },
-            () => { return { q: `91 sayısının en büyük <b>asal çarpanı</b> kaçtır?`, a: [`13`,`7`,`91`,`17`], c: 0 }; }
-        ],
-        getSet(n) { 
-            let shuffled = [...this.templates].sort(() => Math.random() - 0.5);
-            return shuffled.slice(0, n).map(f => f()); 
+        const usedHashes = new Set();
+        function uniqueQ(gen) {
+            for (let i = 0; i < 300; i++) {
+                let q = gen();
+                let h = q.q + q.a.join('');
+                if (!usedHashes.has(h)) { usedHashes.add(h); return q; }
+            }
+            return gen();
         }
-    };
 
-    let questions = Factory.getSet(10), cur = 0, score = 0, selected = null, locked = false;
+        function makeDist(correct, n = 3) {
+            let c = parseFloat(correct);
+            let s = new Set([correct.toString()]);
+            let att = 0;
+            while (s.size < n + 1 && att < 200) {
+                att++;
+                let strategies = [
+                    () => c + rand(1, 3),
+                    () => c - rand(1, 3),
+                    () => c + rand(4, 8),
+                    () => c - rand(4, 8),
+                    () => c * 2,
+                    () => Math.round(c / 2),
+                    () => c + rand(1, 2) * (rand(0, 1) ? 1 : -1),
+                    () => -c,
+                    () => c * 2 + rand(-2, 2),
+                    () => c + rand(10, 20)
+                ];
+                let d = randArr(strategies)();
+                if (d !== c && !isNaN(d) && isFinite(d)) s.add(d.toString());
+            }
+            let inc = 1;
+            while (s.size < n + 1) { s.add((c + inc * 11).toString()); inc++; }
+            return shuffle([...s]);
+        }
 
-    function render() {
-        if(cur >= 10) { finish(); return; }
-        locked = false; selected = null;
-        let q = questions[cur];
-        document.getElementById('q-idx').innerText = `ADIM ${String(cur+1).padStart(2, '0')}`;
-        document.getElementById('q-text').innerHTML = q.q;
-        document.getElementById('bar').style.width = `${(cur/10)*100}%`;
-        
-        let opts = document.getElementById('opts');
-        opts.innerHTML = '';
-        let order = [0,1,2,3].sort(() => Math.random() - 0.5);
-        order.forEach(i => {
-            let d = document.createElement('div');
-            d.className = 'opt';
-            d.innerHTML = `<b>${String.fromCharCode(65+order.indexOf(i))}</b> ${q.a[i]}`;
-            d.onclick = () => { if(!locked) { 
-                selected = i; 
-                document.querySelectorAll('.opt').forEach(x => x.classList.remove('active'));
-                d.classList.add('active');
-                document.getElementById('btn').disabled = false;
-            }};
-            d.dataset.idx = i;
-            opts.appendChild(d);
+        // ================================================================
+        //  GERÇEK LGS SEVİYESİNDE ZOR SORU GENERATÖRLERİ
+        // ================================================================
+
+        const Q = {
+            "Üslü İfadeler": [],
+            "Kareköklü İfadeler": [],
+            "Cebirsel İfadeler": [],
+            "Doğrusal Denklemler": [],
+            "Eşitsizlikler": [],
+            "Üçgenler ve Pisagor": [],
+            "Eşlik ve Benzerlik": [],
+            "Dönüşüm Geometrisi": [],
+            "Olasılık": [],
+            "Veri Analizi": [],
+            "Mantık ve Problem": []
+        };
+
+        // ================================================================
+        //  1. ÜSLÜ İFADELER - LGS ZOR
+        // ================================================================
+        for (let i = 0; i < 40; i++) Q["Üslü İfadeler"].push(() => {
+            let t = rand(1, 15);
+
+            if (t === 1) {
+                // Çok adımlı üslü sadeleştirme
+                let a = rand(2, 4), p = rand(3, 7), q2 = rand(2, 5);
+                // a^(p+q) + a^(p+q) + ... (a adet) = a^(p+q+1)
+                // Soru: a^(p+q) * a tane toplamı
+                let sum = a; // a tane a^(p+q) = a^1 * a^(p+q) = a^(p+q+1)
+                let ans = p + q2 + 1;
+                let cor = `${a}<sup>${ans}</sup>`;
+                let opts = shuffle([cor, `${a}<sup>${p + q2}</sup>`, `${a}<sup>${(p + q2) * 2}</sup>`, `${a * a}<sup>${p + q2}</sup>`]);
+                return { q: `<b>${a}<sup>${p + q2}</sup> + ${a}<sup>${p + q2}</sup> + ... </b> toplamında <b>${a} tane</b> terim var. Bu toplam aşağıdakilerden hangisine eşittir?`, a: opts, c: opts.indexOf(cor), cat: "Üslü İfadeler" };
+            }
+            if (t === 2) {
+                // 2^n - 2^(n-1) = 2^(n-1)
+                let n = rand(8, 20);
+                let cor = `2<sup>${n - 1}</sup>`;
+                let opts = shuffle([cor, `2<sup>${n}</sup>`, `2<sup>${n - 2}</sup>`, `2<sup>1</sup>`]);
+                return { q: `<b>2<sup>${n}</sup> − 2<sup>${n - 1}</sup></b> işleminin sonucu aşağıdakilerden hangisidir?`, a: opts, c: opts.indexOf(cor), cat: "Üslü İfadeler" };
+            }
+            if (t === 3) {
+                // (2^a * 4^b * 8^c) = 2^?
+                let a = rand(2, 6), b = rand(1, 5), c = rand(1, 4);
+                let ans = a + 2 * b + 3 * c;
+                let cor = `2<sup>${ans}</sup>`;
+                let opts = shuffle([cor, `2<sup>${a + b + c}</sup>`, `2<sup>${a * b * c}</sup>`, `2<sup>${ans + 1}</sup>`]);
+                return { q: `<b>2<sup>${a}</sup> × 4<sup>${b}</sup> × 8<sup>${c}</sup></b> ifadesi 2'nin kaçıncı kuvvetine eşittir?`, a: opts, c: opts.indexOf(cor), cat: "Üslü İfadeler" };
+            }
+            if (t === 4) {
+                // 5^n * 2^n = 10^n, buradan faydalanarak
+                let n = rand(3, 8);
+                let extra2 = rand(1, 4);
+                // 5^n * 2^(n+extra) = 10^n * 2^extra
+                let cor = `${Math.pow(2, extra2)} × 10<sup>${n}</sup>`;
+                let opts = shuffle([cor, `10<sup>${n + extra2}</sup>`, `5<sup>${n}</sup> × 2<sup>${extra2}</sup>`, `10<sup>${n}</sup>`]);
+                return { q: `<b>5<sup>${n}</sup> × 2<sup>${n + extra2}</sup></b> ifadesinin sonucu aşağıdakilerden hangisidir?`, a: opts, c: opts.indexOf(cor), cat: "Üslü İfadeler" };
+            }
+            if (t === 5) {
+                // Birler basamağı - çok adımlı
+                let base = randArr([3, 7, 8, 13, 17]);
+                let p = rand(50, 200);
+                let cycle = { 3: [3, 9, 7, 1], 7: [7, 9, 3, 1], 8: [8, 4, 2, 6], 13: [3, 9, 7, 1], 17: [7, 9, 3, 1] };
+                let c = cycle[base];
+                let ans = c[(p - 1) % 4];
+                let opts = makeDist(ans);
+                return { q: `<b>${base}<sup>${p}</sup></b> sayısının <b>birler basamağındaki</b> rakam kaçtır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Üslü İfadeler" };
+            }
+            if (t === 6) {
+                // 3^(2n+1) - 3^(2n) = 2 * 3^(2n)
+                let n = rand(3, 10);
+                let exp = 2 * n;
+                let cor = `2 × 3<sup>${exp}</sup>`;
+                let opts = shuffle([cor, `3<sup>${exp + 1}</sup>`, `3<sup>${exp}</sup>`, `6<sup>${exp}</sup>`]);
+                return { q: `<b>3<sup>${exp + 1}</sup> − 3<sup>${exp}</sup></b> ifadesi aşağıdakilerden hangisine eşittir?`, a: opts, c: opts.indexOf(cor), cat: "Üslü İfadeler" };
+            }
+            if (t === 7) {
+                // 6^n = 2^n * 3^n → Karşılaştırma
+                let n = rand(3, 8);
+                // 2^(3n) ile 8^n eşit → hangisi büyük: 2^(3n+1) vs 3*8^n
+                let a1 = `2<sup>${3 * n + 1}</sup>`;
+                let a2 = `3 × 8<sup>${n}</sup>`;
+                // 2^(3n+1) = 2 * 8^n, 3 * 8^n > 2 * 8^n
+                let cor = a2;
+                let opts = shuffle([a1, a2, "Eşittirler", "Karşılaştırılamaz"]);
+                return { q: `<b>${a1}</b> ile <b>${a2}</b> sayılarından hangisi daha büyüktür?`, a: opts, c: opts.indexOf(cor), cat: "Üslü İfadeler" };
+            }
+            if (t === 8) {
+                // (a^m)^n ÷ a^(m*n-k) = a^k
+                let a = rand(2, 5), m = rand(2, 4), n = rand(2, 4), k = rand(1, 5);
+                let topExp = m * n;
+                let cor = `${a}<sup>${k}</sup>`;
+                let val = Math.pow(a, k);
+                let opts = shuffle([val.toString(), (val * a).toString(), (val + a).toString(), Math.pow(a, k + 1).toString()]);
+                return { q: `<b>(${a}<sup>${m}</sup>)<sup>${n}</sup> ÷ ${a}<sup>${topExp - k}</sup></b> işleminin sonucu kaçtır?`, a: opts, c: opts.indexOf(val.toString()), cat: "Üslü İfadeler" };
+            }
+            if (t === 9) {
+                // 2^10 + 2^10 = 2^11 tarzı - genelleştirilmiş
+                let base = rand(2, 5), n = rand(5, 12);
+                // base adet base^n = base^(n+1)
+                let cor = `${base}<sup>${n + 1}</sup>`;
+                let val = Math.pow(base, n + 1);
+                let opts = shuffle([cor, `${base}<sup>${n * 2}</sup>`, `${base * base}<sup>${n}</sup>`, `${base}<sup>${n + 2}</sup>`]);
+                return { q: `<b>${base}<sup>${n}</sup></b> sayısının <b>${base} katı</b> aşağıdakilerden hangisidir?`, a: opts, c: opts.indexOf(cor), cat: "Üslü İfadeler" };
+            }
+            if (t === 10) {
+                // Negatif üslü karmaşık
+                let a = rand(2, 5), p = rand(2, 4);
+                let val = Math.pow(a, p);
+                // a^(-p) + a^(-p) = 2/a^p
+                let cor = `2/${val}`;
+                let opts = shuffle([cor, `1/${val}`, `1/${val * 2}`, `${val}/2`]);
+                return { q: `<b>${a}<sup>-${p}</sup> + ${a}<sup>-${p}</sup></b> işleminin sonucu kaçtır?`, a: opts, c: opts.indexOf(cor), cat: "Üslü İfadeler" };
+            }
+            if (t === 11) {
+                // 9^n vs 3^(2n+1) karşılaştırma → 3^(2n+1) = 3 * 9^n > 9^n
+                let n = rand(3, 8);
+                let cor = `3<sup>${2 * n + 1}</sup>`;
+                let opts = shuffle([cor, `9<sup>${n}</sup>`, "Eşittirler", `3<sup>${2 * n - 1}</sup>`]);
+                return { q: `<b>9<sup>${n}</sup></b> ile <b>3<sup>${2 * n + 1}</sup></b> sayılarından hangisi daha büyüktür?`, a: opts, c: opts.indexOf(cor), cat: "Üslü İfadeler" };
+            }
+            if (t === 12) {
+                // 4^n + 4^n + 4^n + 4^n = 4^(n+1)
+                let n = rand(4, 12);
+                let cor = `4<sup>${n + 1}</sup>`;
+                let opts = shuffle([cor, `16<sup>${n}</sup>`, `4<sup>${2 * n}</sup>`, `4<sup>${n + 2}</sup>`]);
+                return { q: `<b>4<sup>${n}</sup> + 4<sup>${n}</sup> + 4<sup>${n}</sup> + 4<sup>${n}</sup></b> toplamı aşağıdakilerden hangisine eşittir?`, a: opts, c: opts.indexOf(cor), cat: "Üslü İfadeler" };
+            }
+            if (t === 13) {
+                // 2^a = 3 ise 2^(3a) = ?  → (2^a)^3 = 27
+                let k = rand(2, 5);
+                let base = rand(2, 4);
+                let equals = rand(3, 7);
+                let mult = rand(2, 4);
+                let ans = Math.pow(equals, mult);
+                let opts = makeDist(ans);
+                return { q: `<b>${base}<sup>a</sup> = ${equals}</b> olduğuna göre <b>${base}<sup>${mult}a</sup></b> kaçtır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Üslü İfadeler" };
+            }
+            if (t === 14) {
+                // (2^n + 2^n) / 2^(n-1) = ?  → 2*2^n / 2^(n-1) = 2^(n+1)/2^(n-1) = 2^2 = 4
+                let n = rand(5, 15);
+                let ans = 4;
+                let opts = makeDist(ans);
+                return { q: `<b>(2<sup>${n}</sup> + 2<sup>${n}</sup>) ÷ 2<sup>${n - 1}</sup></b> işleminin sonucu kaçtır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Üslü İfadeler" };
+            }
+            if (t === 15) {
+                // 25^n * 4^n = 100^n → 100^n sonundaki 0 sayısı = 2n
+                let n = rand(3, 8);
+                let ans = 2 * n;
+                let opts = makeDist(ans);
+                return { q: `<b>25<sup>${n}</sup> × 4<sup>${n}</sup></b> sayısının sonunda kaç tane sıfır vardır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Üslü İfadeler" };
+            }
+            // Default hard
+            let n = rand(4, 10);
+            let ans = 3;
+            // (3^(n+2) - 3^n) / (3^n * 8) = (3^n(9-1))/(3^n*8) = 1
+            let cor = "1";
+            let opts = shuffle(["1", "3", "8", "9"]);
+            return { q: `<b>(3<sup>${n + 2}</sup> − 3<sup>${n}</sup>) ÷ (8 × 3<sup>${n}</sup>)</b> işleminin sonucu kaçtır?`, a: opts, c: opts.indexOf(cor), cat: "Üslü İfadeler" };
         });
-        document.getElementById('btn').innerText = "KONTROL ET";
-        document.getElementById('btn').disabled = true;
-    }
 
-    function action() {
-        let btn = document.getElementById('btn');
-        if(!locked) {
-            locked = true;
-            let correct = questions[cur].c;
-            document.querySelectorAll('.opt').forEach(o => {
-                let idx = parseInt(o.dataset.idx);
-                if(idx === correct) o.classList.add('correct');
-                else if(idx === selected) o.classList.add('wrong');
+        // ================================================================
+        //  2. KAREKÖKLÜ İFADELER - LGS ZOR
+        // ================================================================
+        for (let i = 0; i < 40; i++) Q["Kareköklü İfadeler"].push(() => {
+            let t = rand(1, 14);
+
+            if (t === 1) {
+                // √(a²+2ab+b²) + √(a²-2ab+b²) = |a+b| + |a-b|
+                let a = rand(3, 10), b = rand(1, a - 1);
+                let inside1 = (a + b) * (a + b), inside2 = (a - b) * (a - b);
+                let ans = (a + b) + (a - b); // = 2a
+                let opts = makeDist(ans);
+                return { q: `<b>√${inside1} + √${inside2}</b> işleminin sonucu kaçtır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Kareköklü İfadeler" };
+            }
+            if (t === 2) {
+                // Ardışık tam kareler arası sayı adedi
+                let n = rand(10, 25);
+                let sq1 = n * n, sq2 = (n + 1) * (n + 1);
+                let between = sq2 - sq1 - 1; // = 2n
+                let opts = makeDist(between);
+                return { q: `<b>${sq1}</b> ile <b>${sq2}</b> arasında (bu sayılar hariç) kaç tam sayı vardır?`, a: opts, c: opts.indexOf(between.toString()), cat: "Kareköklü İfadeler" };
+            }
+            if (t === 3) {
+                // Karekök denklem: √(x+a) = b → x = b²-a
+                let b = rand(3, 9), a = rand(5, 30);
+                let x = b * b - a;
+                if (x < 0) { a = rand(1, b * b - 1); x = b * b - a; }
+                let opts = makeDist(x);
+                return { q: `<b>√(x + ${a}) = ${b}</b> denkleminde <b>x</b> kaçtır?`, a: opts, c: opts.indexOf(x.toString()), cat: "Kareköklü İfadeler" };
+            }
+            if (t === 4) {
+                // √a * √b + √(a*b) = 2√(ab)
+                let a = rand(2, 8), b = rand(2, 8);
+                let prod = a * b;
+                // Eğer ab tam kare ise güzel sonuç verir
+                let val = 2 * Math.sqrt(prod);
+                // Tam kare yapalım
+                let k = rand(2, 5);
+                a = k; b = k; prod = k * k;
+                val = 2 * k;
+                let opts = makeDist(val);
+                return { q: `<b>√${a} × √${b} + √${prod}</b> işleminin sonucu kaçtır?`, a: opts, c: opts.indexOf(val.toString()), cat: "Kareköklü İfadeler" };
+            }
+            if (t === 5) {
+                // n² < x < (n+1)² olan tam sayı sayısı
+                let n = rand(7, 20);
+                let count = 2 * n; // (n+1)² - n² - 1 = 2n
+                let opts = makeDist(count);
+                return { q: `<b>${n * n}</b> ile <b>${(n + 1) * (n + 1)}</b> arasında (bu sayılar hariç) kaç doğal sayı vardır?`, a: opts, c: opts.indexOf(count.toString()), cat: "Kareköklü İfadeler" };
+            }
+            if (t === 6) {
+                // Payda rasyonelleştirme: a/(√b - √c)
+                let b = rand(5, 15), c = rand(2, b - 1);
+                while (!Number.isInteger(Math.sqrt(b)) || !Number.isInteger(Math.sqrt(c))) {
+                    b = randArr([4, 9, 16, 25, 36]);
+                    c = randArr([1, 4, 9, 16]);
+                    if (b <= c) b = 25;
+                }
+                let sqrtB = Math.sqrt(b), sqrtC = Math.sqrt(c);
+                let diff = b - c;
+                // k / (√b - √c) = k(√b + √c) / (b-c)
+                let k = diff; // böylece k/(b-c) = 1, cevap = √b + √c
+                let ans = sqrtB + sqrtC;
+                let opts = makeDist(ans);
+                return { q: `<b>${k} / (√${b} − √${c})</b> ifadesinin paydası rasyonelleştirildiğinde sonuç kaçtır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Kareköklü İfadeler" };
+            }
+            if (t === 7) {
+                // √(a) + √(b) = √(c) mi? Çelişki sorusu
+                let a = rand(2, 6), b = rand(2, 6);
+                let sA = a * a, sB = b * b;
+                // √(sA) + √(sB) = a + b, (a+b)² = a²+2ab+b²
+                let combined = (a + b) * (a + b);
+                let opts = makeDist(combined);
+                return { q: `<b>(√${sA} + √${sB})<sup>2</sup></b> ifadesinin değeri kaçtır?`, a: opts, c: opts.indexOf(combined.toString()), cat: "Kareköklü İfadeler" };
+            }
+            if (t === 8) {
+                // √(n!) * √(n!) = n!
+                let n = rand(4, 7);
+                let ans = factorial(n);
+                let opts = makeDist(ans);
+                return { q: `<b>√(${n}!) × √(${n}!)</b> işleminin sonucu kaçtır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Kareköklü İfadeler" };
+            }
+            if (t === 9) {
+                // Kök içinde kök: √(a√b) biçimi yerine sayısal
+                // √(12+6√3) = √9 + √3 = 3+√3 ≈ 4.73 → zor, sayısal yapalım
+                // Daha LGS uygun: a√b - c√b
+                let base = randArr([2, 3, 5, 7]);
+                let k1 = rand(5, 12), k2 = rand(2, k1 - 1);
+                let diff = k1 - k2;
+                let sq1 = k1 * k1 * base, sq2 = k2 * k2 * base;
+                let cor = `${diff}√${base}`;
+                let opts = shuffle([cor, `${k1 + k2}√${base}`, `${diff}√${base * 2}`, `${k1 * k2}√${base}`]);
+                return { q: `<b>√${sq1} − √${sq2}</b> işleminin sonucu aşağıdakilerden hangisidir?`, a: opts, c: opts.indexOf(cor), cat: "Kareköklü İfadeler" };
+            }
+            if (t === 10) {
+                // Tam kare yapma - çarpma ve bölme birlikte
+                let p1 = randArr([2, 3, 5, 7]), p2 = randArr([2, 3, 5, 7, 11]);
+                while (p1 === p2) p2 = randArr([2, 3, 5, 7, 11]);
+                let n = p1 * p1 * p1 * p2; // p1³ * p2 → tam kare için p1*p2 ile çarpılmalı
+                let needed = p1 * p2;
+                let opts = makeDist(needed);
+                return { q: `<b>${n}</b> sayısı en küçük hangi doğal sayıyla çarpılırsa <b>tam kare</b> olur?`, a: opts, c: opts.indexOf(needed.toString()), cat: "Kareköklü İfadeler" };
+            }
+            if (t === 11) {
+                // √a arasında kalan tam sayılar: kaç tam sayı n için √k tam sayı DEĞİLDİR?
+                let low = rand(10, 30), high = low + rand(10, 25);
+                let count = 0;
+                for (let j = low; j <= high; j++) {
+                    let sq = Math.sqrt(j);
+                    if (Number.isInteger(sq)) count++;
+                }
+                let total = high - low + 1;
+                let notPerfect = total - count;
+                let opts = makeDist(count);
+                return { q: `<b>${low}</b> ile <b>${high}</b> arasındaki (dahil) sayılardan kaç tanesinin karekökü <b>bir tam sayıdır</b>?`, a: opts, c: opts.indexOf(count.toString()), cat: "Kareköklü İfadeler" };
+            }
+            if (t === 12) {
+                // (√a + √b)² = a + b + 2√(ab) → tam sayı olması için ab tam kare olmalı
+                let k = rand(2, 6);
+                let a = k * rand(2, 5), b = k * rand(2, 5);
+                // a+b+2√ab  → ab = k²*m*n → √ab tam sayı olmalı
+                a = rand(2, 6); b = a; // en basit: a=b
+                let ans = 4 * a; // (√a+√a)² = (2√a)² = 4a
+                let opts = makeDist(ans);
+                return { q: `<b>(√${a} + √${a})<sup>2</sup></b> kaçtır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Kareköklü İfadeler" };
+            }
+            if (t === 13) {
+                // √(x²) = |x|, x<0 ise sonuç -x
+                let x = -rand(3, 15);
+                let ans = -x;
+                let opts = makeDist(ans);
+                return { q: `<b>x = ${x}</b> ise <b>√(x<sup>2</sup>)</b> kaçtır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Kareköklü İfadeler" };
+            }
+            if (t === 14) {
+                // Karmaşık: 3√8 + 2√18 - √50
+                // = 3*2√2 + 2*3√2 - 5√2 = 6√2 + 6√2 - 5√2 = 7√2
+                let coefs = [rand(2, 5), rand(2, 5), rand(1, 4)];
+                let mults = [rand(2, 4), rand(2, 4), rand(2, 4)];
+                let base = randArr([2, 3, 5]);
+                let ins = mults.map(m => m * m * base);
+                let simplified = mults.map((m, j) => coefs[j] * m);
+                let result = simplified[0] + simplified[1] - simplified[2];
+                let cor = `${result}√${base}`;
+                let opts = shuffle([cor, `${result + 1}√${base}`, `${result - 1}√${base}`, `${result * 2}√${base}`]);
+                return { q: `<b>${coefs[0]}√${ins[0]} + ${coefs[1]}√${ins[1]} − ${coefs[2]}√${ins[2]}</b> işleminin sonucu nedir?`, a: opts, c: opts.indexOf(cor), cat: "Kareköklü İfadeler" };
+            }
+            // Default
+            let a = rand(3, 8), b = rand(3, 8);
+            let ans = a * a + b * b;
+            let opts = makeDist(ans);
+            return { q: `Dik kenarları <b>${a}</b> ve <b>${b}</b> cm olan dik üçgenin hipotenüsünün karesi kaçtır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Kareköklü İfadeler" };
+        });
+
+        // ================================================================
+        //  3. CEBİRSEL İFADELER - LGS ZOR
+        // ================================================================
+        for (let i = 0; i < 40; i++) Q["Cebirsel İfadeler"].push(() => {
+            let t = rand(1, 12);
+
+            if (t === 1) {
+                // x + 1/x = k → x² + 1/x² = k²-2 → x³ + 1/x³ = k³-3k
+                let k = rand(3, 7);
+                let ans = k * k * k - 3 * k;
+                let opts = makeDist(ans);
+                return { q: `<b>x + 1/x = ${k}</b> ise <b>x<sup>3</sup> + 1/x<sup>3</sup></b> kaçtır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Cebirsel İfadeler" };
+            }
+            if (t === 2) {
+                // (a+b)² - (a-b)² = 4ab, a ve b karmaşık değerlerle
+                let a = rand(5, 15), b = rand(5, 15);
+                let ans = 4 * a * b;
+                let opts = makeDist(ans);
+                return { q: `<b>a = ${a}</b> ve <b>b = ${b}</b> ise <b>(a+b)<sup>2</sup> − (a−b)<sup>2</sup></b> kaçtır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Cebirsel İfadeler" };
+            }
+            if (t === 3) {
+                // a² - b² = (a-b)(a+b) ile hızlı hesaplama
+                let a = rand(20, 50), b = a - rand(1, 5);
+                let ans = a * a - b * b;
+                let prod = (a - b) * (a + b);
+                let opts = makeDist(ans);
+                return { q: `<b>${a}<sup>2</sup> − ${b}<sup>2</sup></b> kaçtır? <i>(İpucu: Özdeşlik kullanın)</i>`, a: opts, c: opts.indexOf(ans.toString()), cat: "Cebirsel İfadeler" };
+            }
+            if (t === 4) {
+                // x² + y² = (x+y)² - 2xy
+                let xy = rand(5, 15), xpy = rand(8, 20);
+                while (xpy * xpy - 2 * xy <= 0) { xpy = rand(8, 20); xy = rand(3, 10); }
+                let ans = xpy * xpy - 2 * xy;
+                let opts = makeDist(ans);
+                return { q: `<b>x + y = ${xpy}</b> ve <b>x·y = ${xy}</b> ise <b>x<sup>2</sup> + y<sup>2</sup></b> kaçtır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Cebirsel İfadeler" };
+            }
+            if (t === 5) {
+                // Çarpanlara ayırma + sadeleştirme
+                let a = rand(2, 8);
+                // (x²-a²)/(x-a) = x+a, x = belirli değer
+                let x = rand(a + 1, 20);
+                let ans = x + a;
+                let num = x * x - a * a;
+                let den = x - a;
+                let opts = makeDist(ans);
+                return { q: `<b>x = ${x}</b> için <b>(x<sup>2</sup> − ${a * a}) / (x − ${a})</b> ifadesinin değeri kaçtır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Cebirsel İfadeler" };
+            }
+            if (t === 6) {
+                // (x-y)² = x²-2xy+y² = (x+y)²-4xy
+                let xpy = rand(10, 25), xy = rand(5, 40);
+                let ans = xpy * xpy - 4 * xy;
+                if (ans < 0) { xy = rand(1, Math.floor(xpy * xpy / 4) - 1); ans = xpy * xpy - 4 * xy; }
+                let opts = makeDist(ans);
+                return { q: `<b>x + y = ${xpy}</b> ve <b>x·y = ${xy}</b> ise <b>(x − y)<sup>2</sup></b> kaçtır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Cebirsel İfadeler" };
+            }
+            if (t === 7) {
+                // a³ + b³ = (a+b)(a²-ab+b²)
+                let a = rand(2, 6), b = rand(2, 6);
+                let sum = a * a * a + b * b * b;
+                let factor = (a + b) * (a * a - a * b + b * b);
+                let opts = makeDist(sum);
+                return { q: `<b>${a}<sup>3</sup> + ${b}<sup>3</sup></b> kaçtır?`, a: opts, c: opts.indexOf(sum.toString()), cat: "Cebirsel İfadeler" };
+            }
+            if (t === 8) {
+                // 2 değişkenli ifade: x=a, y=b ise (2x-y)²+4xy = ?
+                let x = rand(2, 8), y = rand(2, 8);
+                // (2x-y)² + 4xy = 4x²-4xy+y²+4xy = 4x²+y²
+                let ans = 4 * x * x + y * y;
+                let opts = makeDist(ans);
+                return { q: `<b>x = ${x}</b>, <b>y = ${y}</b> ise <b>(2x − y)<sup>2</sup> + 4xy</b> kaçtır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Cebirsel İfadeler" };
+            }
+            if (t === 9) {
+                // Katsayı bulma: (ax+b)(cx+d) açılımında x'in katsayısı = ad+bc
+                let a = rand(2, 5), b = rand(1, 6), c = rand(2, 5), d = rand(1, 6);
+                let xCoef = a * d + b * c;
+                let opts = makeDist(xCoef);
+                return { q: `<b>(${a}x + ${b})(${c}x + ${d})</b> açılımında <b>x</b>'in katsayısı kaçtır?`, a: opts, c: opts.indexOf(xCoef.toString()), cat: "Cebirsel İfadeler" };
+            }
+            if (t === 10) {
+                // x - 1/x = k ise x² + 1/x² = k²+2
+                let k = rand(2, 8);
+                let ans = k * k + 2;
+                let opts = makeDist(ans);
+                return { q: `<b>x − 1/x = ${k}</b> ise <b>x<sup>2</sup> + 1/x<sup>2</sup></b> kaçtır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Cebirsel İfadeler" };
+            }
+            if (t === 11) {
+                // Toplam çarpım: x²+y² ve xy biliniyorsa (x+y)² = x²+2xy+y²
+                let x2y2 = rand(20, 80), xy = rand(5, 20);
+                let ans = x2y2 + 2 * xy;
+                let opts = makeDist(ans);
+                return { q: `<b>x<sup>2</sup> + y<sup>2</sup> = ${x2y2}</b> ve <b>xy = ${xy}</b> ise <b>(x + y)<sup>2</sup></b> kaçtır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Cebirsel İfadeler" };
+            }
+            if (t === 12) {
+                // 99² = (100-1)² = 10000-200+1 = 9801
+                let base = randArr([100, 50, 200]), diff = rand(1, 4);
+                let n = base - diff;
+                let ans = n * n;
+                let opts = makeDist(ans);
+                return { q: `<b>${n}<sup>2</sup></b> kaçtır? <i>(İpucu: (${base}−${diff})<sup>2</sup> özdeşliğini kullanın)</i>`, a: opts, c: opts.indexOf(ans.toString()), cat: "Cebirsel İfadeler" };
+            }
+            let a = rand(2, 6), b = rand(2, 6);
+            let ans = (a + b) * (a + b);
+            let opts = makeDist(ans);
+            return { q: `<b>(${a} + ${b})<sup>2</sup></b> kaçtır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Cebirsel İfadeler" };
+        });
+
+        // ================================================================
+        //  4. DOĞRUSAL DENKLEMLER - LGS ZOR
+        // ================================================================
+        for (let i = 0; i < 40; i++) Q["Doğrusal Denklemler"].push(() => {
+            let t = rand(1, 10);
+
+            if (t === 1) {
+                // İki bilinmeyenli sistem - sözel
+                let x = rand(5, 30), y = rand(5, 30);
+                let a1 = rand(2, 5), b1 = rand(2, 5), a2 = rand(2, 5), b2 = rand(2, 5);
+                while (a1 * b2 === a2 * b1) { a2 = rand(2, 5); b2 = rand(2, 5); }
+                let c1 = a1 * x + b1 * y, c2 = a2 * x + b2 * y;
+                let ans = x + y;
+                let opts = makeDist(ans);
+                return { q: `<b>${a1}x + ${b1}y = ${c1}</b> ve <b>${a2}x + ${b2}y = ${c2}</b> ise <b>x + y</b> kaçtır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Doğrusal Denklemler" };
+            }
+            if (t === 2) {
+                // Yaş problemi - çok adımlı
+                let cNow = rand(8, 14), pNow = rand(32, 48);
+                let k = rand(2, 4);
+                // Kaç yıl önce baba yaşı çocuğun k katıydı?
+                // pNow - t = k*(cNow - t) → t = (k*cNow - pNow)/(k-1)
+                // Tam sayı olsun
+                let diff = pNow - k * cNow;
+                if (diff % (k - 1) !== 0) { cNow = 10; pNow = 40; k = 3; diff = pNow - k * cNow; }
+                let t_val = -diff / (k - 1);
+                if (t_val < 0) { t_val = (k * cNow - pNow) / (k - 1); }
+                let ans = Math.abs(t_val);
+                let opts = makeDist(ans);
+                return { q: `Bir baba <b>${pNow}</b>, oğlu <b>${cNow}</b> yaşındadır. Kaç yıl <b>önce</b> babanın yaşı oğlunun yaşının <b>${k} katı</b>ydı?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Doğrusal Denklemler" };
+            }
+            if (t === 3) {
+                // Hız problemi - iki araç aynı yönde
+                let v1 = rand(60, 100), v2 = rand(40, v1 - 10);
+                let dist = rand(50, 200);
+                // Yetişme süresi = dist / (v1 - v2)
+                let fark = v1 - v2;
+                dist = fark * rand(2, 5); // tam sayı olsun
+                let ans = dist / fark;
+                let opts = makeDist(ans);
+                return { q: `A aracı saatte <b>${v1} km</b>, B aracı saatte <b>${v2} km</b> hızla aynı yönde hareket ediyor. A, B'den <b>${dist} km</b> geride ise B'ye kaç saatte yetişir?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Doğrusal Denklemler" };
+            }
+            if (t === 4) {
+                // İşçi problemi - 3 kişilik
+                let a = rand(6, 15), b = rand(6, 15), c = rand(6, 15);
+                // Birlikte = 1/(1/a + 1/b + 1/c) = abc / (bc+ac+ab)
+                let num = a * b * c;
+                let den = b * c + a * c + a * b;
+                let g = gcd(num, den);
+                let ansStr = g === den ? `${num / den}` : `${num / g}/${den / g}`;
+                let opts = shuffle([ansStr, `${a + b + c}`, `${Math.min(a, b, c)}`, `${num}/${den + a}`]);
+                return { q: `Bir işi Ali <b>${a} günde</b>, Veli <b>${b} günde</b>, Can <b>${c} günde</b> bitiriyor. Üçü birlikte kaç günde bitirir?`, a: opts, c: opts.indexOf(ansStr), cat: "Doğrusal Denklemler" };
+            }
+            if (t === 5) {
+                // Kesişim noktası
+                let m1 = rand(1, 5), n1 = rand(-10, 10);
+                let m2 = rand(-5, -1), n2 = rand(-10, 10);
+                // m1*x + n1 = m2*x + n2 → x = (n2-n1)/(m1-m2)
+                let dx = m1 - m2, dy = n2 - n1;
+                // Tam sayı olsun
+                if (dy % dx !== 0) { n2 = n1 + dx * rand(1, 4); dy = n2 - n1; }
+                let xK = dy / dx;
+                let yK = m1 * xK + n1;
+                let ans = xK + yK;
+                let opts = makeDist(ans);
+                return { q: `<b>y = ${m1}x ${n1 >= 0 ? '+' : ''} ${n1}</b> ve <b>y = ${m2}x ${n2 >= 0 ? '+' : ''} ${n2}</b> doğrularının kesişim noktasının <b>koordinatları toplamı</b> kaçtır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Doğrusal Denklemler" };
+            }
+            if (t === 6) {
+                // Karışım: %a'lık m litre + %b'lik n litre = %c'lik
+                let a = rand(10, 30), b = rand(50, 80);
+                let m = rand(100, 300), n = rand(100, 300);
+                m = Math.round(m / 50) * 50; n = Math.round(n / 50) * 50;
+                let cPct = Math.round((a * m + b * n) / (m + n) * 10) / 10;
+                let opts = makeDist(cPct);
+                return { q: `<b>%${a}</b>'lik <b>${m} mL</b> çözelti ile <b>%${b}</b>'lik <b>${n} mL</b> çözelti karıştırılıyor. Karışımın yoğunluğu yaklaşık <b>yüzde</b> kaçtır?`, a: opts, c: opts.indexOf(cPct.toString()), cat: "Doğrusal Denklemler" };
+            }
+            if (t === 7) {
+                // Grafik yorumu - iki doğrunun altındaki alan
+                let base = rand(4, 10), height = rand(3, 8);
+                let alan = base * height / 2;
+                let opts = makeDist(alan);
+                return { q: `Bir doğru x eksenini <b>x = ${base}</b>'de, y eksenini <b>y = ${height}</b>'de kesiyor. Bu doğrunun koordinat eksenleriyle oluşturduğu üçgenin alanı kaç birimkaredir?`, a: opts, c: opts.indexOf(alan.toString()), cat: "Doğrusal Denklemler" };
+            }
+            if (t === 8) {
+                // Para problemi
+                let x = rand(3, 12), y = rand(3, 12);
+                let coin1 = randArr([1, 2, 5]), coin2 = randArr([1, 2, 5]);
+                while (coin1 === coin2) coin2 = randArr([1, 2, 5]);
+                if (coin1 > coin2) [coin1, coin2] = [coin2, coin1];
+                let totalPieces = x + y;
+                let totalValue = coin1 * x + coin2 * y;
+                let ansX = x;
+                let opts = makeDist(ansX);
+                return { q: `Toplam <b>${totalPieces}</b> adet <b>${coin1} TL</b> ve <b>${coin2} TL</b>'lik madeni para var, toplam değeri <b>${totalValue} TL</b>'dir. <b>${coin1} TL</b>'lik kaç adet para vardır?`, a: opts, c: opts.indexOf(ansX.toString()), cat: "Doğrusal Denklemler" };
+            }
+            if (t === 9) {
+                // Doğru üzerinde nokta: y=mx+n, alan = k ise n=?
+                let m = rand(1, 4), x0 = rand(2, 8);
+                let y0 = m * x0 + rand(1, 10);
+                let n = y0 - m * x0;
+                let opts = makeDist(n);
+                return { q: `<b>(${x0}, ${y0})</b> noktasından geçen <b>y = ${m}x + n</b> doğrusunda <b>n</b> kaçtır?`, a: opts, c: opts.indexOf(n.toString()), cat: "Doğrusal Denklemler" };
+            }
+            if (t === 10) {
+                // Ters orantı
+                let k = rand(20, 100);
+                let x1 = rand(2, 10);
+                while (k % x1 !== 0) x1 = rand(2, 10);
+                let y1 = k / x1;
+                let x2 = rand(2, 10);
+                while (k % x2 !== 0 || x2 === x1) x2 = rand(2, 10);
+                let y2 = k / x2;
+                let opts = makeDist(y2);
+                return { q: `x ve y ters orantılıdır. <b>x = ${x1}</b> iken <b>y = ${y1}</b> ise <b>x = ${x2}</b> iken <b>y</b> kaçtır?`, a: opts, c: opts.indexOf(y2.toString()), cat: "Doğrusal Denklemler" };
+            }
+            let a = rand(2, 6), b = rand(2, 6), x = rand(3, 12);
+            let c = a * x - b;
+            let opts = makeDist(x);
+            return { q: `<b>${a}x − ${b} = ${c}</b> ise x kaçtır?`, a: opts, c: opts.indexOf(x.toString()), cat: "Doğrusal Denklemler" };
+        });
+
+        // ================================================================
+        //  5. EŞİTSİZLİKLER - LGS ZOR
+        // ================================================================
+        for (let i = 0; i < 40; i++) Q["Eşitsizlikler"].push(() => {
+            let t = rand(1, 10);
+
+            if (t === 1) {
+                // İki yönlü ve mod kullanarak tam sayı sayısı
+                let a = rand(2, 5), b = rand(3, 15), c = rand(20, 60);
+                let low = Math.ceil(b / a), high = Math.floor(c / a);
+                let count = high - low + 1;
+                if (count < 1) { a = 2; b = 4; c = 20; low = 2; high = 10; count = 9; }
+                let opts = makeDist(count);
+                return { q: `<b>${b} ≤ ${a}x ≤ ${c}</b> eşitsizliğini sağlayan <b>tam sayı sayısı</b> kaçtır?`, a: opts, c: opts.indexOf(count.toString()), cat: "Eşitsizlikler" };
+            }
+            if (t === 2) {
+                // Üçgen eşitsizliği + tam sayı
+                let a = rand(5, 15), b = rand(a + 3, a + 15);
+                let minC = b - a + 1, maxC = a + b - 1;
+                let count = maxC - minC + 1;
+                let opts = makeDist(count);
+                return { q: `Kenarları <b>${a}</b> cm ve <b>${b}</b> cm olan üçgenin üçüncü kenarı tam sayıdır. Üçüncü kenar kaç farklı değer alabilir?`, a: opts, c: opts.indexOf(count.toString()), cat: "Eşitsizlikler" };
+            }
+            if (t === 3) {
+                // |ax + b| < c → -c < ax+b < c → çözüm kümesi
+                let a = rand(1, 3), b = rand(1, 10), c = rand(b + 3, b + 15);
+                // -c < ax+b < c → (-c-b)/a < x < (c-b)/a
+                let low = Math.ceil((-c - b) / a);
+                let high = Math.floor((c - b) / a);
+                let count = high - low + 1;
+                if (count < 0) count = 0;
+                let opts = makeDist(count);
+                return { q: `<b>|${a}x + ${b}| < ${c}</b> eşitsizliğini sağlayan <b>tam sayı sayısı</b> kaçtır?`, a: opts, c: opts.indexOf(count.toString()), cat: "Eşitsizlikler" };
+            }
+            if (t === 4) {
+                // Negatif çarpan - yön değişimi
+                let a = rand(2, 6), b = rand(10, 40);
+                // -ax + b > 0 → x < b/a
+                let maxX = Math.ceil(b / a) - 1;
+                if (b % a === 0) maxX = b / a - 1;
+                else maxX = Math.floor(b / a);
+                // Pozitif tam sayılar
+                let count = maxX;
+                if (count < 0) count = 0;
+                let opts = makeDist(count);
+                return { q: `<b>−${a}x + ${b} > 0</b> eşitsizliğini sağlayan <b>pozitif tam sayı sayısı</b> kaçtır?`, a: opts, c: opts.indexOf(count.toString()), cat: "Eşitsizlikler" };
+            }
+            if (t === 5) {
+                // Sözel: bütçe problemi
+                let fixed = rand(50, 200), perItem = rand(5, 20), budget = rand(300, 800);
+                let maxItems = Math.floor((budget - fixed) / perItem);
+                let opts = makeDist(maxItems);
+                return { q: `Sabit masraf <b>${fixed} TL</b>, her ürün <b>${perItem} TL</b> ise <b>${budget} TL</b> bütçeyle en fazla kaç ürün alınabilir?`, a: opts, c: opts.indexOf(maxItems.toString()), cat: "Eşitsizlikler" };
+            }
+if (t === 6) {
+    // Çift eşitsizlik zinciri
+    let a = rand(2, 4), b = rand(1, 5);
+    let low = rand(5, 15), high = rand(25, 50);
+
+    // low < a*x + b < high
+    let xLow = Math.floor((low - b) / a) + 1;
+    let xHigh = Math.ceil((high - b) / a) - 1;
+
+    let count = Math.max(0, xHigh - xLow + 1);
+
+    let opts = makeDist(count);
+    return {
+        q: `<b>${low} < ${a}x + ${b} < ${high}</b> eşitsizliğini sağlayan <b>tam sayı sayısı</b> kaçtır?`,
+        a: opts,
+        c: opts.indexOf(count.toString()),
+        cat: "Eşitsizlikler"
+    };
+}
+            if (t === 7) {
+                // Kare eşitsizlik → x² ≤ n → |x| ≤ √n
+                let n = randArr([16, 25, 36, 49, 64, 81, 100]);
+                let sqrtN = Math.sqrt(n);
+                let count = 2 * sqrtN + 1;
+                let opts = makeDist(count);
+                return { q: `<b>x<sup>2</sup> ≤ ${n}</b> eşitsizliğini sağlayan <b>tam sayı sayısı</b> kaçtır?`, a: opts, c: opts.indexOf(count.toString()), cat: "Eşitsizlikler" };
+            }
+            if (t === 8) {
+                // Toplam eşitsizliği - sınav notu
+                let notlar = [rand(50, 80), rand(50, 80), rand(50, 80), rand(50, 80)];
+                let sum = notlar.reduce((a, b) => a + b, 0);
+                let hedefOrt = rand(65, 85);
+                // (sum + x) / 5 >= hedefOrt → x >= 5*hedefOrt - sum
+                let needed = 5 * hedefOrt - sum;
+                if (needed > 100) { hedefOrt = Math.floor((sum + 100) / 5); needed = 5 * hedefOrt - sum; }
+                if (needed < 0) needed = 0;
+                let opts = makeDist(needed);
+                return { q: `Sınav notları <b>${notlar.join(', ')}</b> olan öğrenci ortalamasını en az <b>${hedefOrt}</b> yapmak isterse 5. sınavdan en az kaç almalıdır?`, a: opts, c: opts.indexOf(needed.toString()), cat: "Eşitsizlikler" };
+            }
+            if (t === 9) {
+                // Eşitsizliklerin kesişimi
+                let a1 = rand(1, 4), b1 = rand(5, 20), a2 = rand(1, 4), b2 = rand(5, 20);
+                // x > b1/a1 VE x < b2/a2
+                let low = Math.ceil(b1 / a1);
+                if (a1 * low <= b1) low++;
+                let high = Math.floor(b2 / a2);
+                if (a2 * high >= b2) high--;
+                while (high <= low) { b2 += 10; high = Math.floor(b2 / a2); if (a2 * high >= b2) high--; }
+                let count = high - low + 1;
+                let opts = makeDist(count);
+                return { q: `<b>${a1}x > ${b1}</b> ve <b>${a2}x < ${b2}</b> eşitsizliklerini <b>aynı anda</b> sağlayan tam sayı sayısı kaçtır?`, a: opts, c: opts.indexOf(count.toString()), cat: "Eşitsizlikler" };
+            }
+            if (t === 10) {
+                // Maksimum-minimum ifade
+                let a = rand(2, 5), b = rand(1, 10), limit = rand(15, 40);
+                // ax + b ≤ limit → max x
+                let maxX = Math.floor((limit - b) / a);
+                // 2 * maxX + b = ?
+                let ans = 2 * maxX + b;
+                let opts = makeDist(ans);
+                return { q: `<b>${a}x + ${b} ≤ ${limit}</b> ise <b>2x + ${b}</b> ifadesinin <b>en büyük tam sayı değeri</b> kaçtır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Eşitsizlikler" };
+            }
+            let a = rand(2, 5), b = rand(5, 25);
+            let ans = Math.floor(b / a);
+            let opts = makeDist(ans);
+            return { q: `<b>${a}x ≤ ${b}</b> en büyük doğal sayı kaçtır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Eşitsizlikler" };
+        });
+
+        // ================================================================
+        //  6. ÜÇGENLER VE PİSAGOR - LGS ZOR
+        // ================================================================
+        for (let i = 0; i < 40; i++) Q["Üçgenler ve Pisagor"].push(() => {
+            let t = rand(1, 12);
+
+            if (t === 1) {
+                // Pisagor + kenar ortay
+                let triplets = [[3, 4, 5], [5, 12, 13], [8, 15, 17], [7, 24, 25]];
+                let trip = randArr(triplets);
+                let k = rand(1, 4);
+                let a = trip[0] * k, b = trip[1] * k, c = trip[2] * k;
+                // Dik kenarlardan birinin kenarortayı = √(4c²-a²)/2... karmaşık
+                // Alan = a*b/2
+                let alan = a * b / 2;
+                // Hipotenüse ait yükseklik: alan = c*h/2 → h = a*b/c
+                let h_num = a * b, h_den = c;
+                let g = gcd(h_num, h_den);
+                let hStr = g === h_den ? `${h_num / h_den}` : `${h_num / g}/${h_den / g}`;
+                let opts = shuffle([hStr, `${a}`, `${b / 2}`, `${alan / a}`]);
+                return { q: `Dik kenarları <b>${a}</b> ve <b>${b}</b> cm olan dik üçgenin <b>hipotenüse ait yüksekliği</b> kaç cm'dir?`, a: opts, c: opts.indexOf(hStr), cat: "Üçgenler ve Pisagor" };
+            }
+            if (t === 2) {
+                // Açıortay + açı hesaplama
+                let A = rand(40, 100);
+                // B ve C açılarının toplamı = 180 - A
+                // Açıortayların B ve C'den çıkan kesişim açısı = 90 + A/2
+                if (A % 2 !== 0) A++;
+                let ans = 90 + A / 2;
+                let opts = makeDist(ans);
+                return { q: `Bir üçgende <b>A açısı = ${A}°</b> ise B ve C açılarının <b>iç açıortaylarının kesişiminde</b> oluşan açı kaç derecedir?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Üçgenler ve Pisagor" };
+            }
+            if (t === 3) {
+                // İkizkenar üçgende taban açısı
+                let tepeAci = rand(20, 120);
+                if (tepeAci % 2 !== 0) tepeAci++;
+                let tabanAci = (180 - tepeAci) / 2;
+                let opts = makeDist(tabanAci);
+                return { q: `İkizkenar üçgenin tepe açısı <b>${tepeAci}°</b> ise bir <b>taban açısı</b> kaç derecedir?`, a: opts, c: opts.indexOf(tabanAci.toString()), cat: "Üçgenler ve Pisagor" };
+            }
+            if (t === 4) {
+                // Dış açı teoremi zinciri
+                let a1 = rand(25, 55), a2 = rand(25, 55);
+                let dis = a1 + a2;
+                // Dış açının açıortayı ile iç açının açıortayı arasındaki açı
+                // = 90 - diğer_iç_açı/2
+                let a3 = 180 - a1 - a2;
+                let ans = dis; // Basit dış açı
+                let opts = makeDist(ans);
+                return { q: `Bir üçgenin iki iç açısı <b>${a1}°</b> ve <b>${a2}°</b> dir. Bu iki açıya <b>komşu olmayan dış açı</b> kaç derecedir?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Üçgenler ve Pisagor" };
+            }
+            if (t === 5) {
+                // 30-60-90 üçgeni uygulaması
+                let a = rand(3, 12);
+                // 30° karşısı = a, 60° karşısı = a√3, 90° karşısı = 2a
+                let hipo = 2 * a;
+                let cor60 = `${a}√3`;
+                let opts = shuffle([cor60, `${2 * a}`, `${a}`, `${a}√2`]);
+                return { q: `30°-60°-90° üçgeninde 30°'nin karşısındaki kenar <b>${a}</b> cm ise <b>60°'nin karşısındaki</b> kenar kaç cm'dir?`, a: opts, c: opts.indexOf(cor60), cat: "Üçgenler ve Pisagor" };
+            }
+            if (t === 6) {
+                // 45-45-90 üçgeni
+                let a = rand(3, 10);
+                let cor = `${a}√2`;
+                let opts = shuffle([cor, `${2 * a}`, `${a}`, `${a * a}`]);
+                return { q: `İkizkenar dik üçgenin dik kenarları <b>${a}</b> cm ise <b>hipotenüsü</b> kaç cm'dir?`, a: opts, c: opts.indexOf(cor), cat: "Üçgenler ve Pisagor" };
+            }
+            if (t === 7) {
+                // Pisagor ters: Dik üçgen mi?
+                let a = rand(5, 15), b = rand(a + 1, 25), c = rand(b + 1, 30);
+                let isDik = (a * a + b * b === c * c);
+                // Kesinlikle dik olan
+                let triplets = [[3, 4, 5], [5, 12, 13], [8, 15, 17]];
+                let trip = randArr(triplets);
+                let k = rand(2, 4);
+                let dik = trip.map(x => x * k);
+                // Kesinlikle dik olmayan
+                let notDik = [dik[0], dik[1], dik[2] + 1];
+                let corAns = `${dik.join(', ')}`;
+                let opts = shuffle([corAns, notDik.join(', '), `${dik[0]+1}, ${dik[1]}, ${dik[2]}`, `${dik[0]}, ${dik[1]+2}, ${dik[2]}`]);
+                return { q: `Aşağıdaki kenar uzunluklarından hangisi bir <b>dik üçgen</b> oluşturur?`, a: opts, c: opts.indexOf(corAns), cat: "Üçgenler ve Pisagor" };
+            }
+            if (t === 8) {
+                // Alan ve kenardan yükseklik
+                let a = rand(6, 20), h = rand(4, 15);
+                let alan = a * h / 2;
+                let b = rand(5, 15);
+                // Alanı biliyoruz, b kenarına ait yükseklik h' = 2*alan/b
+                let newH_num = 2 * alan, newH_den = b;
+                if (newH_num % newH_den !== 0) { b = rand(2, 5); a = b * rand(2, 4); h = rand(4, 10); alan = a * h / 2; newH_num = 2 * alan; newH_den = a; }
+                let ans = newH_num / newH_den;
+                let opts = makeDist(ans);
+                return { q: `Alanı <b>${alan} cm<sup>2</sup></b> olan üçgenin bir kenarı <b>${newH_den}</b> cm ise bu kenara ait <b>yükseklik</b> kaç cm'dir?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Üçgenler ve Pisagor" };
+            }
+            if (t === 9) {
+                // Kenarortay uzunluğu formülü (basit durum)
+                // Bir dik üçgende hipotenüse ait kenarortay = hipotenüs/2
+                let triplets = [[3, 4, 5], [5, 12, 13], [8, 15, 17]];
+                let trip = randArr(triplets);
+                let k = rand(1, 3);
+                let hipo = trip[2] * k;
+                let ans = hipo / 2;
+                let ansFmt = Number.isInteger(ans) ? ans.toString() : ans.toFixed(1);
+                let opts = makeDist(ans);
+                return { q: `Dik kenarları <b>${trip[0] * k}</b> ve <b>${trip[1] * k}</b> cm olan dik üçgende <b>hipotenüse ait kenarortay</b> kaç cm'dir?`, a: opts, c: opts.indexOf(ansFmt), cat: "Üçgenler ve Pisagor" };
+            }
+            if (t === 10) {
+                // Çokgen iç açı toplamı
+                let n = rand(5, 12);
+                let ans = (n - 2) * 180;
+                let opts = makeDist(ans);
+                return { q: `Bir <b>${n}-gen</b>in iç açıları toplamı kaç derecedir?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Üçgenler ve Pisagor" };
+            }
+            if (t === 11) {
+                // Düzgün çokgen bir iç açısı
+                let n = randArr([5, 6, 8, 9, 10, 12]);
+                let ans = (n - 2) * 180 / n;
+                let opts = makeDist(ans);
+                return { q: `Düzgün <b>${n}-gen</b>in bir iç açısı kaç derecedir?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Üçgenler ve Pisagor" };
+            }
+            if (t === 12) {
+                // Köşegen sayısı
+                let n = rand(5, 12);
+                let ans = n * (n - 3) / 2;
+                let opts = makeDist(ans);
+                return { q: `Bir <b>${n}-gen</b>in köşegen sayısı kaçtır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Üçgenler ve Pisagor" };
+            }
+            let a = rand(3, 8), b = rand(a + 1, 12);
+            let c2 = a * a + b * b;
+            let opts = makeDist(c2);
+            return { q: `Dik kenarları <b>${a}</b> ve <b>${b}</b> olan üçgenin hipotenüs karesinin değeri kaçtır?`, a: opts, c: opts.indexOf(c2.toString()), cat: "Üçgenler ve Pisagor" };
+        });
+
+        // ================================================================
+        //  7. EŞLİK VE BENZERLİK - LGS ZOR
+        // ================================================================
+        for (let i = 0; i < 40; i++) Q["Eşlik ve Benzerlik"].push(() => {
+            let t = rand(1, 10);
+
+            if (t === 1) {
+                // Benzer üçgende alan oranı (k²) ve bilinmeyen alan
+                let k = rand(2, 5);
+                let alan1 = rand(8, 40);
+                let alan2 = alan1 * k * k;
+                let opts = makeDist(alan2);
+                return { q: `Benzerlik oranı <b>1:${k}</b> olan iki üçgenden küçüğünün alanı <b>${alan1} cm<sup>2</sup></b> ise büyüğünün alanı kaç cm<sup>2</sup>'dir?`, a: opts, c: opts.indexOf(alan2.toString()), cat: "Eşlik ve Benzerlik" };
+            }
+            if (t === 2) {
+                // Orta taban teoremi + alan
+                let taban = rand(8, 24);
+                if (taban % 2 !== 0) taban++;
+                let h = rand(4, 12);
+                let alan = taban * h / 2;
+                let ortaTaban = taban / 2;
+                // Orta taban üçgenin alanını 4 eşit parçaya böler, üstteki = alan/4
+                let ustAlan = alan / 4;
+                let opts = makeDist(ustAlan);
+                return { q: `Tabanı <b>${taban}</b> cm, yüksekliği <b>${h}</b> cm olan üçgende orta taban çizilmiştir. Orta tabanın üstünde kalan <b>küçük üçgenin alanı</b> kaç cm<sup>2</sup>'dir?`, a: opts, c: opts.indexOf(ustAlan.toString()), cat: "Eşlik ve Benzerlik" };
+            }
+            if (t === 3) {
+                // İç açıortay orantısı
+                let a = rand(4, 12), b = rand(4, 12);
+                while (a === b) b = rand(4, 12);
+                let c = rand(6, 18);
+                // Açıortay c kenarını a/b oranında böler → x = c*a/(a+b), y = c*b/(a+b)
+                let x_num = c * a, x_den = a + b;
+                let g = gcd(x_num, x_den);
+                let xStr = g === x_den ? `${x_num / x_den}` : `${x_num / g}/${x_den / g}`;
+                // Tam sayı olsun
+                c = (a + b) * rand(1, 3);
+                let x = c * a / (a + b);
+                let opts = makeDist(x);
+                return { q: `Bir üçgende <b>|AB| = ${a}</b>, <b>|AC| = ${b}</b> ve <b>|BC| = ${c}</b> cm'dir. A açısının iç açıortayı BC kenarını <b>BD</b> ve <b>DC</b> parçalarına ayırır. <b>BD</b> kaç cm'dir?`, a: opts, c: opts.indexOf(x.toString()), cat: "Eşlik ve Benzerlik" };
+            }
+            if (t === 4) {
+                // Benzer üçgen - paralel kenar
+                let AB = rand(8, 20), DE = rand(3, AB - 2);
+                // DE // BC, AD/DB biliniyorsa
+                let k_num = DE, k_den = AB;
+                let g = gcd(k_num, k_den);
+                // BC bulma: BC = AB * (AB/DE)... yok, DE/BC = AD/AB
+                // Aslında: DE ∥ BC ise AD/AB = DE/BC → BC = AB * DE / AD
+                // Basitleştir: oran = k ise DE = k * BC
+                let BC = rand(DE + 2, DE * 3);
+                let oran = DE; // benzerlik oranı DE:BC
+                let opts = makeDist(BC);
+                return { q: `Bir üçgende DE ∥ BC ve <b>DE = ${DE}</b> cm, benzerlik oranı <b>${DE}/${BC}</b> ise <b>BC</b> kaç cm'dir?`, a: opts, c: opts.indexOf(BC.toString()), cat: "Eşlik ve Benzerlik" };
+            }
+            if (t === 5) {
+                // Çevre oranı = benzerlik oranı
+                let k = rand(2, 5);
+                let cevre1 = rand(15, 40);
+                let cevre2 = cevre1 * k;
+                // Küçük üçgenin bir kenarı biliniyorsa karşılık gelen kenar
+                let kenar1 = rand(3, Math.floor(cevre1 / 3));
+                let kenar2 = kenar1 * k;
+                let opts = makeDist(kenar2);
+                return { q: `Benzer iki üçgenin çevreleri <b>${cevre1}</b> ve <b>${cevre2}</b> cm'dir. Küçük üçgenin bir kenarı <b>${kenar1}</b> cm ise karşılık gelen kenar kaç cm'dir?`, a: opts, c: opts.indexOf(kenar2.toString()), cat: "Eşlik ve Benzerlik" };
+            }
+            if (t === 6) {
+                // Gölge problemi
+                let boy = rand(150, 190), golge = rand(100, 300);
+                let agacGolge = rand(400, 1200);
+                // boy/golge = agacBoy/agacGolge
+                let agacBoy_num = boy * agacGolge;
+                let agacBoy_den = golge;
+                // Tam sayı olsun
+                golge = rand(2, 5) * 50;
+                boy = rand(3, 8) * 50;
+                agacGolge = golge * rand(3, 8);
+                let agacBoy = boy * agacGolge / golge;
+                let opts = makeDist(agacBoy);
+                return { q: `Boyu <b>${boy} cm</b> olan kişinin gölgesi <b>${golge} cm</b>, yanındaki ağacın gölgesi <b>${agacGolge} cm</b>'dir. Ağacın boyu kaç cm'dir?`, a: opts, c: opts.indexOf(agacBoy.toString()), cat: "Eşlik ve Benzerlik" };
+            }
+            if (t === 7) {
+                // Benzerlik oranından hacim oranı (küpler/küreler)
+                let k = rand(2, 4);
+                let hacim1 = rand(10, 50);
+                let hacim2 = hacim1 * k * k * k;
+                let opts = makeDist(hacim2);
+                return { q: `Benzer iki küpün kenarları oranı <b>1:${k}</b> ise küçüğünün hacmi <b>${hacim1} cm<sup>3</sup></b> olduğunda büyüğünün hacmi kaç cm<sup>3</sup>'tür?`, a: opts, c: opts.indexOf(hacim2.toString()), cat: "Eşlik ve Benzerlik" };
+            }
+            if (t === 8) {
+                // Pisagor + Benzerlik
+                let a = rand(3, 8), b = rand(a + 1, 12);
+                let c = Math.sqrt(a * a + b * b);
+                // Dik üçgende hipotenüse indirilen dikmenin ayağı → küçük üçgenler benzer
+                // h² = p * q, p = a²/c, q = b²/c
+                // h = a*b/c
+                let h_num = a * b;
+                let c2 = a * a + b * b;
+                // h² = a²*b²/(a²+b²)
+                let h2_num = a * a * b * b;
+                let h2_den = c2;
+                let g = gcd(h2_num, h2_den);
+                let h2Str = `${h2_num / g}/${h2_den / g}`;
+                if (g === h2_den) h2Str = `${h2_num / h2_den}`;
+                let opts = shuffle([h2Str, `${a * b}`, `${a + b}`, `${c2}`]);
+                return { q: `Dik kenarları <b>${a}</b> ve <b>${b}</b> olan dik üçgende hipotenüse indirilen <b>yüksekliğin karesi</b> kaçtır?`, a: opts, c: opts.indexOf(h2Str), cat: "Eşlik ve Benzerlik" };
+            }
+            if (t === 9) {
+                // Ağaç-bina gölge (ters orantı benzeri)
+                let h1 = rand(5, 15), g1 = rand(3, 10);
+                let g2 = rand(12, 30);
+                let h2 = h1 * g2 / g1;
+                if (!Number.isInteger(h2)) { g1 = rand(2, 5); g2 = g1 * rand(3, 6); h2 = h1 * g2 / g1; }
+                let opts = makeDist(h2);
+                return { q: `<b>${h1} m</b> boyundaki direğin gölgesi <b>${g1} m</b>'dir. Aynı anda gölgesi <b>${g2} m</b> olan binanın yüksekliği kaç m'dir?`, a: opts, c: opts.indexOf(h2.toString()), cat: "Eşlik ve Benzerlik" };
+            }
+            if (t === 10) {
+                // Alan oranından kenar oranı
+                let alanOrani = randArr([4, 9, 16, 25]);
+                let kenarOrani = Math.sqrt(alanOrani);
+                let opts = makeDist(kenarOrani);
+                return { q: `Benzer iki üçgenin alanları oranı <b>1:${alanOrani}</b> ise <b>kenarları oranı</b> kaçtır?`, a: opts, c: opts.indexOf(kenarOrani.toString()), cat: "Eşlik ve Benzerlik" };
+            }
+            let k = rand(2, 5), a = rand(3, 10);
+            let ans = a * k;
+            let opts = makeDist(ans);
+            return { q: `Oran <b>1:${k}</b>, kenar <b>${a}</b> ise karşılığı kaç?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Eşlik ve Benzerlik" };
+        });
+
+        // ================================================================
+        //  8. DÖNÜŞÜM GEOMETRİSİ - LGS ZOR
+        // ================================================================
+        for (let i = 0; i < 40; i++) Q["Dönüşüm Geometrisi"].push(() => {
+            let t = rand(1, 10);
+
+            if (t === 1) {
+                // Ardışık yansıma
+                let x = rand(1, 8), y = rand(1, 8);
+                // x eksenine sonra y eksenine yansıma = orijine göre simetri
+                let cor = `(${-x}, ${-y})`;
+                let opts = shuffle([cor, `(${x}, ${-y})`, `(${-x}, ${y})`, `(${y}, ${x})`]);
+                return { q: `<b>A(${x}, ${y})</b> noktası önce <b>x eksenine</b>, sonra <b>y eksenine</b> göre yansıtılırsa son koordinatı ne olur?`, a: opts, c: opts.indexOf(cor), cat: "Dönüşüm Geometrisi" };
+            }
+            if (t === 2) {
+                // Öteleme + yansıma
+                let x = rand(1, 6), y = rand(1, 6);
+                let dx = rand(2, 5), dy = rand(2, 5);
+                // Önce (dx,dy) öteleme → (x+dx, y+dy)
+                // Sonra x eksenine yansıma → (x+dx, -(y+dy))
+                let fx = x + dx, fy = -(y + dy);
+                let cor = `(${fx}, ${fy})`;
+                let opts = shuffle([cor, `(${x + dx}, ${y + dy})`, `(${-(x + dx)}, ${y + dy})`, `(${fx}, ${-fy})`]);
+                return { q: `<b>A(${x}, ${y})</b> noktası <b>(${dx}, ${dy})</b> ile ötelenip sonra <b>x eksenine</b> göre yansıtılırsa son koordinatı ne olur?`, a: opts, c: opts.indexOf(cor), cat: "Dönüşüm Geometrisi" };
+            }
+            if (t === 3) {
+                // 90° döndürme sonrası uzaklık
+                let x = rand(2, 8), y = rand(2, 8);
+                // 90° döndürme sonrası (-y, x)
+                // Orijinal ile yeni nokta arası mesafe
+                let d2 = (x + y) * (x + y) + (x - y) * (x - y); // = 2(x²+y²)
+                // Basit: mesafe² = (x-(-y))² + (y-x)² = (x+y)² + (y-x)²
+                let dist2 = (x + y) * (x + y) + (y - x) * (y - x);
+                let cor = `√${dist2}`;
+                let opts = shuffle([cor, `${x + y}`, `√${x * x + y * y}`, `${Math.abs(x - y)}`]);
+                return { q: `<b>A(${x}, ${y})</b> noktası orijin etrafında 90° döndürülünce <b>A'(${-y}, ${x})</b> olur. <b>AA'</b> uzunluğu kaç birimdir?`, a: opts, c: opts.indexOf(cor), cat: "Dönüşüm Geometrisi" };
+            }
+            if (t === 4) {
+                // y=x'e göre yansıma + öteleme
+                let x = rand(2, 7), y = rand(2, 7);
+                while (x === y) y = rand(2, 7);
+                // y=x yansıma → (y, x)
+                let dx = rand(-3, 3), dy = rand(-3, 3);
+                let fx = y + dx, fy = x + dy;
+                let cor = `(${fx}, ${fy})`;
+                let opts = shuffle([cor, `(${x + dx}, ${y + dy})`, `(${y}, ${x})`, `(${fy}, ${fx})`]);
+                return { q: `<b>A(${x}, ${y})</b> önce <b>y = x</b> doğrusuna göre yansıtılıp sonra <b>(${dx}, ${dy})</b> ile ötelenirse son koordinatı ne olur?`, a: opts, c: opts.indexOf(cor), cat: "Dönüşüm Geometrisi" };
+            }
+            if (t === 5) {
+                // İki paralel doğruya art arda yansıma = öteleme
+                let d = rand(3, 10);
+                let total = 2 * d;
+                let opts = makeDist(total);
+                return { q: `Aralarındaki uzaklık <b>${d}</b> birim olan iki paralel doğruya sırayla yansıtılan bir nokta toplamda kaç birim <b>yer değiştirir</b>?`, a: opts, c: opts.indexOf(total.toString()), cat: "Dönüşüm Geometrisi" };
+            }
+            if (t === 6) {
+                // Dönme simetrisi derecesi
+                let n = randArr([3, 4, 5, 6, 8, 10, 12]);
+                let ans = 360 / n;
+                let opts = makeDist(ans);
+                return { q: `Düzgün <b>${n}-gen</b>in en küçük dönme simetri açısı kaç derecedir?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Dönüşüm Geometrisi" };
+            }
+            if (t === 7) {
+                // Kesişen iki doğruya yansıma = dönme (2*açı)
+                let angle = rand(15, 75);
+                let rotation = 2 * angle;
+                let opts = makeDist(rotation);
+                return { q: `Aralarındaki açı <b>${angle}°</b> olan iki doğruya sırayla yansıtılan bir şekil kaç derece <b>dönmüş</b> olur?`, a: opts, c: opts.indexOf(rotation.toString()), cat: "Dönüşüm Geometrisi" };
+            }
+            if (t === 8) {
+                // Üçgenin yansıması → alan korunur
+                let a = rand(4, 12), h = rand(3, 10);
+                let alan = a * h / 2;
+                let opts = makeDist(alan);
+                return { q: `Tabanı <b>${a}</b>, yüksekliği <b>${h}</b> cm olan üçgen x eksenine göre yansıtılıyor. Yansıma sonucu oluşan üçgenin alanı kaç cm<sup>2</sup>'dir?`, a: opts, c: opts.indexOf(alan.toString()), cat: "Dönüşüm Geometrisi" };
+            }
+            if (t === 9) {
+                // Çoklu dönme
+                let angle = rand(40, 120);
+                let times = rand(2, 5);
+                let total = (angle * times) % 360;
+                let opts = makeDist(total);
+                return { q: `Bir nokta orijin etrafında <b>${angle}°</b> lik döndürme <b>${times} kez</b> uygulanırsa toplam dönme açısı (360°'den küçük) kaç derece olur?`, a: opts, c: opts.indexOf(total.toString()), cat: "Dönüşüm Geometrisi" };
+            }
+            if (t === 10) {
+                // Koordinatlı öteleme: A+B noktaları arası mesafe korunur mu
+                let x1 = rand(1, 5), y1 = rand(1, 5), x2 = rand(6, 10), y2 = rand(6, 10);
+                let dist2 = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
+                let cor = "Değişmez";
+                let opts = shuffle(["Değişmez", "2 katına çıkar", "Yarıya düşer", "Öteleme vektörü kadar artar"]);
+                return { q: `<b>A(${x1},${y1})</b> ve <b>B(${x2},${y2})</b> noktaları aynı vektörle ötelenirse <b>AB uzunluğu</b> nasıl değişir?`, a: opts, c: opts.indexOf(cor), cat: "Dönüşüm Geometrisi" };
+            }
+            let x = rand(1, 8), y = rand(1, 8);
+            let cor = `(${-x}, ${-y})`;
+            let opts = shuffle([cor, `(${x}, ${y})`, `(${-x}, ${y})`, `(${x}, ${-y})`]);
+            return { q: `<b>(${x}, ${y})</b>'nin orijine göre simetrisi?`, a: opts, c: opts.indexOf(cor), cat: "Dönüşüm Geometrisi" };
+        });
+
+        // ================================================================
+        //  9. OLASILIK - LGS ZOR
+        // ================================================================
+        for (let i = 0; i < 40; i++) Q["Olasılık"].push(() => {
+            let t = rand(1, 12);
+
+            if (t === 1) {
+                // İki zar toplamı ≥ k
+                let k = rand(8, 11);
+                let count = 0;
+                for (let a = 1; a <= 6; a++) for (let b = 1; b <= 6; b++) if (a + b >= k) count++;
+                let g = gcd(count, 36);
+                let cor = `${count / g}/${36 / g}`;
+                let opts = shuffle([cor, `${count}/${36}`, `${36 - count}/${36}`, `1/${k}`]);
+                if (opts.indexOf(cor) === -1) { opts[3] = cor; opts = shuffle(opts); }
+                return { q: `İki zar atıldığında toplamın <b>${k} veya daha büyük</b> olma olasılığı nedir?`, a: opts, c: opts.indexOf(cor), cat: "Olasılık" };
+            }
+            if (t === 2) {
+                // Koşullu olasılık - torba
+                let r = rand(4, 8), b = rand(4, 8);
+                let total = r + b;
+                // İade etmeden 2 kırmızı çekme
+                let num = r * (r - 1);
+                let den = total * (total - 1);
+                let g = gcd(num, den);
+                let cor = `${num / g}/${den / g}`;
+                let opts = shuffle([cor, `${r}/${total}`, `${r * r}/${total * total}`, `${r - 1}/${total - 1}`]);
+                return { q: `<b>${r} kırmızı</b>, <b>${b} mavi</b> top olan torbadan <b>iade etmeden</b> çekilen 2 topun da kırmızı olma olasılığı nedir?`, a: opts, c: opts.indexOf(cor), cat: "Olasılık" };
+            }
+            if (t === 3) {
+                // En az bir - tümleyen olay
+                let r = rand(3, 6), b = rand(3, 6);
+                let total = r + b;
+                // 2 top çekiliyor, en az 1 kırmızı = 1 - P(hiç kırmızı yok)
+                // P(2 mavi) = b*(b-1) / (total*(total-1))
+                let p2mavi_num = b * (b - 1);
+                let p2mavi_den = total * (total - 1);
+                let pEnAz_num = p2mavi_den - p2mavi_num;
+                let pEnAz_den = p2mavi_den;
+                let g = gcd(pEnAz_num, pEnAz_den);
+                let cor = `${pEnAz_num / g}/${pEnAz_den / g}`;
+                let opts = shuffle([cor, `${r}/${total}`, `${p2mavi_num / gcd(p2mavi_num, p2mavi_den)}/${p2mavi_den / gcd(p2mavi_num, p2mavi_den)}`, `1`]);
+                return { q: `<b>${r} kırmızı</b>, <b>${b} mavi</b> toptan iade etmeden 2 top çekildiğinde <b>en az 1'inin kırmızı</b> olma olasılığı nedir?`, a: opts, c: opts.indexOf(cor), cat: "Olasılık" };
+            }
+            if (t === 4) {
+                // 3 para atma - tam 2 tura
+                // C(3,2) * (1/2)³ = 3/8
+                let cor = "3/8";
+                let opts = shuffle(["3/8", "1/4", "1/2", "1/8"]);
+                return { q: `3 madeni para aynı anda atıldığında <b>tam 2 tanesinin tura</b> gelme olasılığı nedir?`, a: opts, c: opts.indexOf(cor), cat: "Olasılık" };
+            }
+            if (t === 5) {
+                // Zar: asal VE tek
+                // Asal: 2,3,5 → Tek ve asal: 3,5 → 2/6 = 1/3
+                let cor = "1/3";
+                let opts = shuffle(["1/3", "1/2", "1/6", "2/3"]);
+                return { q: `Bir zar atıldığında gelen sayının hem <b>asal</b> hem <b>tek</b> olma olasılığı nedir?`, a: opts, c: opts.indexOf(cor), cat: "Olasılık" };
+            }
+            if (t === 6) {
+                // İki zar çarpımı tek
+                // Her ikisi de tek olmalı: 3*3=9 → 9/36 = 1/4
+                let cor = "1/4";
+                let opts = shuffle(["1/4", "1/2", "3/4", "1/6"]);
+                return { q: `İki zar atıldığında çarpımlarının <b>tek sayı</b> olma olasılığı nedir?`, a: opts, c: opts.indexOf(cor), cat: "Olasılık" };
+            }
+            if (t === 7) {
+                // Harf dizilimi: belirli harfler yan yana
+                let word = randArr(["SINAV", "KALEM", "OKUL", "MASA"]);
+                let n = word.length;
+                let totalPerm = factorial(n);
+                // İlk iki harf yan yana = 2! * (n-1)!
+                let yanyana = 2 * factorial(n - 1);
+                let prob_num = yanyana, prob_den = totalPerm;
+                let g = gcd(prob_num, prob_den);
+                let cor = `${prob_num / g}/${prob_den / g}`;
+                let opts = shuffle([cor, `1/${n}`, `2/${n}`, `${prob_num / g + 1}/${prob_den / g}`]);
+                return { q: `"<b>${word}</b>" kelimesinin harfleri rastgele sıralanıyor. İlk iki harfin (<b>${word[0]}</b> ve <b>${word[1]}</b>) yan yana gelme olasılığı nedir?`, a: opts, c: opts.indexOf(cor), cat: "Olasılık" };
+            }
+            if (t === 8) {
+                // Geometrik olasılık
+                let R = rand(4, 10), r = rand(1, R - 1);
+                let alanBuyuk = R * R; // π iptal
+                let alanKucuk = r * r;
+                let prob_num = alanKucuk, prob_den = alanBuyuk;
+                let g = gcd(prob_num, prob_den);
+                let cor = `${prob_num / g}/${prob_den / g}`;
+                let opts = shuffle([cor, `${r}/${R}`, `${R}/${r}`, `${prob_num / g + 1}/${prob_den / g}`]);
+                return { q: `Yarıçapı <b>${R}</b> cm olan dairenin içine yarıçapı <b>${r}</b> cm olan daire çizilmiştir. Rastgele atılan topun <b>küçük daireye</b> isabet etme olasılığı nedir?`, a: opts, c: opts.indexOf(cor), cat: "Olasılık" };
+            }
+            if (t === 9) {
+                // Bağımsız olaylar
+                let p1_num = rand(1, 3), p1_den = rand(p1_num + 1, 6);
+                let p2_num = rand(1, 3), p2_den = rand(p2_num + 1, 6);
+                let num = p1_num * p2_num;
+                let den = p1_den * p2_den;
+                let g = gcd(num, den);
+                let cor = `${num / g}/${den / g}`;
+                let opts = shuffle([cor, `${p1_num + p2_num}/${p1_den + p2_den}`, `${p1_num}/${den}`, `${num}/${den + 1}`]);
+                return { q: `A olayının olasılığı <b>${p1_num}/${p1_den}</b>, B olayının olasılığı <b>${p2_num}/${p2_den}</b> dir. Bağımsız A ve B olaylarının <b>ikisinin birden</b> gerçekleşme olasılığı nedir?`, a: opts, c: opts.indexOf(cor), cat: "Olasılık" };
+            }
+            if (t === 10) {
+                // Kartlardan seçim
+                // 1-20 arası kartlardan çekilen kartın 3'e VE 5'e bölünme olasılığı
+                let n = rand(20, 50);
+                let div = rand(2, 4) * rand(2, 5);
+                let count = Math.floor(n / div);
+                let g = gcd(count, n);
+                let cor = count === 0 ? "0" : `${count / g}/${n / g}`;
+                let opts = shuffle([cor, `${count + 1}/${n}`, `1/${div}`, `${div}/${n}`]);
+                if (opts.indexOf(cor) === -1) { opts[3] = cor; opts = shuffle(opts); }
+                return { q: `1'den <b>${n}</b>'e kadar numaralı kartlardan çekilen kartın <b>${div}</b>'nin katı olma olasılığı nedir?`, a: opts, c: opts.indexOf(cor), cat: "Olasılık" };
+            }
+            if (t === 11) {
+                // İki zar - mutlak fark
+                let k = rand(0, 4);
+                let count = 0;
+                for (let a = 1; a <= 6; a++) for (let b = 1; b <= 6; b++) if (Math.abs(a - b) === k) count++;
+                let g = gcd(count, 36);
+                let cor = `${count / g}/${36 / g}`;
+                let opts = shuffle([cor, `${count}/${36}`, `${k}/6`, `1/${6 - k}`]);
+                if (opts.indexOf(cor) === -1) { opts[3] = cor; opts = shuffle(opts); }
+                return { q: `İki zar atıldığında sayıların <b>farkının mutlak değerinin ${k}</b> olma olasılığı nedir?`, a: opts, c: opts.indexOf(cor), cat: "Olasılık" };
+            }
+            if (t === 12) {
+                // Rastgele 3 basamaklı sayı - çift olma
+                // 100-999 arası: toplam 900, çift olanlar 450
+                let cor = "1/2";
+                let opts = shuffle(["1/2", "4/9", "5/9", "1/3"]);
+                return { q: `Rastgele seçilen 3 basamaklı bir sayının <b>çift</b> olma olasılığı nedir?`, a: opts, c: opts.indexOf(cor), cat: "Olasılık" };
+            }
+            let cor = "1/6";
+            let opts = shuffle(["1/6", "1/3", "1/2", "5/6"]);
+            return { q: `Bir zarın 5 gelme olasılığı nedir?`, a: opts, c: opts.indexOf(cor), cat: "Olasılık" };
+        });
+
+        // ================================================================
+        //  10. VERİ ANALİZİ - LGS ZOR
+        // ================================================================
+        for (let i = 0; i < 40; i++) Q["Veri Analizi"].push(() => {
+            let t = rand(1, 10);
+
+            if (t === 1) {
+                // Ağırlıklı ortalama - sınav sistemi
+                let yazili1 = rand(50, 95), yazili2 = rand(50, 95), sozlu = rand(60, 100), proje = rand(70, 100);
+                // LGS tarzı: yazılılar 2'şer kat, sözlü 1, proje 1 → toplam ağırlık = 6
+                let toplam = yazili1 * 2 + yazili2 * 2 + sozlu + proje;
+                let ort = Math.round(toplam / 6 * 100) / 100;
+                let opts = makeDist(ort);
+                return { q: `Yazılı notları <b>${yazili1}</b> ve <b>${yazili2}</b> (2'şer katsayı), sözlü <b>${sozlu}</b>, proje <b>${proje}</b> (1'er katsayı). Ağırlıklı ortalama kaçtır?`, a: opts, c: opts.indexOf(ort.toString()), cat: "Veri Analizi" };
+            }
+            if (t === 2) {
+                // Medyan değişimi - eleman ekleme
+                let vals = [rand(30, 50), rand(55, 65), rand(70, 80), rand(85, 95)]; // 4 eleman, sıralı
+                vals.sort((a, b) => a - b);
+                let medyanOnce = (vals[1] + vals[2]) / 2;
+                let yeniEleman = rand(vals[1], vals[2]);
+                let yeniVals = [...vals, yeniEleman].sort((a, b) => a - b);
+                let medyanSonra = yeniVals[2];
+                let opts = makeDist(medyanSonra);
+                return { q: `<b>${vals.join(', ')}</b> veri setine <b>${yeniEleman}</b> eklenirse <b>yeni medyan</b> kaç olur?`, a: opts, c: opts.indexOf(medyanSonra.toString()), cat: "Veri Analizi" };
+            }
+            if (t === 3) {
+                // Ortalamayı değiştirmeyecek sayı
+                let n = rand(4, 7);
+                let vals = [];
+                for (let j = 0; j < n; j++) vals.push(rand(40, 90));
+                let sum = vals.reduce((a, b) => a + b, 0);
+                let avg = sum / n;
+                // n+1 kişide aynı ortalama için: (sum + x)/(n+1) = avg → x = avg
+                let ans = avg;
+                if (!Number.isInteger(ans)) {
+                    // Tam sayı olsun
+                    sum = n * rand(50, 80);
+                    vals = [];
+                    let remaining = sum;
+                    for (let j = 0; j < n - 1; j++) { let v = rand(40, 90); vals.push(v); remaining -= v; }
+                    vals.push(remaining);
+                    avg = sum / n;
+                    ans = avg;
+                }
+                let opts = makeDist(ans);
+                return { q: `<b>${n}</b> kişilik grubun ortalaması <b>${avg}</b>'dir. Gruba katılacak kişinin ortalamaları <b>değiştirmemesi</b> için kaç puan alması gerekir?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Veri Analizi" };
+            }
+            if (t === 4) {
+                // Daire grafiğinden çubuk grafiğine dönüşüm
+                let total = rand(200, 600);
+                let pct = rand(15, 40);
+                let angle = pct * 3.6;
+                let count = Math.round(total * pct / 100);
+                let opts = makeDist(count);
+                return { q: `<b>${total}</b> öğrencinin anket sonuçlarında bir kategorinin dilim açısı <b>${angle}°</b>'dir. Bu kategoriye kaç öğrenci oy vermiştir?`, a: opts, c: opts.indexOf(count.toString()), cat: "Veri Analizi" };
+            }
+            if (t === 5) {
+                // Çeyrekler arası açıklık (IQR)
+                let vals = [];
+                for (let j = 0; j < 8; j++) vals.push(rand(20, 90));
+                vals.sort((a, b) => a - b);
+                let q1 = (vals[1] + vals[2]) / 2;
+                let q3 = (vals[5] + vals[6]) / 2;
+                let iqr = q3 - q1;
+                let opts = makeDist(iqr);
+                return { q: `Sıralı veri: <b>${vals.join(', ')}</b>. Çeyrekler arası açıklık (Q3 - Q1) kaçtır?`, a: opts, c: opts.indexOf(iqr.toString()), cat: "Veri Analizi" };
+            }
+            if (t === 6) {
+                // Ortalama + eleman çıkarma
+                let n = 6;
+                let vals = [];
+                for (let j = 0; j < n; j++) vals.push(rand(40, 90));
+                let sum = vals.reduce((a, b) => a + b, 0);
+                let avg1 = Math.round(sum / n * 10) / 10;
+                // En büyük ve en küçüğü çıkar
+                let maxV = Math.max(...vals), minV = Math.min(...vals);
+                let newSum = sum - maxV - minV;
+                let avg2 = Math.round(newSum / (n - 2) * 10) / 10;
+                let opts = makeDist(avg2);
+                return { q: `Veriler: <b>${vals.join(', ')}</b>. En büyük ve en küçük değer çıkarılırsa <b>yeni ortalama</b> kaç olur?`, a: opts, c: opts.indexOf(avg2.toString()), cat: "Veri Analizi" };
+            }
+            if (t === 7) {
+                // İki sınıfın ortalaması birleştirme
+                let n1 = rand(20, 35), avg1 = rand(60, 80);
+                let n2 = rand(20, 35), avg2 = rand(65, 85);
+                let combined = Math.round((n1 * avg1 + n2 * avg2) / (n1 + n2) * 10) / 10;
+                let opts = makeDist(combined);
+                return { q: `<b>${n1}</b> kişilik A sınıfının ortalaması <b>${avg1}</b>, <b>${n2}</b> kişilik B sınıfının ortalaması <b>${avg2}</b> ise iki sınıfın <b>genel ortalaması</b> kaçtır?`, a: opts, c: opts.indexOf(combined.toString()), cat: "Veri Analizi" };
+            }
+            if (t === 8) {
+                // Frekans tablosu + ağırlıklı ortalama
+                let vals = [rand(40, 55), rand(56, 70), rand(71, 85), rand(86, 100)];
+                let freqs = [rand(3, 10), rand(3, 10), rand(3, 10), rand(3, 10)];
+                let sum = 0, totalF = 0;
+                for (let j = 0; j < 4; j++) { sum += vals[j] * freqs[j]; totalF += freqs[j]; }
+                let avg = Math.round(sum / totalF * 10) / 10;
+                let desc = vals.map((v, j) => `${v}→${freqs[j]} kişi`).join(', ');
+                let opts = makeDist(avg);
+                return { q: `Frekans: <b>${desc}</b>. Ortalama kaçtır?`, a: opts, c: opts.indexOf(avg.toString()), cat: "Veri Analizi" };
+            }
+            if (t === 9) {
+                // Sıralı veriden mod, medyan, ortalama karşılaştırması
+                let mode = rand(50, 80);
+                let vals = [mode - 15, mode - 5, mode, mode, mode, mode + 10, mode + 20];
+                let sum = vals.reduce((a, b) => a + b, 0);
+                let avg = Math.round(sum / 7 * 10) / 10;
+                let median = vals[3]; // = mode
+                // Hangisi en büyük?
+                let biggest = Math.max(avg, median, mode);
+                let corLabel = biggest === avg ? `Ortalama (${avg})` : biggest === mode ? `Mod (${mode})` : `Medyan (${median})`;
+                let opts = shuffle([`Ortalama (${avg})`, `Mod (${mode})`, `Medyan (${median})`, "Hepsi eşit"]);
+                return { q: `Veri: <b>${vals.join(', ')}</b>. Aşağıdakilerden hangisi en büyüktür?`, a: opts, c: opts.indexOf(corLabel), cat: "Veri Analizi" };
+            }
+            if (t === 10) {
+                // Standart sapma yorumu
+                let cor = "Veriler ortalamaya daha yakındır";
+                let opts = shuffle([cor, "Ortalama daha büyüktür", "Medyan daha küçüktür", "Mod yoktur"]);
+                return { q: `Bir veri setinin standart sapması <b>küçüldüğünde</b> bu ne anlama gelir?`, a: opts, c: opts.indexOf(cor), cat: "Veri Analizi" };
+            }
+            let vals = [rand(40, 60), rand(60, 80), rand(80, 100)];
+            let avg = Math.round(vals.reduce((a, b) => a + b, 0) / 3);
+            let opts = makeDist(avg);
+            return { q: `<b>${vals.join(', ')}</b> ortalaması kaç?`, a: opts, c: opts.indexOf(avg.toString()), cat: "Veri Analizi" };
+        });
+
+        // ================================================================
+        //  11. MANTIK VE PROBLEM - LGS ZOR
+        // ================================================================
+        for (let i = 0; i < 40; i++) Q["Mantık ve Problem"].push(() => {
+            let t = rand(1, 14);
+
+            if (t === 1) {
+                // Havuz + iki musluk + sızıntı
+                let fill = rand(4, 8), drain = rand(10, 20);
+                // Net dolma hızı = 1/fill - 1/drain = (drain-fill)/(fill*drain)
+                let num = fill * drain;
+                let den = drain - fill;
+                // Tam sayı olsun
+                num = den * rand(2, 6);
+                let ans = num / den;
+                let opts = makeDist(ans);
+                return { q: `Bir havuzu <b>${fill} saatte</b> dolduran musluk ve <b>${drain} saatte</b> boşaltan delik birlikte açık. <b>${num} litrelik</b> havuz kaç saatte dolar?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Mantık ve Problem" };
+            }
+            if (t === 2) {
+                // Yaş problemi - 3 kişi
+                let a = rand(5, 10), b = rand(12, 18), c = rand(35, 50);
+                let sum = a + b + c;
+                let yilSonra = rand(3, 8);
+                let newSum = sum + 3 * yilSonra;
+                let opts = makeDist(newSum);
+                return { q: `Üç kardeşin yaşları <b>${a}, ${b}, ${c}</b>'tir. <b>${yilSonra} yıl sonra</b> yaşları toplamı kaç olur?`, a: opts, c: opts.indexOf(newSum.toString()), cat: "Mantık ve Problem" };
+            }
+            if (t === 3) {
+                // Saat problemi - ileri/geri kalan saat
+                let minutesPerHour = rand(2, 8);
+                let hours = rand(6, 24);
+                let totalDrift = minutesPerHour * hours;
+                let opts = makeDist(totalDrift);
+                return { q: `Saatte <b>${minutesPerHour} dakika</b> geri kalan bir saat <b>${hours} saat</b> sonra gerçek saatten kaç dakika geri kalır?`, a: opts, c: opts.indexOf(totalDrift.toString()), cat: "Mantık ve Problem" };
+            }
+            if (t === 4) {
+                // EBOB uygulaması - eşit bölme
+                let a = rand(24, 120), b = rand(24, 120);
+                while (gcd(a, b) < 4) { a = rand(24, 120); b = rand(24, 120); }
+                let g = gcd(a, b);
+                let opts = makeDist(g);
+                return { q: `<b>${a}</b> ve <b>${b}</b> metrelik iki kumaş eşit parçalara kesilecek. Her parça en uzun kaç metre olabilir? (Artan kumaş olmamalı)`, a: opts, c: opts.indexOf(g.toString()), cat: "Mantık ve Problem" };
+            }
+            if (t === 5) {
+                // EKOK uygulaması - aynı anda çalma
+                let a = rand(3, 12), b = rand(3, 12), c = rand(3, 12);
+                let l = lcm(lcm(a, b), c);
+                let opts = makeDist(l);
+                return { q: `Üç zil sırasıyla <b>${a}, ${b}, ${c}</b> dakikada bir çalıyor. İlk kez birlikte çaldıktan sonra tekrar birlikte kaç dakika sonra çalar?`, a: opts, c: opts.indexOf(l.toString()), cat: "Mantık ve Problem" };
+            }
+            if (t === 6) {
+                // Kâr-zarar çok adımlı
+                let maliyet = rand(50, 200);
+                let karOrani = rand(20, 60);
+                let satisFiyati = maliyet * (100 + karOrani) / 100;
+                let indirimOrani = rand(10, 30);
+                let indirimliFiyat = satisFiyati * (100 - indirimOrani) / 100;
+                let netKar = Math.round((indirimliFiyat - maliyet) * 100) / 100;
+                let opts = makeDist(netKar);
+                return { q: `<b>${maliyet} TL</b>'ye alınan ürün <b>%${karOrani} kârla</b> fiyatlandırılıp sonra <b>%${indirimOrani} indirim</b> yapılıyor. Net kâr/zarar kaç TL'dir?`, a: opts, c: opts.indexOf(netKar.toString()), cat: "Mantık ve Problem" };
+            }
+            if (t === 7) {
+                // Hız problemi - nehirde tekne
+                let tekneHiz = rand(15, 30), nehirHiz = rand(3, 8);
+                let mesafe = rand(50, 200);
+                // Akıntı yönünde: tekne + nehir, karşı yönde: tekne - nehir
+                let sure1 = mesafe / (tekneHiz + nehirHiz);
+                let sure2 = mesafe / (tekneHiz - nehirHiz);
+                // Toplam süre
+                mesafe = (tekneHiz + nehirHiz) * (tekneHiz - nehirHiz); // tam sayı süre olsun
+                sure1 = mesafe / (tekneHiz + nehirHiz);
+                sure2 = mesafe / (tekneHiz - nehirHiz);
+                let total = sure1 + sure2;
+                let opts = makeDist(total);
+                return { q: `Durgun sudaki hızı <b>${tekneHiz} km/sa</b> olan tekne, akıntı hızı <b>${nehirHiz} km/sa</b> olan nehirde <b>${mesafe} km</b>'lik mesafeyi gidip dönüyor. Toplam süre kaç saattir?`, a: opts, c: opts.indexOf(total.toString()), cat: "Mantık ve Problem" };
+            }
+            if (t === 8) {
+                // Tren problemi - aynı yönde geçme
+                let L1 = rand(100, 300), L2 = rand(100, 300);
+                let v1 = rand(60, 120), v2 = rand(30, v1 - 10);
+                // Hızlı trenin yavaşı geçme süresi = (L1+L2) / (v1-v2) [m/s veya km/sa düzeltmesi]
+                let fark = v1 - v2;
+                let totalL = L1 + L2;
+                // totalL / fark saniye (m/s ise) → basitleştir
+                totalL = fark * rand(5, 20); // tam sayı olsun
+                L1 = rand(Math.floor(totalL / 3), Math.floor(2 * totalL / 3));
+                L2 = totalL - L1;
+                let sure = totalL / fark;
+                let opts = makeDist(sure);
+                return { q: `Uzunlukları <b>${L1} m</b> ve <b>${L2} m</b> olan iki tren aynı yönde, hızları <b>${v1} m/s</b> ve <b>${v2} m/s</b>. Hızlı tren yavaşı kaç saniyede geçer?`, a: opts, c: opts.indexOf(sure.toString()), cat: "Mantık ve Problem" };
+            }
+            if (t === 9) {
+                // Mantık bulmacası
+                let total = rand(30, 60);
+                let kedi = rand(10, total - 20), kopek = rand(10, total - kedi - 5);
+                let kus = total - kedi - kopek;
+                let opts = makeDist(kus);
+                return { q: `Bir pet shopta toplam <b>${total}</b> hayvan var. Kediler köpeklerden <b>${kedi - kopek > 0 ? kedi - kopek + ' fazla' : kopek - kedi + ' az'}</b> ve kuş sayısı <b>${kus}</b>'tir. Kedi sayısı kaçtır?`, a: opts, c: opts.indexOf(kedi.toString()), cat: "Mantık ve Problem" };
+            }
+            if (t === 10) {
+                // Dişli çark
+                let d1 = rand(12, 36), d2 = rand(12, 36);
+                while (d1 === d2) d2 = rand(12, 36);
+                // 1. çark n tur → 2. çark n*d1/d2 tur
+                let n = rand(3, 10);
+                let g = gcd(d1 * n, d2);
+                let turNum = d1 * n;
+                let turDen = d2;
+                let gg = gcd(turNum, turDen);
+                let ansStr = gg === turDen ? `${turNum / turDen}` : `${turNum / gg}/${turDen / gg}`;
+                // Tam sayı olsun
+                d2 = rand(2, 5) * rand(2, 4);
+                d1 = d2 * rand(2, 4);
+                n = rand(2, 6);
+                let ans = d1 * n / d2;
+                let opts2 = makeDist(ans);
+                return { q: `<b>${d1}</b> dişli çark <b>${d2}</b> dişli çarkla bağlı. Büyük çark <b>${n} tur</b> dönerse küçük çark kaç tur döner?`, a: opts2, c: opts2.indexOf(ans.toString()), cat: "Mantık ve Problem" };
+            }
+            if (t === 11) {
+                // Bölünebilme kuralı - son 2 basamak
+                let hundreds = rand(1, 9), tens = rand(0, 9);
+                // 4'e bölünme: son 2 basamak 4'e bölünmeli
+                let base = hundreds * 100 + tens * 10;
+                let found = [];
+                for (let d = 0; d <= 9; d++) if ((tens * 10 + d) % 4 === 0) found.push(d);
+                let ans = found.length;
+                let opts = makeDist(ans);
+                return { q: `<b>${hundreds}${tens}▢</b> sayısı <b>4</b>'e tam bölünebilmesi için ▢ yerine kaç farklı rakam gelebilir?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Mantık ve Problem" };
+            }
+            if (t === 12) {
+                // Ardışık tam sayılar problemleri
+                let n = rand(3, 7);
+                let sum = rand(30, 100);
+                // n ardışık: n*a + n*(n-1)/2 = sum → a = (sum - n*(n-1)/2) / n
+                let correction = n * (n - 1) / 2;
+                let remainder = sum - correction;
+                // Tam sayı olsun
+                sum = n * rand(5, 20) + correction;
+                remainder = sum - correction;
+                let first = remainder / n;
+                let last = first + n - 1;
+                let opts = makeDist(last);
+                return { q: `<b>${n}</b> ardışık tam sayının toplamı <b>${sum}</b> ise <b>en büyüğü</b> kaçtır?`, a: opts, c: opts.indexOf(last.toString()), cat: "Mantık ve Problem" };
+            }
+            if (t === 13) {
+                // Bölen sayısı uygulaması
+                let candidates = [60, 72, 84, 90, 96, 108, 120, 144, 168, 180, 240, 360];
+                let n = randArr(candidates);
+                let dc = divisorCount(n);
+                let opts = makeDist(dc);
+                return { q: `<b>${n}</b> sayısının pozitif bölen sayısı kaçtır?`, a: opts, c: opts.indexOf(dc.toString()), cat: "Mantık ve Problem" };
+            }
+            if (t === 14) {
+                // Modüler aritmetik: Son rakam
+                let a = rand(2, 9), b = rand(2, 9);
+                let prod = a * b;
+                let lastDigit = prod % 10;
+                let power = rand(10, 50);
+                // (a*b)^power'ın son rakamı
+                let cycle = [];
+                let cur = lastDigit;
+                do { cycle.push(cur); cur = (cur * lastDigit) % 10; } while (cur !== lastDigit && cycle.length < 5);
+                let ans = cycle[(power - 1) % cycle.length];
+                let opts = makeDist(ans);
+                return { q: `<b>(${a} × ${b})<sup>${power}</sup></b> sayısının birler basamağı kaçtır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Mantık ve Problem" };
+            }
+            let a = rand(12, 48), b = rand(12, 48);
+            let ans = gcd(a, b);
+            let opts = makeDist(ans);
+            return { q: `EBOB(${a}, ${b}) kaçtır?`, a: opts, c: opts.indexOf(ans.toString()), cat: "Mantık ve Problem" };
+        });
+
+
+        // ================================================================
+        //  TEST YÖNETİMİ
+        // ================================================================
+        let usedPool = new Set();
+
+        function getRandomTest() {
+            let cats = Object.keys(Q);
+            let pool = [];
+            for (let cat of cats) for (let i = 0; i < Q[cat].length; i++) pool.push({ cat, i, fn: Q[cat][i] });
+
+            let picks = [];
+            let shuffledCats = shuffle(cats);
+
+            // Her kategoriden en az 1 (mümkünse)
+            for (let cat of shuffledCats) {
+                if (picks.length >= 10) break;
+                let items = pool.filter(p => p.cat === cat && !usedPool.has(p.cat + p.i));
+                if (items.length > 0) {
+                    let pick = randArr(items);
+                    picks.push(pick);
+                    usedPool.add(pick.cat + pick.i);
+                }
+            }
+
+            // Kalan slotları rastgele doldur
+            let remaining = pool.filter(p => !usedPool.has(p.cat + p.i));
+            remaining = shuffle(remaining);
+            while (picks.length < 10 && remaining.length > 0) {
+                picks.push(remaining.shift());
+                usedPool.add(picks[picks.length - 1].cat + picks[picks.length - 1].i);
+            }
+
+            if (picks.length < 10) {
+                usedPool = new Set();
+                return getRandomTest();
+            }
+
+            return shuffle(picks).map(p => uniqueQ(p.fn));
+        }
+
+        let questions = [], cur = 0, score = 0, selected = null, locked = false;
+
+        function render() {
+            if (!questions.length || cur >= 10) { finish(); return; }
+            locked = false; selected = null;
+            let q = questions[cur];
+            document.getElementById('q-idx').innerHTML = `SORU ${String(cur + 1).padStart(2, '0')} <span class="q-cat">${q.cat || ''}</span>`;
+            document.getElementById('q-text').innerHTML = q.q;
+            document.getElementById('bar').style.width = `${(cur / 10) * 100}%`;
+            let oc = document.getElementById('opts');
+            oc.innerHTML = '';
+            let order = [...Array(q.a.length).keys()].sort(() => Math.random() - 0.5);
+            order.forEach(i => {
+                let div = document.createElement('div');
+                div.className = 'opt';
+                div.innerHTML = `<b>${String.fromCharCode(65 + order.indexOf(i))}</b> <span>${q.a[i]}</span>`;
+                div.onclick = () => {
+                    if (!locked) {
+                        selected = i;
+                        document.querySelectorAll('.opt').forEach(x => x.classList.remove('active'));
+                        div.classList.add('active');
+                        document.getElementById('btn').disabled = false;
+                    }
+                };
+                div.dataset.idx = i;
+                oc.appendChild(div);
             });
-            if(selected === correct) { score += 10; document.getElementById('score').innerText = score; }
-            btn.innerText = "DEVAM ET";
-        } else { cur++; render(); }
-    }
+            document.getElementById('btn').innerText = "CEVABI KONTROL ET";
+            document.getElementById('btn').disabled = true;
+            document.getElementById('score').innerText = score;
+        }
 
-    function finish() {
-        document.getElementById('game').innerHTML = `
-            <div style="text-align:center; padding: 40px 0;">
-                <h1 style="font-size:5rem; color:var(--accent); margin-bottom: 10px;">${score}</h1>
-                <p style="letter-spacing: 5px; color: #666; font-weight: 700;">LGS MANTIK PUANI</p>
-                <div style="margin: 30px 0; font-size: 1.2rem; line-height: 1.8;">
-                    ${score === 100 ? "OLAĞANÜSTÜ! Tam bir LGS canavarısın. Tebrikler" : 
-                      score >= 70 ? "Çok iyi! Birkaç kelime oyununa takılmışsın o kadar." : "Güzel deneme, kelime oyunlarına daha dikkat etmelisin."}
-                </div>
-                <button class="btn" onclick="location.reload()">SİSTEMİ YENİDEN BAŞLAT</button>
-            </div>`;
-    }
+        function action() {
+            let btn = document.getElementById('btn');
+            if (!locked) {
+                locked = true;
+                let correct = questions[cur].c;
+                document.querySelectorAll('.opt').forEach(o => {
+                    let idx = parseInt(o.dataset.idx);
+                    if (idx === correct) o.classList.add('correct');
+                    else if (idx === selected) o.classList.add('wrong');
+                });
+                if (selected === correct) { score += 10; document.getElementById('score').innerText = score; }
+                btn.innerText = "DEVAM ET →";
+            } else { cur++; render(); }
+        }
 
-    render();
-</script>
+        function finish() {
+            document.getElementById('bar').style.width = '100%';
+            let emoji = score === 100 ? "🏆" : score >= 70 ? "🔥" : score >= 40 ? "📚" : "💪";
+            let msg = score === 100 ? "Olağanüstü! LGS'de derece potansiyelin var!" :
+                score >= 70 ? "Çok iyi! Bu seviyeyi korursan LGS'de başarılı olursun." :
+                    score >= 40 ? "Orta seviye. Zayıf olduğun konulara daha çok çalışmalısın." :
+                        "Bu zorluk seviyesi seni geliştirecek. Tekrar dene!";
+            document.getElementById('game').innerHTML = `
+                <div style="text-align:center; padding: 40px 0;">
+                    <div style="font-size:4rem; margin-bottom:20px;">${emoji}</div>
+                    <h1 style="font-size:5rem; color:var(--accent); margin-bottom:10px;">${score}</h1>
+                    <p style="letter-spacing:5px; color:#666; font-weight:700;">LGS SEVİYE SKORU</p>
+                    <div style="margin:30px 0; font-size:1.15rem; line-height:1.8; color:#aaa;">${msg}</div>
+                    <button class="btn" onclick="nextTest()">YENİ TEST</button>
+                    <button class="btn" style="margin-top:10px; background:#333; color:#fff;" onclick="location.reload()">SİSTEMİ SIFIRLA</button>
+                </div>`;
+        }
+
+        function nextTest() {
+            questions = getRandomTest();
+            cur = 0; score = 0;
+            document.getElementById('score').innerText = '0';
+            document.getElementById('bar').style.width = '0%';
+            document.getElementById('game').innerHTML = `
+                <div class="q-tag" id="q-idx">SORU 01</div>
+                <div class="q-text" id="q-text">Hazırlanıyor...</div>
+                <div class="options" id="opts"></div>
+                <button class="btn" id="btn" disabled onclick="action()">CEVABI KONTROL ET</button>`;
+            render();
+        }
+
+        (() => { questions = getRandomTest(); render(); })();
+    </script>
 </body>
+
 </html>
