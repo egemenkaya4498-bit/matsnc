@@ -151,11 +151,7 @@ body {
     letter-spacing: 2px;
 }
 
-.clock-date {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    margin-top: 2px;
-}
+.clock-date { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
 
 .plus-member-badge {
     display: none;
@@ -168,7 +164,6 @@ body {
     box-shadow: 0 0 18px var(--gold-glow);
     animation: goldPulse 2s infinite;
 }
-
 .plus-member-badge.visible { display: flex; }
 
 @keyframes goldPulse {
@@ -280,7 +275,6 @@ body {
     color: var(--text-muted);
 }
 .history-item.active .history-title { color: white; }
-
 .history-time { font-size: 0.62rem; color: rgba(138,155,189,0.6); margin-top: 3px; }
 
 .delete-btn {
@@ -297,11 +291,7 @@ body {
 }
 .delete-btn:hover { color: #ff9e9e; opacity: 1; }
 
-.sidebar-footer {
-    border-top: 1px solid rgba(255,255,255,0.08);
-    padding-top: 12px;
-    text-align: center;
-}
+.sidebar-footer { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px; text-align: center; }
 .sidebar-footer-version { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; }
 .sidebar-footer-next { font-size: 0.6rem; color: rgba(168,85,247,0.7); margin-top: 4px; line-height: 1.4; }
 
@@ -401,8 +391,7 @@ body {
 }
 
 .research-dot {
-    width: 7px;
-    height: 7px;
+    width: 7px; height: 7px;
     border-radius: 50%;
     background: var(--research-blue);
     animation: researchDotPulse 1s infinite;
@@ -430,7 +419,7 @@ body {
     max-width: 78%;
     padding: 16px 20px;
     border-radius: 24px;
-    line-height: 1.7;
+    line-height: 1.75;
     font-size: 0.95rem;
     word-wrap: break-word;
     backdrop-filter: blur(10px);
@@ -460,6 +449,7 @@ body {
 .ai-msg:hover {
     border-color: rgba(0,240,255,0.4);
     box-shadow: 0 8px 24px rgba(0,0,0,0.3), 0 0 12px var(--primary-glow);
+    transition: all 0.25s;
 }
 
 .congrats-msg {
@@ -513,10 +503,9 @@ body {
 .thinking-icon { font-size: 1rem; }
 .thinking-icon.spinning { animation: thinkSpin 1.5s linear infinite; }
 @keyframes thinkSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-.thinking-icon.done { animation: none; }
 
 .thinking-label { font-size: 0.8rem; font-weight: 700; color: #60a5fa; flex: 1; }
-.thinking-duration { font-size: 0.65rem; color: rgba(96,165,250,0.6); margin-left: auto; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.5px; }
+.thinking-duration { font-size: 0.65rem; color: rgba(96,165,250,0.6); margin-left: auto; font-family: 'JetBrains Mono', monospace; }
 .thinking-toggle { font-size: 0.75rem; color: rgba(96,165,250,0.5); transition: transform 0.25s; }
 .thinking-toggle.open { transform: rotate(180deg); }
 
@@ -570,7 +559,6 @@ body {
 @keyframes thinkDotBounce { 0%,60%,100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-6px); opacity: 1; } }
 .thinking-loading-text { font-size: 0.73rem; color: #60a5fa; font-weight: 500; }
 
-/* Kaynaklar kutusu */
 .sources-box {
     margin-top: 8px;
     padding: 10px 14px;
@@ -584,7 +572,6 @@ body {
 .sources-box-title { font-size: 0.68rem; color: #60a5fa; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 3px; }
 .source-link { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #93c5fd; text-decoration: none; }
 .source-link:hover { color: #60a5fa; text-decoration: underline; }
-.source-link-icon { width: 14px; height: 14px; opacity: 0.7; }
 .source-domain { color: var(--text-muted); font-size: 0.65rem; margin-left: 2px; }
 
 .math-block {
@@ -820,10 +807,8 @@ body {
 }
 </style>
 <body>
-<script async src="https://cse.google.com/cse.js?cx=72119d78701724da4">
-</script>
 <canvas id="particle-canvas"></canvas>
-<input type="file" id="fileInput" accept="image/*" style="display:none;">
+<input type="file" id="fileInput" accept="image/*" style="display:none;" multiple>
 
 <div class="app">
     <aside class="sidebar">
@@ -890,12 +875,12 @@ body {
                 <input type="text" id="userInput"
                        placeholder="Matematik sorusu sor... (📎 veya Ctrl+V ile resim ekle)"
                        autofocus maxlength="4000">
-                <div id="imagePreviewArea" style="display:flex;align-items:center;"></div>
-                <button class="attach-btn" id="attachBtn" title="Resim dosyası ekle">📎</button>
+                <div id="imagePreviewArea" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;"></div>
+                <button class="attach-btn" id="attachBtn" title="Resim dosyası ekle (max 2)">📎</button>
                 <button id="sendBtn">➤</button>
             </div>
             <div class="infobox">
-                <p>Yapay Zeka hata yapabilir. Kişisel verilerinizi paylaşmayınız. · V5.0 — Google Araştırma Entegrasyonlu</p>
+                <p>Yapay Zeka hata yapabilir. Kişisel verilerinizi paylaşmayınız. · V5.0 — Google Araştırma + Çoklu Gemini API</p>
             </div>
         </div>
     </main>
@@ -905,7 +890,7 @@ body {
 <div id="kayaModal" class="modal">
     <div class="modal-content">
         <h2>✨ KAYA STUDIOS PLUS</h2>
-        <p class="modal-subtitle">Kaya Studios Plus sahibi olmanız için sadece bir adım kaldı! Güvenlik önlemlerinin alınması için sizden bazı bilgiler istenmektedir. İsteminiz onaylandığında <strong>Kaya Studios Plus</strong> avantajlarından yararlanabileceksiniz.</p>
+        <p class="modal-subtitle">Kaya Studios Plus sahibi olmanız için sadece bir adım kaldı! İsteminiz onaylandığında <strong>Kaya Studios Plus</strong> avantajlarından yararlanabileceksiniz.</p>
         <input type="text"  id="firstName" placeholder="Adınız"         autocomplete="off" maxlength="50">
         <input type="text"  id="lastName"  placeholder="Soyadınız"       autocomplete="off" maxlength="50">
         <input type="email" id="gmail"     placeholder="Gmail adresiniz" autocomplete="off">
@@ -921,7 +906,7 @@ body {
     <div class="confirm-modal-content">
         <h2>🚫 Aboneliği İptal Et</h2>
         <p>Kaya Studios Plus üyeliğinizi iptal etmek istediğinizden emin misiniz?<br><br>
-           İptal etmeniz durumunda <strong>Plus avantajlarınızı</strong> kaybedeceksiniz. Tekrar başvurabilirsiniz.</p>
+           İptal etmeniz durumunda <strong>Plus avantajlarınızı</strong> kaybedeceksiniz.</p>
         <div class="confirm-buttons">
             <button class="confirm-keep-btn"   id="keepPlusBtn">Vazgeç</button>
             <button class="confirm-cancel-btn" id="confirmCancelBtn">Evet, İptal Et</button>
@@ -932,7 +917,6 @@ body {
 <script>
 /* ══════════════════════════════════════════════════════════════
    MATH CANAVARI V5.0 — KAYA STUDIOS AI
-   Gerçek Google Custom Search Entegrasyonu
    ══════════════════════════════════════════════════════════════ */
 
 const STORAGE_KEY      = 'math-canavari-v5';
@@ -942,44 +926,81 @@ const MAX_MSG_LENGTH   = 4000;
 const WARN_MSG_LENGTH  = 3500;
 const CLIENT_COOLDOWN  = 1500;
 const SPAM_SAME_MSG    = 3;
+const MAX_IMAGES       = 2;
+const SOURCES_SEP      = '|||SOURCES|||';
 
 let sessions = [], activeId = null;
 let isStreaming = false, streamCancel = null, currentStreamElement = null;
-let pendingImageFile = null, pendingImageUrl = null;
+let pendingImageFiles = [];   // ← Artık dizi
 let plusData = null, plusPollInterval = null;
 let lastSendTime = 0, recentMessages = [];
 
 const welcomeMsg = {
     id: 'welcome', role: 'ai',
-    text: 'Selam! Ben **Math Canavarı V5.0** 🧠⚡\n\nBazı sorularda **Google üzerinden gerçek zamanlı araştırma** yapabiliyorum! Tarihler, ünlü kişiler, özel günler gibi konularda otomatik olarak Google\'da arama yapar, gerçek kaynakları tarar ve sana en doğru bilgiyi sunarım.\n\nHaydi, sorunu sor!'
+    text: 'Selam! Ben **Math Canavarı V5.0** 🧠⚡\n\nBazı sorularda **Google üzerinden gerçek zamanlı araştırma** yapabiliyorum! Tarihler, ünlü kişiler, özel günler gibi konularda otomatik olarak Google\'da arama yapar, gerçek kaynakları tarar ve sana en doğru bilgiyi sunarım.\n\n**3 ayrı Gemini API** ile kesintisiz hizmet sunuyorum. Haydi, sorunu sor!'
 };
 
 const DAYS_TR   = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
 const MONTHS_TR = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
 
-/* ══════════════════════════════════════════════════════════
-   CLIENT-SIDE ARAŞTIRMA TESPİTİ
-   (Sadece UI için — gerçek araştırma backend'de yapılır)
-   ══════════════════════════════════════════════════════════ */
+/* ══════ SOURCES AYRAÇ PARSE — GÜVENLİ ══════ */
+function parseBackendResponse(rawText) {
+    /*
+     * Backend formatı: <AI_metni>|||SOURCES|||<JSON>
+     * Bu fonksiyon her koşulda güvenli şekilde parse eder.
+     */
+    if (typeof rawText !== 'string') return { replyText: '', researchPerformed: false, searchQuery: '', realSources: [] };
+
+    const sepIdx = rawText.indexOf(SOURCES_SEP);
+    if (sepIdx === -1) {
+        // Ayraç yok — düz metin
+        return { replyText: rawText.trim(), researchPerformed: false, searchQuery: '', realSources: [] };
+    }
+
+    const replyText  = rawText.substring(0, sepIdx).trim();
+    const jsonPart   = rawText.substring(sepIdx + SOURCES_SEP.length).trim();
+
+    let researchPerformed = false;
+    let searchQuery       = '';
+    let realSources       = [];
+
+    try {
+        // İlk { ... } bloğunu al
+        const startIdx = jsonPart.indexOf('{');
+        const endIdx   = jsonPart.lastIndexOf('}');
+        if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
+            const jsonStr  = jsonPart.substring(startIdx, endIdx + 1);
+            const parsed   = JSON.parse(jsonStr);
+            researchPerformed = parsed.performed  || false;
+            searchQuery       = parsed.query      || '';
+            realSources       = Array.isArray(parsed.sources) ? parsed.sources : [];
+        }
+    } catch(e) {
+        console.warn('[SOURCES PARSE] JSON parse hatası:', e);
+    }
+
+    return { replyText, researchPerformed, searchQuery, realSources };
+}
+
+/* ══════ ARAŞTIRMA TESPİTİ ══════ */
 const RESEARCH_PATTERNS = [
-    { regex: /ne\s*zaman\s*(doğdu|öldü|doğmuş|ölmüş|vefat|kuruldu|kurulmuş|keşfedildi|icat|bulundu|başladı|bitti|oldu|yapıldı|açıldı|kapandı)/i,           label: 'Tarih/Olay Araştırması' },
-    { regex: /(doğum|ölüm|vefat|kuruluş)\s*(tarihi|günü|yılı|senesi)/i,                                                                                       label: 'Tarih Araştırması' },
-    { regex: /hangi\s*(tarih|yıl|gün|ay|dönem|çağ|yüzyıl)/i,                                                                                                  label: 'Tarih Sorgusu' },
-    { regex: /(\d{1,2})\s*(ocak|şubat|mart|nisan|mayıs|haziran|temmuz|ağustos|eylül|ekim|kasım|aralık)\s*(ne\s*oldu|nedir|önemi|olaylar)/i,                    label: 'Belirli Tarih Araştırması' },
+    { regex: /ne\s*zaman\s*(doğdu|öldü|doğmuş|ölmüş|vefat|kuruldu|kurulmuş|keşfedildi|icat|bulundu|başladı|bitti|oldu|yapıldı|açıldı|kapandı)/i, label: 'Tarih/Olay Araştırması' },
+    { regex: /(doğum|ölüm|vefat|kuruluş)\s*(tarihi|günü|yılı|senesi)/i, label: 'Tarih Araştırması' },
+    { regex: /hangi\s*(tarih|yıl|gün|ay|dönem|çağ|yüzyıl)/i, label: 'Tarih Sorgusu' },
+    { regex: /(\d{1,2})\s*(ocak|şubat|mart|nisan|mayıs|haziran|temmuz|ağustos|eylül|ekim|kasım|aralık)\s*(ne\s*oldu|nedir|önemi|olaylar)/i, label: 'Belirli Tarih Araştırması' },
     { regex: /(atatürk|mustafa\s*kemal|einstein|newton|tesla|edison|mozart|beethoven|da\s*vinci|leonardo|picasso|shakespeare|fatih\s*sultan|kanuni|yavuz\s*sultan|mimar\s*sinan|nazım\s*hikmet|yunus\s*emre|mehmet\s*akif|barış\s*manço|zeki\s*müren|tarkan|elon\s*musk|steve\s*jobs|bill\s*gates|mark\s*zuckerberg|jeff\s*bezos|alan\s*turing|marie\s*curie|nikola\s*tesla|stephen\s*hawking|galileo|kopernik|kepler|pythagoras|pisagor|arşimet|archimedes|öklid|euclid|euler|gauss|fibonacci|fermat|pascal|descartes|leibniz|riemann|hilbert|ramanujan|emmy\s*noether|ada\s*lovelace|al-?harizmi|harezmi|ali\s*kuşçu|uluğ\s*bey|ibn-?i?\s*sina|farabi|biruni|hayyam|ömer\s*hayyam|cahit\s*arf)/i, label: 'Ünlü Kişi Araştırması' },
     { regex: /(anneler\s*günü|babalar\s*günü|sevgililer\s*günü|öğretmenler\s*günü|dünya\s*\w+\s*günü|cumhuriyet\s*bayramı|zafer\s*bayramı|19\s*mayıs|23\s*nisan|30\s*ağustos|29\s*ekim|ramazan\s*bayramı|kurban\s*bayramı|yılbaşı|noel|nevruz|hıdırellez|kadınlar\s*günü|çocuk\s*bayramı|işçi\s*bayramı|1\s*mayıs|pi\s*günü|matematik\s*günü)/i, label: 'Özel Gün Araştırması' },
-    { regex: /(nüfusu|başkenti|para\s*birimi|yüzölçümü|en\s*büyük\s*şehri|resmi\s*dili)\s*(ne|kaç|nedir)/i,                                                   label: 'Genel Bilgi Araştırması' },
+    { regex: /(nüfusu|başkenti|para\s*birimi|yüzölçümü|en\s*büyük\s*şehri|resmi\s*dili)\s*(ne|kaç|nedir)/i, label: 'Genel Bilgi Araştırması' },
     { regex: /dünya[''nın]*\s*(en\s*büyük|en\s*küçük|en\s*uzun|en\s*kısa|en\s*yüksek|en\s*derin|en\s*geniş|en\s*hızlı|en\s*ağır|en\s*sıcak|en\s*soğuk|en\s*kalabalık)/i, label: 'Dünya Rekoru Araştırması' },
-    { regex: /(kim|kimdir|kimdi|kim\s*tarafından|kimin\s*eseri)\s*\??$/i,                                                                                      label: 'Kişi Araştırması' },
-    { regex: /kaç\s*(yılında|senesinde|tarihinde)/i,                                                                                                           label: 'Yıl Araştırması' },
-    { regex: /(tarihi|tarihçesi)\s*(nedir|ne|hakkında)/i,                                                                                                      label: 'Tarih Araştırması' },
-    { regex: /(kim\s*buldu|kim\s*keşfetti|kim\s*geliştirdi|kim\s*icat\s*etti|kim\s*yazdı|kim\s*çizdi|kim\s*besteledi|kim\s*tasarladı)/i,                      label: 'Keşif/Buluş Araştırması' },
+    { regex: /(kimdir|kimdi|kim\s*tarafından|kimin\s*eseri)/i, label: 'Kişi Araştırması' },
+    { regex: /kaç\s*(yılında|senesinde|tarihinde)/i, label: 'Yıl Araştırması' },
+    { regex: /(tarihi|tarihçesi)\s*(nedir|ne|hakkında)/i, label: 'Tarih Araştırması' },
+    { regex: /(kim\s*buldu|kim\s*keşfetti|kim\s*geliştirdi|kim\s*icat\s*etti|kim\s*yazdı|kim\s*besteledi|kim\s*tasarladı)/i, label: 'Keşif/Buluş Araştırması' },
     { regex: /(hangi\s*bilim\s*insanı|hangi\s*matematikçi|hangi\s*fizikçi|hangi\s*kimyager|hangi\s*mühendis|hangi\s*mimar|hangi\s*sanatçı|hangi\s*yazar|hangi\s*şair)/i, label: 'Bilim İnsanı Araştırması' },
-    { regex: /(şu\s*an|şuan|şimdi|bugün|bu\s*yıl|2024|2025|güncel|son\s*durum|günümüzde)/i,                                                                   label: 'Güncel Bilgi Araştırması' },
-    { regex: /(kaç\s*yaşında|yaşıyor\s*mu|hayatta\s*mı|sağ\s*mı|ne\s*zaman\s*öldü)/i,                                                                        label: 'Yaşam Durumu Araştırması' },
-    { regex: /(nerede\s*doğdu|nerede\s*öldü|nerede\s*yaşıyor|nerede\s*gömülü|mezarı\s*nerede)/i,                                                              label: 'Konum Araştırması' },
-    { regex: /(formül|teorem|kural|yasa|kanun|aksiyom)\w*\s*(kimin|kim\s*tarafından|ne\s*zaman|hangi\s*yıl)/i,                                                label: 'Formül/Teorem Kökeni Araştırması' },
-    { regex: /(pi\s*sayısı|euler\s*sayısı|altın\s*oran|fibonacci\s*dizisi|asal\s*sayı)\w*\s*(ne|nedir|kim|tarih)/i,                                           label: 'Matematik Kavram Araştırması' },
+    { regex: /(kaç\s*yaşında|yaşıyor\s*mu|hayatta\s*mı|sağ\s*mı|ne\s*zaman\s*öldü)/i, label: 'Yaşam Durumu Araştırması' },
+    { regex: /(nerede\s*doğdu|nerede\s*öldü|nerede\s*yaşıyor|nerede\s*gömülü|mezarı\s*nerede)/i, label: 'Konum Araştırması' },
+    { regex: /(formül|teorem|kural|yasa|kanun|aksiyom)\w*\s*(kimin|kim\s*tarafından|ne\s*zaman|hangi\s*yıl)/i, label: 'Formül/Teorem Kökeni Araştırması' },
+    { regex: /(pi\s*sayısı|euler\s*sayısı|altın\s*oran|fibonacci\s*dizisi|asal\s*sayı)\w*\s*(ne|nedir|kim|tarih)/i, label: 'Matematik Kavram Araştırması' },
 ];
 
 const PURE_MATH = [
@@ -1116,8 +1137,8 @@ async function checkPlusStatus() {
         if (!res.ok) return;
         const data = await res.json();
         if (!data.status || data.status === plusData.status) return;
-        const oldStatus  = plusData.status;
-        plusData.status  = data.status;
+        const oldStatus = plusData.status;
+        plusData.status = data.status;
         if (data.name)    plusData.name    = data.name;
         if (data.surname) plusData.surname = data.surname;
         savePlusData(); applyPlusUI();
@@ -1208,7 +1229,7 @@ function loadSessions() {
     activeId = newId; saveToLocal();
 }
 
-function getActiveSession()   { return sessions.find(s => s.id === activeId) || sessions[0]; }
+function getActiveSession() { return sessions.find(s => s.id === activeId) || sessions[0]; }
 
 function updateActiveSession(updater) {
     sessions = sessions.map(s => s.id === activeId ? updater(s) : s);
@@ -1260,23 +1281,48 @@ function setupCharCounter() {
     });
 }
 
-/* ═══════ RESİM İŞLEMLERİ ═══════ */
-function clearPendingImage() {
-    if (pendingImageUrl) { URL.revokeObjectURL(pendingImageUrl); pendingImageUrl = null; }
-    pendingImageFile = null;
+/* ═══════ RESİM İŞLEMLERİ (ÇOKLU) ═══════ */
+function clearAllImages() {
+    pendingImageFiles = [];
     document.getElementById('imagePreviewArea').innerHTML = '';
 }
 
-function showImagePreview(file) {
-    if (file.size > 10 * 1024 * 1024) { showToast('Max 10MB.', true); return; }
-    if (!file.type.startsWith('image/')) { showToast('Sadece resim.', true); return; }
-    clearPendingImage(); pendingImageFile = file;
-    const url = URL.createObjectURL(file); pendingImageUrl = url;
+function renderImagePreviews() {
     const container = document.getElementById('imagePreviewArea');
-    const div = document.createElement('div'); div.className = 'image-preview-container';
-    div.innerHTML = `<img class="image-preview" src="${url}" alt="önizleme"><button class="remove-image" title="Kaldır">✕</button>`;
-    div.querySelector('.remove-image').addEventListener('click', e => { e.stopPropagation(); clearPendingImage(); });
-    container.appendChild(div);
+    container.innerHTML = '';
+    pendingImageFiles.forEach((file, idx) => {
+        const url = URL.createObjectURL(file);
+        const wrap = document.createElement('div');
+        wrap.className = 'image-preview-container';
+        const img = document.createElement('img');
+        img.className = 'image-preview';
+        img.src = url;
+        img.alt = 'önizleme';
+        const rmBtn = document.createElement('button');
+        rmBtn.className = 'remove-image';
+        rmBtn.title = 'Kaldır';
+        rmBtn.textContent = '✕';
+        rmBtn.addEventListener('click', e => {
+            e.stopPropagation();
+            URL.revokeObjectURL(url);
+            pendingImageFiles.splice(idx, 1);
+            renderImagePreviews();
+        });
+        wrap.appendChild(img);
+        wrap.appendChild(rmBtn);
+        container.appendChild(wrap);
+    });
+}
+
+function addImageFile(file) {
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { showToast('Sadece resim dosyası ekleyebilirsiniz.', true); return; }
+    if (file.size > 10 * 1024 * 1024)    { showToast('Max 10MB resim ekleyebilirsiniz.', true); return; }
+    if (pendingImageFiles.length >= MAX_IMAGES) {
+        showToast(`En fazla ${MAX_IMAGES} resim ekleyebilirsiniz.`, true); return;
+    }
+    pendingImageFiles.push(file);
+    renderImagePreviews();
 }
 
 function setupPasteHandler() {
@@ -1288,7 +1334,8 @@ function setupPasteHandler() {
             else if (item.type === 'text/plain') plainText = await new Promise(r => item.getAsString(r));
         }
         if (imageFile) {
-            e.preventDefault(); showImagePreview(imageFile);
+            e.preventDefault();
+            addImageFile(imageFile);
             if (plainText) {
                 const inp = document.getElementById('userInput');
                 const s = inp.selectionStart, en = inp.selectionEnd;
@@ -1301,9 +1348,18 @@ function setupPasteHandler() {
 
 /* ═══════ RENDER ═══════ */
 function renderTextWithMath(text) {
+    // Madde işaretlerini düzelt
+    const cleaned = text
+        .replace(/^\s*\*\s+/gm, '- ')
+        .replace(/(\n\s*)\*\s+/g, '$1- ');
+
     const container = document.createElement('div');
-    container.innerHTML = text
+    // Bold, italic, kod blokları
+    container.innerHTML = cleaned
+        .replace(/```([\s\S]*?)```/g, '<pre style="background:rgba(0,0,0,0.3);padding:10px;border-radius:8px;overflow-x:auto;font-family:JetBrains Mono,monospace;font-size:0.85rem;margin:8px 0;border:1px solid rgba(0,240,255,0.15)"><code>$1</code></pre>')
+        .replace(/`([^`]+)`/g, '<code style="background:rgba(0,240,255,0.1);padding:2px 6px;border-radius:4px;font-family:JetBrains Mono,monospace;font-size:0.88rem">$1</code>')
         .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
         .replace(/\n/g, '<br>');
     applyKatex(container);
     return container;
@@ -1339,27 +1395,26 @@ function renderMessages() {
             const header = document.createElement('div');
             header.className = 'thinking-header';
             header.innerHTML = `
-                <span class="thinking-icon done">✅</span>
+                <span class="thinking-icon">✅</span>
                 <span class="thinking-label">${msg.label || 'Araştırma Tamamlandı'}</span>
-                <span class="thinking-duration">${msg.duration || '0'}s</span>
+                <span class="thinking-duration">${msg.duration || '0s'}</span>
                 <span class="thinking-toggle">▼</span>
             `;
             const body  = document.createElement('div'); body.className = 'thinking-body';
             const inner = document.createElement('div'); inner.className = 'thinking-body-inner';
             inner.innerHTML = msg.stepsHtml || '';
 
-            // Kaynaklar kutusu
             if (msg.sources && msg.sources.length > 0) {
                 const sourcesBox = document.createElement('div');
                 sourcesBox.className = 'sources-box';
                 sourcesBox.innerHTML = `<div class="sources-box-title">🔗 Taranan Gerçek Kaynaklar</div>`;
                 msg.sources.forEach(src => {
                     const a = document.createElement('a');
-                    a.className  = 'source-link';
-                    a.href       = src.link;
-                    a.target     = '_blank';
-                    a.rel        = 'noopener noreferrer';
-                    a.innerHTML  = `${getDomainIcon(src.domain)} <span>${(src.title || src.domain || '').slice(0, 55)}</span> <span class="source-domain">${src.domain}</span>`;
+                    a.className = 'source-link';
+                    a.href      = src.link;
+                    a.target    = '_blank';
+                    a.rel       = 'noopener noreferrer';
+                    a.innerHTML = `${getDomainIcon(src.domain)} <span>${(src.title || src.domain || '').slice(0, 55)}</span> <span class="source-domain">${src.domain}</span>`;
                     sourcesBox.appendChild(a);
                 });
                 inner.appendChild(sourcesBox);
@@ -1375,11 +1430,11 @@ function renderMessages() {
         }
 
         const div = document.createElement('div');
-        if (msg.role === 'congrats')        div.className = 'msg congrats-msg';
-        else if (msg.isRateLimit)           div.className = 'msg rate-limit-msg';
-        else if (msg.isInfo)                div.className = 'msg info-msg';
+        if (msg.role === 'congrats')   div.className = 'msg congrats-msg';
+        else if (msg.isRateLimit)      div.className = 'msg rate-limit-msg';
+        else if (msg.isInfo)           div.className = 'msg info-msg';
         else div.className = `msg ${msg.role === 'user' ? 'user-msg' : 'ai-msg'} ${msg.isError ? 'error-msg' : ''}`;
-        div.appendChild(renderTextWithMath(msg.text));
+        div.appendChild(renderTextWithMath(msg.text || ''));
         chatBox.appendChild(div);
     });
 
@@ -1391,27 +1446,42 @@ function renderSidebar() {
     const list = document.getElementById('historyList');
     list.innerHTML = '';
     sessions.slice().sort((a, b) => b.timestamp - a.timestamp).forEach(s => {
-        const item       = document.createElement('div');
-        item.className   = `history-item ${s.id === activeId ? 'active' : ''}`;
-        const titleSpan  = document.createElement('div'); titleSpan.className = 'history-title'; titleSpan.textContent = s.title;
-        const timeSpan   = document.createElement('div'); timeSpan.className  = 'history-time';  timeSpan.textContent  = formatTimeAgo(s.timestamp);
+        const item = document.createElement('div');
+        item.className = `history-item ${s.id === activeId ? 'active' : ''}`;
+
+        const titleSpan = document.createElement('div');
+        titleSpan.className  = 'history-title';
+        titleSpan.textContent = s.title;
+
+        const timeSpan = document.createElement('div');
+        timeSpan.className  = 'history-time';
+        timeSpan.textContent = formatTimeAgo(s.timestamp);
+
         const clickHandler = () => {
             if (isStreaming) stopStreaming();
-            activeId = s.id; renderSidebar(); renderMessages(); enableInput(); clearPendingImage();
+            activeId = s.id; renderSidebar(); renderMessages(); enableInput(); clearAllImages();
         };
-        titleSpan.onclick = clickHandler; timeSpan.onclick = clickHandler;
-        const delBtn = document.createElement('button'); delBtn.className = 'delete-btn'; delBtn.textContent = '🗑 Sil';
+        titleSpan.onclick = clickHandler;
+        timeSpan.onclick  = clickHandler;
+
+        const delBtn = document.createElement('button');
+        delBtn.className  = 'delete-btn';
+        delBtn.textContent = '🗑 Sil';
         delBtn.onclick = e => {
-            e.stopPropagation(); if (isStreaming) stopStreaming();
+            e.stopPropagation();
+            if (isStreaming) stopStreaming();
             sessions = sessions.filter(ss => ss.id !== s.id);
             if (!sessions.length) {
                 const newId = Date.now().toString() + Math.random().toString(36);
                 sessions = [{ id: newId, title: 'Yeni Sohbet', timestamp: Date.now(), messages: [{ ...welcomeMsg, id: 'welcome-' + newId }] }];
             }
             if (activeId === s.id) activeId = sessions[0].id;
-            saveToLocal(); renderSidebar(); renderMessages(); enableInput(); clearPendingImage();
+            saveToLocal(); renderSidebar(); renderMessages(); enableInput(); clearAllImages();
         };
-        item.appendChild(titleSpan); item.appendChild(timeSpan); item.appendChild(delBtn);
+
+        item.appendChild(titleSpan);
+        item.appendChild(timeSpan);
+        item.appendChild(delBtn);
         list.appendChild(item);
     });
 }
@@ -1431,13 +1501,12 @@ function stopStreaming() {
 
 /* ═══════ STREAMING ═══════ */
 function startStreaming(sessionId, messageId, fullTextRaw) {
-    // SOURCES ve benzeri ekleri temizle
-    let cleanText = fullTextRaw
-        .replace(/\|\|\|SOURCES\|\|\|[\s\S]*$/, '')
-        .replace(/\|\|\|.*?\|\|\|[\s\S]*$/, '')
+    // SOURCES ayracını ve sonrasını kesinlikle temizle
+    let cleanText = fullTextRaw;
+    const sepIdx = cleanText.indexOf(SOURCES_SEP);
+    if (sepIdx !== -1) cleanText = cleanText.substring(0, sepIdx);
+    cleanText = cleanText
         .replace(/Google\s*kurdu/gi, '')
-        .replace(/^\s*\*\s+/gm, '- ')
-        .replace(/(\n\s*)\*\s+/g, '$1- ')
         .trim();
 
     const session = sessions.find(s => s.id === sessionId);
@@ -1452,20 +1521,22 @@ function startStreaming(sessionId, messageId, fullTextRaw) {
     chatBox.appendChild(aiDiv);
     currentStreamElement = aiDiv;
 
-    let pos   = 0;
-    const total = cleanText.length;
+    let pos       = 0;
+    const total   = cleanText.length;
     isStreaming   = true;
 
     streamCancel = setInterval(() => {
         if (!currentStreamElement || !document.getElementById('stream-target-' + messageId)) {
             stopStreaming(); return;
         }
-        const speed = Math.floor(Math.random() * 5) + 2;
+        const speed = Math.floor(Math.random() * 6) + 3;
         pos = Math.min(pos + speed, total);
         const partial = cleanText.substring(0, pos);
 
         const temp = document.createElement('div');
-        temp.innerHTML = partial.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+        temp.innerHTML = partial
+            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\n/g, '<br>');
         applyKatex(temp);
         currentStreamElement.innerHTML = '';
         while (temp.firstChild) currentStreamElement.appendChild(temp.firstChild);
@@ -1483,12 +1554,12 @@ function startStreaming(sessionId, messageId, fullTextRaw) {
             } : s);
             saveToLocal(); stopStreaming();
         }
-    }, 35);
+    }, 30);
 }
 
 /* ═══════ CANLI THINKING PANELİ ═══════ */
 function createLiveThinkingPanel(label) {
-    const id        = 'think-' + Date.now();
+    const id = 'think-' + Date.now();
     const container = document.createElement('div');
     container.className = 'thinking-container';
     container.id        = id;
@@ -1502,7 +1573,7 @@ function createLiveThinkingPanel(label) {
         <span class="thinking-toggle open">▼</span>
     `;
 
-    const body  = document.createElement('div'); body.className  = 'thinking-body open'; body.id  = id + '-body';
+    const body  = document.createElement('div'); body.className  = 'thinking-body open'; body.id = id + '-body';
     const inner = document.createElement('div'); inner.className = 'thinking-body-inner'; inner.id = id + '-inner';
 
     const prog = document.createElement('div');
@@ -1545,9 +1616,6 @@ function createLiveThinkingPanel(label) {
 }
 
 async function finishThinkingWithSources(container, realSources, searchQuery, researchPerformed) {
-    /*
-     * realSources: [{title, domain, link}] — Backend header'ından gelen gerçek Google kaynakları
-     */
     const id      = container._id;
     const inner   = document.getElementById(id + '-inner');
     const fill    = document.getElementById(id + '-fill');
@@ -1569,18 +1637,16 @@ async function finishThinkingWithSources(container, realSources, searchQuery, re
         if (isBottom) chatBox.scrollTop = chatBox.scrollHeight;
     };
     const setProg = pct => {
-        if (fill)  fill.style.width    = pct + '%';
-        if (ptext) ptext.textContent   = '%' + Math.round(pct);
+        if (fill)  fill.style.width  = pct + '%';
+        if (ptext) ptext.textContent = '%' + Math.round(pct);
     };
 
-    // Adım 1 — başlangıç
     await delay(250);
     if (loading) loading.remove();
     addStep('🔍', `Google araması başlatıldı: <span class="think-step-analysis">"${(searchQuery || '').slice(0, 60)}"</span>`);
     setProg(8);
 
     if (researchPerformed && realSources && realSources.length > 0) {
-        // ─── Gerçek kaynaklar var ───
         await delay(350);
         addStep('🌐', 'Google Custom Search API yanıt verdi...');
         setProg(15);
@@ -1589,14 +1655,14 @@ async function finishThinkingWithSources(container, realSources, searchQuery, re
         for (let i = 0; i < realSources.length; i++) {
             const src  = realSources[i];
             const icon = getDomainIcon(src.domain);
-            await delay(300 + Math.random() * 200);
+            await delay(280 + Math.random() * 180);
             addStep(icon, `
                 <a class="think-step-site" href="${src.link}" target="_blank" rel="noopener noreferrer">${src.domain}</a>
                 <span style="color:var(--text-muted)"> — </span>
                 <span style="color:rgba(238,245,255,0.75);font-size:0.75rem">${(src.title || '').slice(0, 65)}</span>
             `);
             setProg(18 + (i + 1) / realSources.length * 48);
-            await delay(200 + Math.random() * 150);
+            await delay(180 + Math.random() * 120);
             addStep('📄', `<span class="think-step-result">${foundTexts[i % foundTexts.length]}</span>`);
             setProg(18 + (i + 1) / realSources.length * 55);
         }
@@ -1611,25 +1677,21 @@ async function finishThinkingWithSources(container, realSources, searchQuery, re
         addStep('✅', `<span class="think-step-result">Araştırma tamamlandı — ${realSources.length} gerçek Google kaynağı incelendi.</span>`);
         setProg(100);
         if (ptext) ptext.textContent = 'Tamamlandı ✓';
-
     } else {
-        // ─── Google API yapılandırılmamış ───
         await delay(400);
         addStep('⚠️', '<span style="color:#ffaa44">Google Search API yapılandırılmamış — AI kendi bilgisinden yanıt veriyor.</span>');
         setProg(100);
         if (ptext) ptext.textContent = 'AI Bilgisi';
     }
 
-    // Header güncelle
-    const iconEl  = container.querySelector('.thinking-icon');
+    const iconEl = container.querySelector('.thinking-icon');
     if (iconEl) { iconEl.classList.remove('spinning'); iconEl.textContent = '✅'; }
     clearInterval(container._durTimer);
-    const durEl   = container.querySelector('.thinking-duration');
+    const durEl    = container.querySelector('.thinking-duration');
     const finalDur = durEl ? durEl.textContent : '0s';
-    const labelEl = container.querySelector('.thinking-label');
+    const labelEl  = container.querySelector('.thinking-label');
     const labelTxt = labelEl ? labelEl.textContent : 'Araştırma';
 
-    // Panel kapat
     await delay(700);
     const bd = document.getElementById(id + '-body');
     if (bd) bd.classList.remove('open');
@@ -1649,43 +1711,66 @@ function buildContext() {
     const session = getActiveSession();
     const recent  = session.messages
         .filter(m => m.role !== 'congrats' && m.role !== 'thinking' && !m.isRateLimit && !m.isInfo)
-        .slice(-20);
+        .slice(-18);
     let history = '';
     for (const msg of recent) {
-        if (msg.role === 'user' && !msg.isError)      history += `Kullanıcı: ${msg.text}\n`;
-        else if (msg.role === 'ai' && !msg.isError)   history += `Asistan: ${msg.text}\n`;
+        if (msg.role === 'user' && !msg.isError)    history += `Kullanıcı: ${msg.text}\n`;
+        else if (msg.role === 'ai' && !msg.isError) history += `Asistan: ${msg.text}\n`;
     }
     return history;
 }
 
+/* ═══════ BAŞLIK OLUŞTURMA — SOURCES AYRAÇ DÜZELTİLDİ ═══════ */
 async function generateTitleAsync(firstUserMsg, sessionId) {
     try {
         const form = new FormData();
-        form.append('message', `Şu mesaja Türkçe kısa bir sohbet başlığı ver (max 40 karakter). Sadece başlığı yaz: ${firstUserMsg}`);
+        // Başlık isteği için saf bir mesaj — context gönderme
+        form.append('message', `Şu mesaja Türkçe kısa bir sohbet başlığı ver (max 40 karakter, sadece başlığı yaz, tırnak işareti kullanma): ${firstUserMsg.slice(0, 200)}`);
+        // search_query boş bırak ki araştırma yapılmasın
+        form.append('search_query', '');
+        form.append('is_plus', 'false');
+
         const res = await fetch(`${API_BASE}/chat`, { method: 'POST', body: form });
-        if (res.ok) {
-            let title = (await res.text()).trim().slice(0, 40).replace(/^"|"$/g, '').replace(/\*\*/g, '');
-            if (title) { sessions = sessions.map(s => s.id === sessionId ? { ...s, title } : s); saveToLocal(); renderSidebar(); }
+        if (!res.ok) return;
+
+        const rawText = await res.text();
+
+        // ✅ SOURCES ayracını güvenli şekilde temizle
+        const { replyText } = parseBackendResponse(rawText);
+
+        let title = replyText
+            .trim()
+            .slice(0, 40)
+            .replace(/^["'«»]+|["'«»]+$/g, '')  // baştaki/sondaki tırnak işaretleri
+            .replace(/\*\*/g, '')                 // bold işaretçiler
+            .replace(/\n.*/s, '')                 // ilk satırdan sonrasını at
+            .trim();
+
+        if (title && title.length > 2) {
+            sessions = sessions.map(s => s.id === sessionId ? { ...s, title } : s);
+            saveToLocal();
+            renderSidebar();
         }
-    } catch(e) {}
+    } catch(e) {
+        console.warn('[TITLE] Başlık oluşturulamadı:', e);
+    }
 }
 
 /* ════════════════════════════════════════════════════════
    ANA GÖNDERME FONKSİYONU
-   Gerçek Google araştırması: API yanıtından header okur
    ════════════════════════════════════════════════════════ */
 async function sendMessage() {
     if (isStreaming) return;
     const input = document.getElementById('userInput');
     const btn   = document.getElementById('sendBtn');
     const text  = input.value.trim();
-    if (!text && !pendingImageFile) return;
+    if (!text && pendingImageFiles.length === 0) return;
 
     if (text) {
         const spamCheck = checkClientSpam(text);
         if (!spamCheck.ok) {
             showCooldownBar(CLIENT_COOLDOWN);
-            const warn      = document.getElementById('spamWarning');
+            const warn = document.getElementById('spamWarning');
             warn.textContent = `⚠️ ${spamCheck.reason}`;
             warn.classList.add('visible');
             setTimeout(() => warn.classList.remove('visible'), 2500);
@@ -1696,7 +1781,10 @@ async function sendMessage() {
 
     const session     = getActiveSession();
     const isFirstUser = session.messages.filter(m => m.role === 'user').length === 0;
-    const userDisplay = pendingImageFile ? (text ? `${text} 📎 [Resim eklendi]` : '📎 [Resim]') : text;
+    const imgCount    = pendingImageFiles.length;
+    const userDisplay = imgCount > 0
+        ? (text ? `${text} 📎 [${imgCount} Resim]` : `📎 [${imgCount} Resim]`)
+        : text;
 
     updateActiveSession(s => ({
         ...s,
@@ -1704,25 +1792,35 @@ async function sendMessage() {
         messages:  [...s.messages, { id: Date.now() + '-user', role: 'user', text: userDisplay }]
     }));
 
-    input.value         = '';
-    input.disabled      = true;
-    btn.disabled        = true;
+    input.value    = '';
+    input.disabled = true;
+    btn.disabled   = true;
     document.getElementById('charCounter').textContent = '';
 
-    const chatBox   = document.getElementById('chatBox');
-    const isPlus    = plusData && plusData.status === 'approved';
-    const userName  = isPlus ? (plusData.name || '') : '';
+    const isPlus   = plusData && plusData.status === 'approved';
+    const userName = isPlus ? (plusData.name || '') : '';
 
     const formData = new FormData();
-    formData.append('message', buildContext() + `\nKullanıcı: ${text}\nAsistan:`);
-    formData.append('search_query', text);  // ✨ Sadece kullanıcının mesajı
-    formData.append('is_plus', isPlus ? 'true' : 'false');
-    if (userName)         formData.append('user_name', userName);
-    if (pendingImageFile) formData.append('image', pendingImageFile, pendingImageFile.name || 'image.png');
+    formData.append('message',      buildContext() + `\nKullanıcı: ${text}\nAsistan:`);
+    formData.append('search_query', text);
+    formData.append('is_plus',      isPlus ? 'true' : 'false');
+    if (userName) formData.append('user_name', userName);
 
-    const clientRes = detectResearchNeed(text);
+    // Tüm resimleri ekle
+    pendingImageFiles.forEach((file, i) => {
+        formData.append('image', file, file.name || `image${i}.png`);
+    });
 
-    if (clientRes.needed && !pendingImageFile) {
+    const imgFilesCopy  = [...pendingImageFiles]; // Kopyayı sakla
+    const hasImages     = imgFilesCopy.length > 0;
+    const clientRes     = detectResearchNeed(text);
+    const chatBox       = document.getElementById('chatBox');
+
+    // Resimleri hemen temizle (UI'dan)
+    clearAllImages();
+
+    if (clientRes.needed && !hasImages) {
+        /* ── ARAŞTIRMA YOLU ── */
         const resInd = document.getElementById('researchIndicator');
         resInd.classList.add('active');
         document.getElementById('researchIndicatorText').textContent = 'Google\'da araştırılıyor...';
@@ -1731,11 +1829,11 @@ async function sendMessage() {
         chatBox.appendChild(thinkPanel);
         chatBox.scrollTop = chatBox.scrollHeight;
 
-        const panelId     = thinkPanel._id;
-        const panelInner  = document.getElementById(panelId + '-inner');
-        const panelFill   = document.getElementById(panelId + '-fill');
-        const panelPtext  = document.getElementById(panelId + '-ptext');
-        const panelLoad   = document.getElementById(panelId + '-loading');
+        const panelId    = thinkPanel._id;
+        const panelInner = document.getElementById(panelId + '-inner');
+        const panelFill  = document.getElementById(panelId + '-fill');
+        const panelPtext = document.getElementById(panelId + '-ptext');
+        const panelLoad  = document.getElementById(panelId + '-loading');
 
         const addStepFn = (icon, html) => {
             const step = document.createElement('div');
@@ -1745,12 +1843,12 @@ async function sendMessage() {
             if (progEl) panelInner.insertBefore(step, progEl); else panelInner.appendChild(step);
             const bd = document.getElementById(panelId + '-body');
             if (bd) bd.scrollTop = bd.scrollHeight;
-            const isBottom = chatBox.scrollHeight - chatBox.scrollTop - chatBox.clientHeight < 120;
-            if (isBottom) chatBox.scrollTop = chatBox.scrollHeight;
+            if (chatBox.scrollHeight - chatBox.scrollTop - chatBox.clientHeight < 120)
+                chatBox.scrollTop = chatBox.scrollHeight;
         };
         const setProgFn = pct => {
             if (panelFill)  panelFill.style.width  = pct + '%';
-            if (panelPtext) panelPtext.textContent = '%' + Math.round(pct);
+            if (panelPtext) panelPtext.textContent  = '%' + Math.round(pct);
         };
 
         setTimeout(() => {
@@ -1774,46 +1872,14 @@ async function sendMessage() {
                         { id: Date.now() + '-ai-rl', role: 'ai', text: `⏳ ${errText}`, isRateLimit: true },
                     ]
                 }));
-                renderMessages(); enableInput(); clearPendingImage(); return;
+                renderMessages(); enableInput(); return;
             }
             if (!apiResponse.ok) throw new Error(`HTTP ${apiResponse.status}`);
-            
-            const contentType = apiResponse.headers.get('content-type') || '';
-            let replyText = '';
-            let researchPerformed = false;
-            let searchQuery = text;
-            let realSources = [];
-            
-            if (contentType.includes('application/json')) {
-                try {
-                    const responseData = await apiResponse.json();
-                    replyText = responseData.reply || '';
-                    researchPerformed = responseData.research_performed || false;
-                    searchQuery = responseData.search_query || text;
-                    realSources = responseData.sources || [];
-                } catch (jsonErr) {
-                    replyText = await apiResponse.text();
-                }
-            } else {
-                replyText = await apiResponse.text();
-            }
-            
-            // ✨ Backend SOURCES ayracı ile gömüyorsa parse et
-            if (replyText.includes('|||SOURCES|||')) {
-                const parts = replyText.split('|||SOURCES|||');
-                replyText = parts[0].trim();
-                try {
-                    const jsonMatch = parts[1].match(/\{[\s\S]*\}/);
-                    if (jsonMatch) {
-                        const sourceData = JSON.parse(jsonMatch[0]);
-                        researchPerformed = sourceData.performed || false;
-                        searchQuery = sourceData.query || text;
-                        realSources = sourceData.sources || [];
-                    }
-                } catch(e) {}
-            }
 
-            const thinkData = await finishThinkingWithSources(thinkPanel, realSources, searchQuery, researchPerformed);
+            const rawText = await apiResponse.text();
+            const { replyText, researchPerformed, searchQuery, realSources } = parseBackendResponse(rawText);
+
+            const thinkData = await finishThinkingWithSources(thinkPanel, realSources, searchQuery || text, researchPerformed);
             thinkData.label = researchPerformed && realSources.length > 0
                 ? `${clientRes.label} — ${realSources.length} Google kaynağı`
                 : clientRes.label;
@@ -1830,7 +1896,6 @@ async function sendMessage() {
             await new Promise(r => setTimeout(r, 150));
             startStreaming(activeId, aiMsgId, replyText);
             if (isFirstUser && text) generateTitleAsync(text, activeId);
-            clearPendingImage();
 
         } catch(err) {
             document.getElementById('researchIndicator').classList.remove('active');
@@ -1840,10 +1905,11 @@ async function sendMessage() {
                     { id: Date.now() + '-ai-err', role: 'ai', text: `❌ Hata: ${err.message}`, isError: true }
                 ]
             }));
-            renderMessages(); enableInput(); clearPendingImage();
+            renderMessages(); enableInput();
         }
 
     } else {
+        /* ── NORMAL YOLU ── */
         const aiMsgId = Date.now() + '-ai-stream';
         updateActiveSession(s => ({
             ...s, messages: [...s.messages, { id: aiMsgId, role: 'ai', text: '' }]
@@ -1867,53 +1933,20 @@ async function sendMessage() {
                     ...s, messages: s.messages.map(m =>
                         m.id === aiMsgId ? { ...m, text: `⏳ ${errText}`, isRateLimit: true } : m)
                 }));
-                renderMessages(); enableInput(); clearPendingImage(); return;
+                renderMessages(); enableInput(); return;
             }
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-            const contentType = response.headers.get('content-type') || '';
-            let replyText;
-            let researchPerformed = false;
-            let searchQuery = text;
-            let realSources = [];
+            const rawText = await response.text();
+            const { replyText, researchPerformed, searchQuery, realSources } = parseBackendResponse(rawText);
 
-            if (contentType.includes('application/json')) {
-                try {
-                    const responseData = await response.json();
-                    replyText = responseData.reply || '';
-                    researchPerformed = responseData.research_performed || false;
-                    searchQuery = responseData.search_query || text;
-                    realSources = responseData.sources || [];
-                } catch (jsonErr) {
-                    replyText = await response.text();
-                }
-            } else {
-                replyText = await response.text();
-            }
-
-            // ✨ Backend SOURCES ayracı ile gömüyorsa parse et
-            if (replyText.includes('|||SOURCES|||')) {
-                const parts = replyText.split('|||SOURCES|||');
-                replyText = parts[0].trim();
-                try {
-                    const jsonMatch = parts[1].match(/\{[\s\S]*\}/);
-                    if (jsonMatch) {
-                        const sourceData = JSON.parse(jsonMatch[0]);
-                        researchPerformed = sourceData.performed || false;
-                        searchQuery = sourceData.query || text;
-                        realSources = sourceData.sources || [];
-                    }
-                } catch(e) {}
-            }
-
-            if (researchPerformed) {
-                const thinkPanel = createLiveThinkingPanel("Google'da Araştırıldı");
+            // Backend beklenmedik bir araştırma yaptıysa thinking paneli göster
+            if (researchPerformed && realSources.length > 0) {
+                const thinkPanel = createLiveThinkingPanel('Google\'da Araştırıldı');
                 chatBox.appendChild(thinkPanel);
-                const thinkData = await finishThinkingWithSources(thinkPanel, realSources, searchQuery, researchPerformed);
-                thinkData.label = realSources.length > 0 
-                    ? `Google Araması — ${realSources.length} kaynak` 
-                    : `Google Araması`;
-                
+                const thinkData = await finishThinkingWithSources(thinkPanel, realSources, searchQuery || text, researchPerformed);
+                thinkData.label = `Google Araması — ${realSources.length} kaynak`;
+
                 updateActiveSession(s => ({
                     ...s, messages: [...s.messages.filter(m => m.id !== aiMsgId),
                         { id: 'think-sv-' + Date.now(), role: 'thinking', duration: thinkData.duration, stepsHtml: thinkData.stepsHtml, label: thinkData.label, sources: realSources },
@@ -1926,7 +1959,6 @@ async function sendMessage() {
             await new Promise(r => setTimeout(r, 100));
             startStreaming(activeId, aiMsgId, replyText);
             if (isFirstUser && text) generateTitleAsync(text, activeId);
-            clearPendingImage();
 
         } catch(err) {
             const ti = document.getElementById('typing-ind');
@@ -1935,10 +1967,11 @@ async function sendMessage() {
                 ...s, messages: s.messages.map(m =>
                     m.id === aiMsgId ? { ...m, text: `❌ Hata: ${err.message}`, isError: true } : m)
             }));
-            renderMessages(); enableInput(); clearPendingImage();
+            renderMessages(); enableInput();
         }
     }
 }
+
 /* ═══════ YENİ SOHBET ═══════ */
 function newChat() {
     if (isStreaming) stopStreaming();
@@ -1947,15 +1980,14 @@ function newChat() {
     activeId = newId;
     saveToLocal(); renderSidebar(); renderMessages(); enableInput();
     document.getElementById('userInput').focus();
-    clearPendingImage();
+    clearAllImages();
 
     if (plusData && plusData.status === 'approved' && plusData.name) {
         const h = getTurkeyTime().getHours();
         const greeting = h < 5 ? 'İyi geceler' : h < 12 ? 'Günaydın' : h < 18 ? 'İyi günler' : h < 22 ? 'İyi akşamlar' : 'İyi geceler';
-        const pwId     = 'plus-welcome-' + newId;
         sessions = sessions.map(s => s.id === newId ? { ...s, messages: [...s.messages, {
-            id: pwId, role: 'ai',
-            text: `${greeting} **${plusData.name}**! 👑 Plus + Google Araştırma modundayım — her konuda yardımcı olabilirim!`
+            id: 'plus-welcome-' + newId, role: 'ai',
+            text: `${greeting} **${plusData.name}**! 👑 Plus + Google Araştırma + 3x Gemini modundayım — her konuda yardımcı olabilirim!`
         }]} : s);
         saveToLocal(); renderMessages();
     }
@@ -1963,8 +1995,8 @@ function newChat() {
 
 /* ═══════ TOAST ═══════ */
 function showToast(message, isError = false) {
-    const toast   = document.createElement('div');
-    toast.className = 'toast';
+    const toast = document.createElement('div');
+    toast.className  = 'toast';
     toast.textContent = message;
     if (isError) toast.style.borderLeftColor = '#ff5e5e';
     document.body.appendChild(toast);
@@ -2001,7 +2033,7 @@ async function submitPlusRequest() {
     } catch(e) {
         showToast('Bağlantı hatası. Daha sonra tekrar deneyin.', true);
     } finally {
-        submitBtn.disabled  = false;
+        submitBtn.disabled    = false;
         submitBtn.textContent = 'Başvur';
     }
 }
@@ -2036,9 +2068,9 @@ function drawParticles() {
         if (p.x < 0 || p.x > pw) p.vx *= -1;
         if (p.y < 0 || p.y > ph) p.vy *= -1;
         ctx.beginPath();
-        ctx.fillStyle  = `rgba(${color},0.85)`;
+        ctx.fillStyle   = `rgba(${color},0.85)`;
         ctx.shadowColor = `rgba(${color},0.5)`;
-        ctx.shadowBlur = 12;
+        ctx.shadowBlur  = 12;
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
     }
@@ -2078,7 +2110,7 @@ document.getElementById('keepPlusBtn').addEventListener('click', closeCancelConf
 document.getElementById('confirmCancelBtn').addEventListener('click', confirmCancelPlus);
 document.getElementById('attachBtn').addEventListener('click', () => document.getElementById('fileInput').click());
 document.getElementById('fileInput').addEventListener('change', e => {
-    if (e.target.files[0]) showImagePreview(e.target.files[0]);
+    Array.from(e.target.files).forEach(f => addImageFile(f));
     e.target.value = '';
 });
 window.addEventListener('click', e => {
